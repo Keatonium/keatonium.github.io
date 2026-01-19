@@ -39,25 +39,28 @@
         #app { padding-top: var(--nav-height); min-height: 100vh; }
         .page { display: none; padding: 4rem 2rem; max-width: var(--max-width); margin: 0 auto; animation: fadeUp 0.8s var(--ease) forwards; }
         .page.active { display: block; }
+
         @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Project Cards */
-        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem; }
-        .project-card { background: var(--bg-secondary); border: 1px solid #333; padding: 2rem; border-radius: 4px; transition: transform 0.3s var(--ease); }
-        .project-card:hover { transform: translateY(-5px); border-color: var(--ut-orange); }
-        .project-tag { font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem; text-transform: uppercase; margin-bottom: 0.5rem; display: block; }
-
-        /* Tetris Fixed Borders */
+        /* TETRIS FIX */
         .hero-layout { display: grid; grid-template-columns: 1fr 300px; gap: 4rem; align-items: center; min-height: 70vh; }
-        #tetris-container { background: #000; border: 2px solid #333; padding: 10px; position: relative; width: fit-content; }
+        #tetris-container { background: #000; border: 2px solid #333; padding: 10px; box-shadow: 0 0 30px rgba(255, 130, 0, 0.1); position: relative; width: fit-content; }
         canvas { display: block; background-color: #000; image-rendering: pixelated; }
-        .game-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10; font-family: var(--font-mono); color: var(--ut-orange); }
-        .game-btn { background: none; border: 1px solid var(--ut-orange); color: var(--ut-orange); padding: 8px 12px; cursor: pointer; font-family: var(--font-mono); font-size: 0.7rem; margin-top: 10px; width: 100%; }
+        .score-board { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ut-orange); margin-bottom: 10px; }
+        .pause-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10; font-family: var(--font-mono); color: var(--ut-orange); }
+        .game-btn { background: none; border: 1px solid var(--ut-orange); color: var(--ut-orange); padding: 8px 12px; cursor: pointer; font-family: var(--font-mono); font-size: 0.7rem; margin-top: 10px; transition: 0.2s; }
+        .game-btn:hover { background: var(--ut-orange); color: #000; }
 
-        /* Terminal & Info */
-        .terminal-window { background: #0d0d0d; border: 1px solid #333; padding: 20px; font-family: var(--font-mono); height: 300px; overflow-y: auto; margin-top: 2rem; border-radius: 4px; }
+        /* UI COMPONENTS */
+        .info-card { background: var(--bg-secondary); border: 1px solid #333; padding: 2.5rem; border-radius: 4px; }
+        .terminal-window { background: #0d0d0d; border: 1px solid #333; padding: 20px; font-family: var(--font-mono); height: 350px; overflow-y: auto; margin-top: 2rem; cursor: text; border-radius: 4px; }
         .terminal-input { background: transparent; border: none; color: var(--ut-orange); font-family: var(--font-mono); outline: none; width: 70%; font-size: 1rem; }
-        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-top: 3rem; }
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-top: 3rem; }
+
+        @media (max-width: 768px) {
+            .hero-layout { grid-template-columns: 1fr; text-align: center; }
+            #tetris-container { margin: 0 auto; }
+        }
     </style>
 </head>
 <body>
@@ -81,49 +84,51 @@
             <div class="hero-layout">
                 <div>
                     <h1 style="font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.1;">
-                        I build <i>systems</i> <br> that thrive at the <br> <span style="color:var(--ut-orange)">hardware level.</span>
+                        I believe in <i>code</i> <br> that runs close <br> to the <span style="color:var(--ut-orange)">bare metal.</span>
                     </h1>
                 </div>
                 <div id="tetris-container">
-                    <div class="game-overlay" id="game-over-overlay">
-                        <h2>SYSTEM FAILURE</h2>
-                        <button class="game-btn" onclick="restartGame()">REBOOT</button>
+                    <div class="score-board">
+                        <span>Score: <span id="score">0</span></span>
+                        <span>Best: <span id="high-score">0</span></span>
+                    </div>
+                    <div class="pause-overlay" id="pause-overlay">
+                        <h2 style="letter-spacing: 4px;">PAUSED</h2>
+                        <button class="game-btn" onclick="togglePause()">RESUME</button>
                     </div>
                     <canvas id="tetris" width="240" height="400"></canvas>
-                    <button class="game-btn" onclick="togglePause()">PAUSE/RESUME</button>
+                    <button class="game-btn" style="width:100%" onclick="togglePause()">PAUSE GAME</button>
                 </div>
             </div>
         </section>
 
         <section id="projects" class="page">
             <h2 style="font-family: var(--font-display); font-size: 3.5rem;">Projects</h2>
-            <div class="project-grid">
-                <div class="project-card">
-                    <span class="project-tag">API / Discord</span>
-                    <h3>Discord Bot Infrastructure</h3>
-                    <p style="color: var(--text-secondary); margin-top: 1rem; font-size: 0.9rem;">Automated community management and service integration using Discord's API.</p>
-                </div>
-                <div class="project-card">
-                    <span class="project-tag">Embedded / C</span>
-                    <h3>RTOS Kernel</h3>
-                    <p style="color: var(--text-secondary); margin-top: 1rem; font-size: 0.9rem;">A preemptive real-time operating system designed for ARM Cortex-M microcontrollers.</p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+                <div class="info-card">
+                    <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">API / DISCORD</span>
+                    <h3 style="margin-top: 0.5rem;">Discord Infrastructure</h3>
+                    <p style="color: var(--text-secondary); margin-top: 1rem;">Placeholder for Discord automation and bot development projects.</p>
                 </div>
             </div>
         </section>
 
         <section id="education" class="page">
-            <h2 style="font-family: var(--font-display); font-size: 3.5rem; margin-bottom: 2rem;">Education</h2>
-            <div style="background: var(--bg-secondary); padding: 2.5rem; border: 1px solid #333;">
-                <h3>University of Tennessee, Knoxville</h3>
-                <p style="color: var(--ut-orange); font-family: var(--font-mono); margin-top: 0.5rem;">B.S. Computer Engineering | 2023 - 2027</p>
-                <p style="color: var(--text-secondary); margin-top: 1rem; line-height: 1.6;">Researcher at the Innovative Computing Laboratory (ICL). Focusing on FPGA architecture and systems security.</p>
+            <h2 style="font-family: var(--font-display); font-size: 3.5rem; margin-bottom: 3rem;">Education</h2>
+            <div class="info-card">
+                <h3 style="font-size: 2rem; margin-bottom: 0.5rem;">University of Tennessee, Knoxville</h3>
+                <p style="color: var(--ut-orange); font-family: var(--font-mono); margin-bottom: 1.5rem;">B.S. Computer Engineering | Honors (2023 - 2027)</p>
+                <ul style="color: var(--text-secondary); line-height: 1.8; list-style-position: inside;">
+                    <li>Researcher at the Innovative Computing Laboratory (ICL)</li>
+                    <li>Focus: FPGA Architecture & High-Performance Computing</li>
+                </ul>
             </div>
         </section>
 
         <section id="about" class="page">
             <h2 style="font-family: var(--font-display); font-size: 3.5rem;">About</h2>
             <div class="terminal-window" onclick="document.getElementById('term-input').focus()">
-                <div id="terminal-output" style="white-space: pre-wrap; color: #bbb;">[KEATON_OS] Type 'help' to start.</div>
+                <div id="terminal-output" style="white-space: pre-wrap; color: #bbb;">[SYSTEM_DIAGNOSTIC] Type 'help' to start.</div>
                 <div style="display: flex; gap: 10px; margin-top: 10px;">
                     <span style="color: var(--ut-orange)">keaton@wyrick:~$</span>
                     <input type="text" id="term-input" class="terminal-input" autofocus autocomplete="off">
@@ -135,12 +140,12 @@
             <h2 style="font-family: var(--font-display); font-size: 3.5rem;">Contact</h2>
             <div class="contact-grid">
                 <div class="contact-item">
-                    <h4 style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.8rem;">EMAIL</h4>
-                    <p style="font-size: 1.2rem;">kwyrick@vols.utk.edu</p>
+                    <h4 style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.75rem; letter-spacing: 1px;">EMAIL</h4>
+                    <p style="font-size: 1.25rem;">kwyrick@vols.utk.edu</p>
                 </div>
                 <div class="contact-item">
-                    <h4 style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.8rem;">GITHUB</h4>
-                    <p style="font-size: 1.2rem;"><a href="https://github.com/keatonium" style="color: inherit; text-decoration: none; border-bottom: 1px solid var(--ut-orange);">@keatonium</a></p>
+                    <h4 style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.75rem; letter-spacing: 1px;">GITHUB</h4>
+                    <p style="font-size: 1.25rem;"><a href="https://github.com/keatonium" style="color: inherit; text-decoration: none; border-bottom: 1px solid var(--ut-orange);">@keatonium</a></p>
                 </div>
             </div>
         </section>
@@ -149,19 +154,19 @@
     <script>
         const router = { navigate: (id) => { document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === id)); window.scrollTo(0,0); } };
 
-        // TERMINAL FIX
+        // TERMINAL LOGIC
         const termInput = document.getElementById('term-input');
         const termOutput = document.getElementById('terminal-output');
         const cmds = {
             help: "Commands: ls, whoami, clear, sysinfo",
-            whoami: "Keaton Wyrick. Honors Computer Engineering student & ICL researcher.",
-            ls: "projects/  research/  resume.pdf",
-            sysinfo: "OS: Keatonium v1.0 | Status: Stable"
+            whoami: "Keaton Wyrick. Honors Computer Engineering student & researcher.",
+            ls: "projects/ research/ resume.pdf",
+            sysinfo: "OS: Keatonium v1.0 | Status: Active"
         };
         termInput.addEventListener('keydown', e => {
             if (e.key === 'Enter') {
                 const cmd = termInput.value.toLowerCase().trim();
-                if (cmd === 'clear') { termOutput.innerHTML = '[SYSTEM CLEARED]'; }
+                if (cmd === 'clear') { termOutput.innerHTML = ''; }
                 else if (cmds[cmd]) { termOutput.innerHTML += `\n<span style="color:var(--ut-orange)">$</span> ${cmd}\n${cmds[cmd]}`; }
                 else { termOutput.innerHTML += `\n$ ${cmd}\nCommand not found.`; }
                 termInput.value = '';
@@ -169,21 +174,116 @@
             }
         });
 
-        // TETRIS (BASIC ENGINE RESTORED)
+        // TETRIS STABLE ENGINE
         const canvas = document.getElementById('tetris');
         const context = canvas.getContext('2d');
+        const scoreVal = document.getElementById('score');
+        const highScoreVal = document.getElementById('high-score');
         context.scale(20, 20);
-        const arena = Array.from({length: 20}, () => new Array(12).fill(0));
-        const player = { pos: {x: 4, y: 0}, matrix: [[0,1,0],[1,1,1],[0,0,0]] };
+
+        let score = 0, isPaused = false;
+        let highScore = localStorage.getItem('keaton-tetris-best') || 0;
+        highScoreVal.innerText = highScore;
+
+        function createPiece(type) {
+            if (type === 'I') return [[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]];
+            if (type === 'L') return [[0,2,0],[0,2,0],[0,2,2]];
+            if (type === 'J') return [[0,3,0],[0,3,0],[3,3,0]];
+            if (type === 'O') return [[4,4],[4,4]];
+            if (type === 'Z') return [[5,5,0],[0,5,5],[0,0,0]];
+            if (type === 'S') return [[0,6,6],[6,6,0],[0,0,0]];
+            if (type === 'T') return [[0,7,0],[7,7,7],[0,0,0]];
+        }
+
+        function collide(arena, p) {
+            const [m, o] = [p.matrix, p.pos];
+            for (let y = 0; y < m.length; ++y) {
+                for (let x = 0; x < m[y].length; ++x) {
+                    if (m[y][x] !== 0 && (arena[y + o.y] === undefined || arena[y + o.y][x + o.x] !== 0)) return true;
+                }
+            }
+            return false;
+        }
+
+        function drawMatrix(matrix, offset, color = '#FF8200', opacity = 1) {
+            context.globalAlpha = opacity;
+            matrix.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) {
+                        context.fillStyle = color;
+                        context.fillRect(x + offset.x, y + offset.y, 1, 1);
+                    }
+                });
+            });
+            context.globalAlpha = 1;
+        }
 
         function draw() {
             context.fillStyle = '#000';
             context.fillRect(0, 0, canvas.width, canvas.height);
-            player.matrix.forEach((row, y) => row.forEach((val, x) => {
-                if (val) { context.fillStyle = '#FF8200'; context.fillRect(x + player.pos.x, y + player.pos.y, 1, 1); }
-            }));
+            drawMatrix(arena, {x: 0, y: 0});
+            drawMatrix(player.matrix, player.pos);
         }
-        function update() { draw(); requestAnimationFrame(update); }
+
+        function playerDrop() {
+            player.pos.y++;
+            if (collide(arena, player)) {
+                player.pos.y--;
+                player.matrix.forEach((row, y) => {
+                    row.forEach((value, x) => { if (value !== 0) arena[y + player.pos.y][x + player.pos.x] = value; });
+                });
+                playerReset();
+                arenaSweep();
+            }
+            dropCounter = 0;
+        }
+
+        function playerReset() {
+            const pieces = 'ILJOTSZ';
+            player.matrix = createPiece(pieces[Math.floor(Math.random() * pieces.length)]);
+            player.pos.y = 0;
+            player.pos.x = 4;
+            if (collide(arena, player)) arena.forEach(row => row.fill(0));
+        }
+
+        function arenaSweep() {
+            outer: for (let y = arena.length - 1; y > 0; --y) {
+                for (let x = 0; x < arena[y].length; ++x) { if (arena[y][x] === 0) continue outer; }
+                arena.unshift(arena.splice(y, 1)[0].fill(0));
+                score += 10;
+                scoreVal.innerText = score;
+                ++y;
+            }
+        }
+
+        function togglePause() {
+            isPaused = !isPaused;
+            document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+        }
+
+        const arena = Array.from({length: 20}, () => new Array(12).fill(0));
+        const player = { pos: {x: 0, y: 0}, matrix: null };
+        let dropCounter = 0, lastTime = 0;
+
+        function update(time = 0) {
+            if (!isPaused) {
+                const deltaTime = time - lastTime;
+                lastTime = time;
+                dropCounter += deltaTime;
+                if (dropCounter > 1000) playerDrop();
+                draw();
+            } else { lastTime = time; }
+            requestAnimationFrame(update);
+        }
+
+        document.addEventListener('keydown', e => {
+            if (isPaused) return;
+            if (e.keyCode === 37) { player.pos.x--; if(collide(arena, player)) player.pos.x++; }
+            if (e.keyCode === 39) { player.pos.x++; if(collide(arena, player)) player.pos.x--; }
+            if (e.keyCode === 40) playerDrop();
+        });
+
+        playerReset(); 
         update();
     </script>
 </body>
