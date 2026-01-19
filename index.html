@@ -3,764 +3,328 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Keaton Wyrick — Computer Engineering projects portfolio" />
-  <title>Keaton Wyrick | Portfolio</title>
-
-  <!--
-    keatonium.github.io
-    Single-file “multi-page” SPA using hash routes.
-    Drop this into /index.html
-  -->
+  <meta name="description" content="Keaton Wyrick — Computer Engineering at UTK" />
+  <title>Keaton Wyrick | UTK Engineering</title>
 
   <style>
-    :root{
-      /* Palette */
-      --bg0:#070A12;
-      --bg1:#0B1022;
-      --panel:#0F1733;
-      --panel2:#0B132B;
-      --text:#EAF0FF;
-      --muted:#A6B0D0;
-      --line:rgba(234,240,255,.12);
-
-      /* Accents */
-      --blue:#66A6FF;
-      --mint:#3EF3C4;
-      --utk:#FF8200; /* UTK Orange */
-      --pink:#FF4DA6;
-
-      --shadow: 0 14px 55px rgba(0,0,0,.55);
-      --radius: 18px;
-      --max: 1120px;
-      --ease: cubic-bezier(.2,.8,.2,1);
-
-      --focus: 0 0 0 4px rgba(102,166,255,.22);
+    :root {
+      /* Official UTK Colors */
+      --ut-orange: #FF8200;
+      --smokey-grey: #58595B;
+      --white: #FFFFFF;
+      --black: #000000;
+      
+      /* Theme Palette */
+      --bg: #0a0a0a;
+      --panel: #161616;
+      --text: #f0f0f0;
+      --text-muted: #a0a0a0;
+      --accent-gradient: linear-gradient(45deg, #FF8200, #ff9e3d);
+      
+      --radius: 4px; /* Sharper, more technical look */
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    *{ box-sizing:border-box; }
-    html,body{ height:100%; }
-    html{ scroll-behavior:smooth; }
-
-    body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-      color:var(--text);
-      background:
-        radial-gradient(800px 560px at 12% 8%, rgba(102,166,255,.22), transparent 60%),
-        radial-gradient(850px 600px at 88% 12%, rgba(62,243,196,.16), transparent 58%),
-        radial-gradient(900px 650px at 75% 90%, rgba(255,130,0,.14), transparent 62%),
-        radial-gradient(700px 520px at 20% 92%, rgba(255,77,166,.12), transparent 60%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
-      overflow-x:hidden;
-      line-height:1.55;
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
     }
 
-    a{ color:inherit; text-decoration:none; }
-    a:hover{ text-decoration:none; }
+    /* Background Pizzazz: Subtle Checkered Pattern */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(45deg, #111 25%, transparent 25%), 
+        linear-gradient(-45deg, #111 25%, transparent 25%), 
+        linear-gradient(45deg, transparent 75%, #111 75%), 
+        linear-gradient(-45deg, transparent 75%, #111 75%);
+      background-size: 80px 80px;
+      background-position: 0 0, 0 40px, 40px 40px, 40px 0;
+      z-index: -1;
+      opacity: 0.3;
+    }
 
-    .wrap{ max-width: var(--max); margin: 0 auto; padding: 22px 18px 70px; }
+    a { text-decoration: none; color: inherit; transition: 0.3s var(--ease); }
 
-    /* --- top nav --- */
-    .nav{
+    /* --- NAV --- */
+    .nav {
       position: sticky;
-      top:0;
-      z-index: 50;
-      backdrop-filter: blur(14px);
-      background: rgba(7,10,18,.55);
-      border-bottom: 1px solid var(--line);
+      top: 0;
+      z-index: 100;
+      background: rgba(10, 10, 10, 0.8);
+      backdrop-filter: blur(12px);
+      border-bottom: 3px solid var(--ut-orange);
     }
-    .navInner{ max-width: var(--max); margin:0 auto; padding: 12px 18px; display:flex; gap:12px; align-items:center; justify-content:space-between; }
+    .nav-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 900; letter-spacing: 1px; }
+    .nav-links { display: flex; gap: 1rem; }
+    
+    .nav-link {
+      padding: 0.5rem 1rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      border: 1px solid transparent;
+    }
+    .nav-link:hover { color: var(--ut-orange); }
+    .nav-link[aria-current="page"] {
+      border-color: var(--ut-orange);
+      color: var(--ut-orange);
+      background: rgba(255, 130, 0, 0.1);
+    }
 
-    .brand{
-      display:flex; align-items:center; gap:10px;
+    /* --- HERO --- */
+    .hero {
+      padding: 6rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      gap: 3rem;
+    }
+    @media (max-width: 900px) { .hero { grid-template-columns: 1fr; } }
+
+    .hero-content h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      margin: 0;
+      line-height: 0.9;
+      text-transform: uppercase;
+      font-weight: 900;
+    }
+    .glitch-text {
+      color: var(--ut-orange);
+      position: relative;
+      display: inline-block;
+    }
+    .glitch-text::after {
+      content: "COMPUTER ENGINEERING";
+      position: absolute;
+      left: 2px;
+      text-shadow: -2px 0 #ff00c1;
+      top: 0;
+      overflow: hidden;
+      clip: rect(0, 900px, 0, 0);
+      animation: noise 2s infinite linear alternate-reverse;
+    }
+
+    .hero-sub {
+      font-size: 1.2rem;
+      color: var(--text-muted);
+      margin: 2rem 0;
+      max-width: 600px;
+      border-left: 4px solid var(--ut-orange);
+      padding-left: 1.5rem;
+    }
+
+    /* --- BUTTONS --- */
+    .btn {
+      display: inline-block;
+      padding: 1rem 2rem;
       font-weight: 800;
-      letter-spacing: .2px;
-    }
-    .logo{
-      width: 28px; height: 28px; border-radius: 12px;
-      background: conic-gradient(from 210deg, var(--blue), var(--mint), var(--utk), var(--pink), var(--blue));
-      box-shadow: 0 0 0 4px rgba(102,166,255,.12);
-      position:relative;
-      overflow:hidden;
-    }
-    .logo::after{
-      content:"";
-      position:absolute;
-      inset:-40%;
-      background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.55), transparent 55%);
-      transform: rotate(18deg);
-      opacity:.25;
-    }
-
-    .navLinks{ display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
-
-    .chip{
-      position:relative;
-      border:1px solid var(--line);
-      background: rgba(234,240,255,.04);
-      padding: 9px 11px;
-      border-radius: 999px;
-      font-size: 13px;
-      color: var(--muted);
-      transition: transform .16s var(--ease), background .16s var(--ease), border-color .16s var(--ease), color .16s var(--ease);
-      user-select:none;
-    }
-    .chip:hover{
-      transform: translateY(-2px);
-      background: rgba(234,240,255,.08);
-      border-color: rgba(102,166,255,.35);
-      color: var(--text);
-    }
-    .chip[aria-current="page"]{
-      color: var(--text);
-      border-color: rgba(255,130,0,.55);
-      background: linear-gradient(180deg, rgba(255,130,0,.18), rgba(234,240,255,.04));
-    }
-
-    .chip:focus-visible{ outline: none; box-shadow: var(--focus); }
-
-    /* --- page container + transitions --- */
-    .pageWrap{
-      position: relative;
-      margin-top: 18px;
-    }
-    .page{
-      display:none;
-      animation: pageIn .55s var(--ease) both;
-    }
-    .page.isActive{ display:block; }
-
-    @keyframes pageIn{
-      from{ opacity:0; transform: translateY(10px) scale(.995); filter: blur(6px); }
-      to{ opacity:1; transform: translateY(0) scale(1); filter: blur(0); }
-    }
-
-    /* --- reusable cards --- */
-    .card{
-      background: linear-gradient(180deg, rgba(234,240,255,.07), rgba(234,240,255,.03));
-      border: 1px solid var(--line);
+      text-transform: uppercase;
+      letter-spacing: 1px;
       border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow:hidden;
-    }
-
-    .cardGlow{
+      cursor: pointer;
       position: relative;
+      overflow: hidden;
+      transition: 0.3s;
     }
-    .cardGlow::before{
-      content:"";
-      position:absolute;
-      inset:-2px;
-      background: radial-gradient(600px 180px at 15% 0%, rgba(102,166,255,.25), transparent 55%),
-                  radial-gradient(520px 170px at 85% 0%, rgba(62,243,196,.20), transparent 55%),
-                  radial-gradient(520px 170px at 55% 120%, rgba(255,130,0,.22), transparent 60%);
-      opacity:.55;
-      pointer-events:none;
-      filter: blur(10px);
+    .btn-primary {
+      background: var(--ut-orange);
+      color: var(--white);
+      border: none;
     }
-
-    /* --- hero --- */
-    .hero{ padding: 12px 0 4px; }
-    .heroGrid{ display:grid; grid-template-columns: 1.2fr .8fr; gap: 16px; align-items:stretch; }
-    @media (max-width: 900px){ .heroGrid{ grid-template-columns: 1fr; } }
-
-    .heroMain{ padding: 22px 22px 18px; position: relative; }
-    .heroMain h1{
-      margin:0 0 10px;
-      font-size: 36px;
-      line-height:1.1;
-      letter-spacing: -.4px;
+    .btn-primary:hover {
+      background: var(--white);
+      color: var(--black);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px rgba(255, 130, 0, 0.3);
     }
 
-    .gradientName{
-      background: linear-gradient(90deg, var(--text), rgba(234,240,255,.85), rgba(102,166,255,.95), rgba(62,243,196,.92));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
+    /* --- CARDS --- */
+    .card {
+      background: var(--panel);
+      border: 1px solid #333;
+      padding: 2rem;
+      position: relative;
+      transition: 0.3s var(--ease);
+    }
+    .card::before {
+      content: "";
+      position: absolute;
+      top: -1px; left: -1px;
+      width: 0; height: 0;
+      border-top: 2px solid var(--ut-orange);
+      border-left: 2px solid var(--ut-orange);
+      transition: 0.4s;
+    }
+    .card:hover { border-color: #555; transform: translateY(-5px); }
+    .card:hover::before { width: 40px; height: 40px; }
+
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; }
+
+    /* --- EDUCATION / SKILLS --- */
+    .edu-list { list-style: none; padding: 0; }
+    .edu-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem 0;
+      border-bottom: 1px solid #333;
+    }
+    .edu-item b { color: var(--ut-orange); }
+
+    /* --- ANIMATIONS --- */
+    .page { display: none; animation: slideUp 0.6s var(--ease) both; }
+    .page.is-active { display: block; }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes noise {
+      0% { clip: rect(40px, 9999px, 42px, 0); }
+      20% { clip: rect(12px, 9999px, 80px, 0); }
+      100% { clip: rect(90px, 9999px, 92px, 0); }
     }
 
-    .subtitle{ color: var(--muted); margin:0 0 14px; font-size: 15px; }
-
-    .ctaRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 14px; }
-
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding: 10px 12px;
-      border-radius: 14px;
-      border: 1px solid var(--line);
-      background: rgba(234,240,255,.04);
-      color: var(--text);
-      font-size: 13px;
-      transition: transform .16s var(--ease), background .16s var(--ease), border-color .16s var(--ease), box-shadow .16s var(--ease);
-      user-select:none;
-    }
-
-    .btn:hover{
-      transform: translateY(-2px);
-      background: rgba(234,240,255,.07);
-      border-color: rgba(102,166,255,.35);
-      box-shadow: 0 10px 25px rgba(0,0,0,.22);
-    }
-
-    .btn:active{ transform: translateY(0); }
-
-    .btn.primary{
-      border-color: rgba(255,130,0,.55);
-      background: linear-gradient(180deg, rgba(255,130,0,.22), rgba(234,240,255,.04));
-    }
-
-    .btn.secondary{
-      border-color: rgba(62,243,196,.40);
-      background: linear-gradient(180deg, rgba(62,243,196,.18), rgba(234,240,255,.04));
-    }
-
-    .btn:focus-visible{ outline:none; box-shadow: var(--focus); }
-
-    .pillRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 12px; }
-    .pill{
-      border: 1px solid var(--line);
-      background: rgba(234,240,255,.04);
-      padding: 8px 10px;
-      border-radius: 999px;
-      font-size: 13px;
-      color: var(--muted);
-    }
-    .pill b{ color: var(--text); font-weight: 650; }
-
-    .heroSide{ padding: 18px; display:flex; flex-direction:column; gap:12px; }
-    .kpi{ display:flex; gap:12px; align-items:flex-start; padding: 12px; border-radius: 14px; border:1px solid var(--line); background: rgba(11,19,43,.55); }
-
-    .kpiIcon{ width:36px; height:36px; border-radius: 14px; display:flex; align-items:center; justify-content:center; border:1px solid rgba(234,240,255,.14); }
-    .kpiIcon.blue{ background: rgba(102,166,255,.16); border-color: rgba(102,166,255,.35); }
-    .kpiIcon.mint{ background: rgba(62,243,196,.14); border-color: rgba(62,243,196,.32); }
-    .kpiIcon.utk{ background: rgba(255,130,0,.14); border-color: rgba(255,130,0,.32); }
-
-    .kpi strong{ display:block; font-size: 13px; }
-    .kpi span{ display:block; margin-top: 2px; font-size: 13px; color: var(--muted); }
-
-    /* --- sections --- */
-    .section{ margin-top: 22px; }
-    .sectionHeader{ display:flex; align-items:flex-end; justify-content:space-between; gap:14px; margin-bottom: 12px; }
-    .sectionHeader h2{ margin:0; font-size: 18px; letter-spacing: .2px; }
-    .sectionHeader p{ margin:0; color: var(--muted); font-size: 13px; }
-
-    /* --- scroll reveal animations --- */
-    .reveal{
-      opacity: 0;
-      transform: translateY(10px);
-      filter: blur(6px);
-      transition: opacity .55s var(--ease), transform .55s var(--ease), filter .55s var(--ease);
-    }
-    .reveal.isVisible{
-      opacity: 1;
-      transform: translateY(0);
-      filter: blur(0);
-    }
-
-    /* --- grids --- */
-    .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap: 14px; }
-
-    /* project controls */
-    .controls{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
-    .search{
-      flex: 1;
-      min-width: 220px;
-      display:flex;
-      align-items:center;
-      gap:10px;
-      padding: 10px 12px;
-      border:1px solid var(--line);
-      border-radius: 14px;
-      background: rgba(234,240,255,.04);
-    }
-    .search input{ width:100%; border:0; outline:none; background: transparent; color: var(--text); font-size: 14px; }
-
-    .filters{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
-    button.tag{
-      cursor:pointer;
-      border:1px solid var(--line);
-      background: rgba(234,240,255,.04);
-      color: var(--muted);
-      border-radius: 999px;
-      padding: 8px 10px;
-      font-size: 13px;
-      transition: transform .16s var(--ease), background .16s var(--ease), border-color .16s var(--ease), color .16s var(--ease);
-      user-select:none;
-    }
-    button.tag:hover{ transform: translateY(-2px); background: rgba(234,240,255,.07); border-color: rgba(102,166,255,.35); color: var(--text); }
-    button.tag[aria-pressed="true"]{
-      color: var(--text);
-      border-color: rgba(255,130,0,.55);
-      background: linear-gradient(180deg, rgba(255,130,0,.18), rgba(234,240,255,.04));
-    }
-
-    /* project cards */
-    .project{ grid-column: span 6; padding: 16px; }
-    @media (max-width: 900px){ .project{ grid-column: span 12; } }
-
-    .projectTop{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
-    .project h3{ margin:0; font-size: 16px; }
-    .meta{ margin-top: 7px; display:flex; gap:8px; flex-wrap:wrap; }
-    .badge{ font-size: 12px; color: var(--muted); border:1px solid var(--line); background: rgba(234,240,255,.03); border-radius: 999px; padding: 5px 8px; }
-    .project p{ margin: 10px 0 0; color: var(--muted); font-size: 13.5px; }
-
-    .actions{ margin-top: 12px; display:flex; gap:10px; flex-wrap:wrap; }
-
-    /* about page */
-    .aboutBlock{ padding: 18px; grid-column: span 12; }
-    .aboutCols{ display:grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    @media (max-width: 900px){ .aboutCols{ grid-template-columns: 1fr; } }
-
-    .callout{ padding: 14px; border-radius: 16px; border:1px solid var(--line); background: rgba(11,19,43,.55); }
-    .callout h3{ margin:0 0 6px; font-size: 15px; }
-    .callout p{ margin:0; color: var(--muted); font-size: 13.5px; }
-
-    /* resume page */
-    .resumeBox{ padding: 18px; grid-column: span 12; }
-    .hint{ color: var(--muted); font-size: 13px; margin-top: 8px; }
-
-    /* footer */
-    footer{ margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
-    .footRow{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
-
-    /* fun floating accent */
-    .floaty{
-      position:absolute;
-      right: -22px;
-      top: -22px;
-      width: 140px;
-      height: 140px;
-      background: radial-gradient(circle at 30% 30%, rgba(255,130,0,.35), transparent 55%),
-                  radial-gradient(circle at 70% 70%, rgba(62,243,196,.28), transparent 55%),
-                  radial-gradient(circle at 50% 50%, rgba(102,166,255,.24), transparent 60%);
-      filter: blur(2px);
-      opacity:.85;
-      transform: rotate(18deg);
-      animation: drift 9s var(--ease) infinite alternate;
-      pointer-events:none;
-    }
-    @keyframes drift{
-      from{ transform: translateY(0) rotate(12deg); opacity:.75; }
-      to{ transform: translateY(10px) rotate(22deg); opacity:.95; }
-    }
-
-    @media (prefers-reduced-motion: reduce){
-      html{ scroll-behavior:auto; }
-      *{ animation:none !important; transition:none !important; }
+    footer {
+      text-align: center;
+      padding: 4rem;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
     }
   </style>
 </head>
 
 <body>
-  <header class="nav">
-    <div class="navInner">
-      <div class="brand" aria-label="Home">
-        <span class="logo" aria-hidden="true"></span>
-        <span>Keaton Wyrick</span>
+  <nav class="nav">
+    <div class="nav-inner">
+      <div class="brand">
+        <svg width="32" height="32" viewBox="0 0 100 100" fill="var(--ut-orange)">
+          <path d="M10 10 H90 V30 H60 V90 H40 V30 H10 Z" />
+        </svg>
+        <span>WYRICK<span style="color:var(--ut-orange)">_</span></span>
       </div>
-
-      <nav class="navLinks" aria-label="Primary">
-        <a class="chip" data-route href="#/">Home</a>
-        <a class="chip" data-route href="#/projects">Projects</a>
-        <a class="chip" data-route href="#/about">About</a>
-        <a class="chip" data-route href="#/resume">Resume</a>
-        <a class="chip" data-route href="#/contact">Contact</a>
-      </nav>
+      <div class="nav-links">
+        <a class="nav-link" href="#/" data-route>Home</a>
+        <a class="nav-link" href="#/projects" data-route>Work</a>
+        <a class="nav-link" href="#/edu" data-route>Education</a>
+        <a class="nav-link" href="#/contact" data-route>Contact</a>
+      </div>
     </div>
-  </header>
+  </nav>
 
-  <main class="wrap">
-    <div class="pageWrap" id="pageWrap">
-
-      <!-- HOME -->
-      <section class="page" data-page="/" aria-label="Home page">
-        <section class="hero">
-          <div class="heroGrid">
-            <div class="card cardGlow heroMain reveal">
-              <div class="floaty" aria-hidden="true"></div>
-              <h1><span class="gradientName">Computer Engineering</span> portfolio</h1>
-              <p class="subtitle">
-                Honors Computer Engineering student at the University of Tennessee, Knoxville (Class of 2027). I like embedded systems, digital logic, and ML when it actually ships.
-              </p>
-
-              <div class="ctaRow">
-                <a class="btn primary" href="#/projects">View projects</a>
-                <a class="btn secondary" href="#/resume">Grab my resume</a>
-                <a class="btn" href="https://github.com/keatonium" target="_blank" rel="noreferrer">GitHub</a>
-              </div>
-
-              <div class="pillRow">
-                <span class="pill"><b>Embedded</b> C, UART, bare metal</span>
-                <span class="pill"><b>FPGA</b> Verilog, VGA timing</span>
-                <span class="pill"><b>ML</b> PyTorch + clean data</span>
-                <span class="pill"><b>UTK</b> orange accent energy</span>
-              </div>
-            </div>
-
-            <aside class="card heroSide reveal" aria-label="Quick info">
-              <div class="kpi">
-                <div class="kpiIcon utk" aria-hidden="true">⚡</div>
-                <div>
-                  <strong>Looking for</strong>
-                  <span>Co-op or internship (hardware, firmware, embedded)</span>
-                </div>
-              </div>
-              <div class="kpi">
-                <div class="kpiIcon blue" aria-hidden="true">🎓</div>
-                <div>
-                  <strong>Education</strong>
-                  <span>BS Computer Engineering, UTK</span>
-                </div>
-              </div>
-              <div class="kpi">
-                <div class="kpiIcon mint" aria-hidden="true">📍</div>
-                <div>
-                  <strong>Location</strong>
-                  <span>Knoxville, TN</span>
-                </div>
-              </div>
-            </aside>
-          </div>
-        </section>
-
-        <section class="section">
-          <div class="sectionHeader">
-            <div>
-              <h2>Quick highlights</h2>
-              <p>A few things I like building (and why).</p>
+  <main style="max-width: 1100px; margin: 0 auto; padding: 0 2rem;">
+    <div id="page-wrap">
+      
+      <section class="page" data-page="/">
+        <div class="hero">
+          <div class="hero-content">
+            <h1><span class="glitch-text">Computer Engineering</span></h1>
+            <p class="hero-sub">
+              Honors student at the <strong>University of Tennessee, Knoxville</strong>. 
+              Bridging the gap between high-level algorithms and bare-metal performance.
+            </p>
+            <div style="display: flex; gap: 1rem;">
+              <a href="#/projects" class="btn btn-primary">View Projects</a>
+              <a href="https://github.com/keatonium" class="btn" style="border:1px solid #444">GitHub</a>
             </div>
           </div>
-
-          <div class="grid">
-            <div class="card project reveal" style="grid-column: span 4;">
-              <h3>FPGA game logic</h3>
-              <p>Designing state machines and timing that feel solid on real hardware.</p>
-            </div>
-            <div class="card project reveal" style="grid-column: span 4;">
-              <h3>Microcontrollers</h3>
-              <p>GPIO, timing, UART debugging, and getting signals right the first time.</p>
-            </div>
-            <div class="card project reveal" style="grid-column: span 4;">
-              <h3>ML that behaves</h3>
-              <p>Simple models, clean data, good baselines, and honest evaluation.</p>
+          
+          <div class="card" style="background: rgba(255,130,0,0.05); border-color: var(--ut-orange);">
+            <h3 style="margin-top:0">The Stack</h3>
+            <div style="display:flex; flex-wrap:wrap; gap:8px;">
+              <span style="background:#222; padding:4px 8px; font-size:12px; font-weight:700;">VERILOG</span>
+              <span style="background:#222; padding:4px 8px; font-size:12px; font-weight:700;">C/C++</span>
+              <span style="background:#222; padding:4px 8px; font-size:12px; font-weight:700;">PYTORCH</span>
+              <span style="background:#222; padding:4px 8px; font-size:12px; font-weight:700;">RTOS</span>
+              <span style="background:#222; padding:4px 8px; font-size:12px; font-weight:700;">FPGA</span>
             </div>
           </div>
-        </section>
+        </div>
       </section>
 
-      <!-- PROJECTS -->
-      <section class="page" data-page="/projects" aria-label="Projects page">
-        <section class="section">
-          <div class="sectionHeader">
-            <div>
-              <h2>Projects</h2>
-              <p>Search and filter. Swap the repo links as you publish code.</p>
-            </div>
-            <div class="controls">
-              <div class="search" role="search">
-                <span aria-hidden="true">🔎</span>
-                <input id="q" type="search" placeholder="Search: FPGA, ESP32, PyTorch, UART…" autocomplete="off" />
-              </div>
-              <div class="filters" aria-label="Project filters">
-                <button class="tag" data-tag="all" aria-pressed="true">All</button>
-                <button class="tag" data-tag="embedded" aria-pressed="false">Embedded</button>
-                <button class="tag" data-tag="fpga" aria-pressed="false">FPGA</button>
-                <button class="tag" data-tag="ml" aria-pressed="false">ML</button>
-                <button class="tag" data-tag="systems" aria-pressed="false">Systems</button>
-              </div>
-            </div>
-          </div>
-
-          <div id="projectGrid" class="grid" aria-live="polite"></div>
-
-          <div class="hint reveal">
-            Pro move: once each project has a repo, add a short demo GIF in the README and link it here as “Demo”.
-          </div>
-        </section>
+      <section class="page" data-page="/projects">
+        <h2 style="text-transform:uppercase; letter-spacing:2px; color:var(--ut-orange)">Engineered Solutions</h2>
+        <div class="grid" id="project-grid"></div>
       </section>
 
-      <!-- ABOUT -->
-      <section class="page" data-page="/about" aria-label="About page">
-        <section class="section">
-          <div class="sectionHeader">
-            <div>
-              <h2>About</h2>
-              <p>Short version: I like building hardware–software systems that feel fast and reliable.</p>
-            </div>
-          </div>
-
+      <section class="page" data-page="/edu">
+        <div class="card">
+          <h2 style="margin-top:0">University of Tennessee, Knoxville</h2>
+          <p style="color:var(--ut-orange); font-weight:700;">B.S. Computer Engineering, Honors (Class of 2027)</p>
+          
+          <h3>Relevant Coursework</h3>
           <div class="grid">
-            <div class="card aboutBlock reveal">
-              <div class="aboutCols">
-                <div class="callout">
-                  <h3>How I build</h3>
-                  <p>Start with a clean spec, build a minimal prototype, and test early on real hardware. I like tight feedback loops and readable code.</p>
-                </div>
-                <div class="callout">
-                  <h3>What I’m into</h3>
-                  <p>Firmware, digital logic, and applied ML. Basically anything where you can measure improvement and ship it.</p>
-                </div>
-                <div class="callout">
-                  <h3>What I value</h3>
-                  <p>Good documentation, predictable performance, and systems that don’t break under stress.</p>
-                </div>
-                <div class="callout">
-                  <h3>What I’m learning next</h3>
-                  <p>More advanced embedded tooling and deeper hardware verification workflows.</p>
-                </div>
-              </div>
-            </div>
+            <ul class="edu-list">
+              <li class="edu-item">Digital Logic Design <b>A</b></li>
+              <li class="edu-item">Microcontroller Systems <b>A</b></li>
+              <li class="edu-item">Computer Org & Architecture <b>A</b></li>
+            </ul>
+            <ul class="edu-list">
+              <li class="edu-item">Data Structures & Algorithms <b>A</b></li>
+              <li class="edu-item">Signals and Systems <b>In Progress</b></li>
+              <li class="edu-item">Machine Learning <b>In Progress</b></li>
+            </ul>
           </div>
-        </section>
-      </section>
-
-      <!-- RESUME -->
-      <section class="page" data-page="/resume" aria-label="Resume page">
-        <section class="section">
-          <div class="sectionHeader">
-            <div>
-              <h2>Resume</h2>
-              <p>Add <span style="color:var(--text)">resume.pdf</span> to this repo, then this button will work instantly.</p>
-            </div>
-          </div>
-
-          <div class="grid">
-            <div class="card resumeBox reveal">
-              <div class="ctaRow">
-                <a class="btn primary" href="./resume.pdf" target="_blank" rel="noreferrer">Open resume PDF</a>
-                <a class="btn" href="#/contact">Contact me</a>
-              </div>
-              <div class="hint">
-                If you want the resume embedded on this page, you can replace this section with an <code>&lt;iframe&gt;</code>.
-              </div>
-            </div>
-          </div>
-        </section>
-      </section>
-
-      <!-- CONTACT -->
-      <section class="page" data-page="/contact" aria-label="Contact page">
-        <section class="section">
-          <div class="sectionHeader">
-            <div>
-              <h2>Contact</h2>
-              <p>Fast ways to reach me.</p>
-            </div>
-          </div>
-
-          <div class="grid">
-            <div class="card project reveal" style="grid-column: span 12;">
-              <div class="ctaRow">
-                <a class="btn primary" href="mailto:keatonwyrick4@gmail.com">Email</a>
-                <a class="btn" href="https://www.linkedin.com/in/keatonwyrick" target="_blank" rel="noreferrer">LinkedIn</a>
-                <a class="btn secondary" href="https://github.com/keatonium" target="_blank" rel="noreferrer">GitHub</a>
-              </div>
-              <p style="margin-top:12px; color:var(--muted);">
-                Want this to feel even more personal? Add a small “now” section with what you’re currently building.
-              </p>
-            </div>
-          </div>
-        </section>
+        </div>
       </section>
 
     </div>
-
-    <footer class="reveal">
-      <div class="footRow">
-        <span>© <span id="year"></span> Keaton Wyrick</span>
-        <span>Built for GitHub Pages • UTK orange as a tertiary accent</span>
-      </div>
-    </footer>
   </main>
 
+  <footer>
+    Keaton Wyrick // Volunteer State // Built for Performance
+  </footer>
+
   <script>
-    // -----------------------------
-    // “Multi-page” router (hash routes)
-    // -----------------------------
-    const routes = ["/", "/projects", "/about", "/resume", "/contact"]; // keep in sync with nav
+    const routes = ["/", "/projects", "/edu", "/contact"];
     const pages = Array.from(document.querySelectorAll('.page'));
     const navLinks = Array.from(document.querySelectorAll('[data-route]'));
 
-    function currentPath(){
-      const raw = (location.hash || '#/').slice(1);
-      const path = raw.startsWith('/') ? raw : '/' + raw;
-      return routes.includes(path) ? path : '/';
+    function router() {
+      const path = location.hash.slice(1) || "/";
+      pages.forEach(p => p.classList.toggle('is-active', p.dataset.page === path));
+      navLinks.forEach(l => l.setAttribute('aria-current', l.getAttribute('href') === `#${path}` ? 'page' : ''));
+      window.scrollTo(0, 0);
     }
 
-    function setActiveNav(path){
-      navLinks.forEach(a => {
-        const isCurrent = a.getAttribute('href') === `#${path}`;
-        if (isCurrent) a.setAttribute('aria-current','page');
-        else a.removeAttribute('aria-current');
-      });
-    }
+    window.addEventListener('hashchange', router);
+    router();
 
-    function showPage(path){
-      pages.forEach(p => {
-        const match = p.dataset.page === path;
-        p.classList.toggle('isActive', match);
-      });
-      setActiveNav(path);
-      // top-of-page feel between route switches
-      window.scrollTo({ top: 0, behavior: 'instant' });
-      // re-run reveal check after route switch
-      requestAnimationFrame(checkReveals);
-    }
-
-    window.addEventListener('hashchange', () => showPage(currentPath()));
-
-    // initial
-    showPage(currentPath());
-
-    // -----------------------------
-    // Projects (edit these as you add repos)
-    // -----------------------------
+    // Project Injection
     const projects = [
-      {
-        title: "Tetris on FPGA",
-        tags: ["embedded","fpga","systems"],
-        stack: ["Verilog","Basys 3","VGA"],
-        desc: "Tetris implemented on a Basys 3 FPGA with custom game logic, VGA sync, and parallel state updates for consistent visuals.",
-        links: { repo: "https://github.com/keatonium" } // TODO: replace with actual repo
-      },
-      {
-        title: "Simon Game (TM4C123G)",
-        tags: ["embedded","systems"],
-        stack: ["C","TM4C123G","Keil","UART"],
-        desc: "Bare-metal Simon game with GPIO timing logic, UART debug output, and a resistor-based input circuit.",
-        links: { repo: "https://github.com/keatonium" } // TODO
-      },
-      {
-        title: "Linear Regression Model (PyTorch)",
-        tags: ["ml","systems"],
-        stack: ["Python","PyTorch","NumPy","Pandas"],
-        desc: "Linear regression model predicting linear functions using PyTorch; data cleanup with NumPy/Pandas; optimized via SGD.",
-        links: { repo: "https://github.com/keatonium" } // TODO
-      },
-      {
-        title: "ESP32 Wi‑Fi Security Experiment",
-        tags: ["embedded","systems"],
-        stack: ["ESP32","Arduino IDE","Wi‑Fi"],
-        desc: "Hands-on exploration of Wi‑Fi management behavior and device hardening concepts using ESP32 Wi‑Fi APIs.",
-        links: { repo: "https://github.com/keatonium" } // TODO
-      }
+      { title: "Tetris FPGA", tech: "Verilog / VGA", desc: "A hardware-native implementation of Tetris on the Basys 3 board." },
+      { title: "Bare Metal Simon", tech: "C / TM4C123G", desc: "Interrupt-driven memory game using raw register access." },
+      { title: "Neural Regressor", tech: "PyTorch", desc: "Deep learning model for predictive signal analysis." }
     ];
 
-    const grid = document.getElementById('projectGrid');
-    const q = document.getElementById('q');
-
-    let activeTag = 'all';
-
-    function el(tag, attrs={}, children=[]) {
-      const node = document.createElement(tag);
-      for (const [k,v] of Object.entries(attrs)) {
-        if (k === 'class') node.className = v;
-        else if (k.startsWith('on') && typeof v === 'function') node.addEventListener(k.slice(2).toLowerCase(), v);
-        else node.setAttribute(k, v);
-      }
-      for (const child of children) {
-        if (typeof child === 'string') node.appendChild(document.createTextNode(child));
-        else node.appendChild(child);
-      }
-      return node;
-    }
-
-    function matches(project, query, tag) {
-      const qs = (query || '').trim().toLowerCase();
-      const blob = [project.title, project.desc, ...(project.stack||[]), ...(project.tags||[])].join(' ').toLowerCase();
-      const tagOk = (tag === 'all') || (project.tags || []).includes(tag);
-      const qOk = !qs || blob.includes(qs);
-      return tagOk && qOk;
-    }
-
-    function projectCard(p){
-      const top = el('div', {class:'projectTop'}, [
-        el('div', {}, [
-          el('h3', {}, [p.title]),
-          el('div', {class:'meta'}, (p.stack||[]).map(s => el('span', {class:'badge'}, [s])))
-        ]),
-        el('span', {class:'badge', title:'Tags'}, [p.tags.map(t=>t.toUpperCase()).join(' · ')])
-      ]);
-
-      const actions = el('div', {class:'actions'}, [
-        el('a', {class:'btn primary', href: p.links.repo, target:'_blank', rel:'noreferrer'}, ['GitHub Repo']),
-      ]);
-
-      const card = el('article', {class:'card project reveal'}, [
-        top,
-        el('p', {}, [p.desc]),
-        actions
-      ]);
-
-      return card;
-    }
-
-    function renderProjects(){
-      if (!grid) return;
-      const query = q ? q.value : '';
-      grid.innerHTML = '';
-      const filtered = projects.filter(p => matches(p, query, activeTag));
-
-      if (!filtered.length){
-        grid.appendChild(
-          el('div', {class:'card project reveal', style:'grid-column: span 12;'}, [
-            el('h3', {}, ['No matches']),
-            el('p', {}, ['Try a different search term or switch filters.'])
-          ])
-        );
-        requestAnimationFrame(checkReveals);
-        return;
-      }
-
-      for (const p of filtered) grid.appendChild(projectCard(p));
-      requestAnimationFrame(checkReveals);
-    }
-
-    // filters
-    const buttons = Array.from(document.querySelectorAll('button.tag'));
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        activeTag = btn.dataset.tag;
-        buttons.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
-        renderProjects();
-      });
+    const grid = document.getElementById('project-grid');
+    projects.forEach(p => {
+      grid.innerHTML += `
+        <div class="card">
+          <small style="color:var(--ut-orange); font-weight:800">${p.tech}</small>
+          <h3 style="margin: 0.5rem 0">${p.title}</h3>
+          <p style="color:var(--text-muted); font-size:0.9rem">${p.desc}</p>
+          <a href="#" style="font-weight:700; font-size:0.8rem; border-bottom:1px solid var(--ut-orange)">CODE REPO &rarr;</a>
+        </div>
+      `;
     });
-
-    if (q) q.addEventListener('input', renderProjects);
-
-    // Render projects once on load (page may be hidden but OK)
-    renderProjects();
-
-    // -----------------------------
-    // Scroll reveal (IntersectionObserver)
-    // -----------------------------
-    const revealEls = () => Array.from(document.querySelectorAll('.page.isActive .reveal'));
-
-    let io;
-    function setupObserver(){
-      if (io) io.disconnect();
-      io = new IntersectionObserver(entries => {
-        for (const e of entries){
-          if (e.isIntersecting) e.target.classList.add('isVisible');
-        }
-      }, { threshold: 0.12 });
-
-      for (const node of revealEls()) io.observe(node);
-    }
-
-    function checkReveals(){
-      // Reset visibility for active page (nice when switching routes)
-      document.querySelectorAll('.reveal.isVisible').forEach(n => n.classList.remove('isVisible'));
-      setupObserver();
-    }
-
-    // run once after load
-    checkReveals();
-
-    // year
-    document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
 </html>
