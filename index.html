@@ -44,7 +44,7 @@
 
         /* TETRIS FIX */
         .hero-layout { display: grid; grid-template-columns: 1fr 300px; gap: 4rem; align-items: center; min-height: 70vh; }
-        #tetris-container { background: #000; border: 2px solid #333; padding: 10px; box-shadow: 0 0 30px rgba(255, 130, 0, 0.1); position: relative; width: fit-content; }
+        #tetris-container { background: #000; border: 2px solid #333; padding: 10px; box-shadow: 0 0 30px rgba(255, 130, 0, 0.1); position: relative; width: fit-content; touch-action: none; }
         canvas { display: block; background-color: #000; image-rendering: pixelated; }
         .score-board { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ut-orange); margin-bottom: 10px; }
         .pause-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10; font-family: var(--font-mono); color: var(--ut-orange); }
@@ -56,7 +56,6 @@
         .terminal-window { background: #0d0d0d; border: 1px solid #333; padding: 20px; font-family: var(--font-mono); height: 350px; overflow-y: auto; margin-top: 2rem; cursor: text; border-radius: 4px; }
         .terminal-input { background: transparent; border: none; color: var(--ut-orange); font-family: var(--font-mono); outline: none; width: 70%; font-size: 1rem; }
         
-        /* IMPROVED CONTACT SECTION */
         .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
         .contact-card { 
             background: var(--bg-secondary); 
@@ -234,6 +233,14 @@
             return false;
         }
 
+        function rotate(matrix) {
+            for (let y = 0; y < matrix.length; ++y) {
+                for (let x = 0; x < y; ++x) [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
+            }
+            matrix.forEach(row => row.reverse());
+            if (collide(arena, player)) matrix.forEach(row => row.reverse()); 
+        }
+
         function drawMatrix(matrix, offset, color, opacity = 1, isGhost = false) {
             context.globalAlpha = opacity;
             matrix.forEach((row, y) => {
@@ -260,9 +267,7 @@
             context.fillRect(0, 0, canvas.width, canvas.height);
             
             const ghostPos = { x: player.pos.x, y: player.pos.y };
-            while (!collide(arena, { pos: ghostPos, matrix: player.matrix })) {
-                ghostPos.y++;
-            }
+            while (!collide(arena, { pos: ghostPos, matrix: player.matrix })) { ghostPos.y++; }
             ghostPos.y--;
             drawMatrix(player.matrix, ghostPos, '#FF8200', 0.3, true);
 
@@ -286,12 +291,10 @@
         function playerReset() {
             const pieces = 'ILJOTSZ';
             player.matrix = createPiece(pieces[Math.floor(Math.random() * pieces.length)]);
-            player.pos.y = 0;
-            player.pos.x = 4;
+            player.pos.y = 0; player.pos.x = 4;
             if (collide(arena, player)) {
                 arena.forEach(row => row.fill(0));
-                score = 0;
-                dropInterval = 1000;
+                score = 0; dropInterval = 1000;
                 scoreVal.innerText = score;
             }
         }
@@ -300,12 +303,10 @@
             outer: for (let y = arena.length - 1; y > 0; --y) {
                 for (let x = 0; x < arena[y].length; ++x) { if (arena[y][x] === 0) continue outer; }
                 arena.unshift(arena.splice(y, 1)[0].fill(0));
-                score += 10;
-                scoreVal.innerText = score;
+                score += 10; scoreVal.innerText = score;
                 dropInterval = Math.max(100, 1000 - (Math.floor(score / 100) * 100));
                 if (score > highScore) {
-                    highScore = score;
-                    highScoreVal.innerText = highScore;
+                    highScore = score; highScoreVal.innerText = highScore;
                     localStorage.setItem('keaton-tetris-best', highScore);
                 }
                 ++y;
@@ -328,20 +329,42 @@
             requestAnimationFrame(update);
         }
 
+        // KEYBOARD CONTROLS
         document.addEventListener('keydown', e => {
             if (isPaused) return;
             if (e.keyCode === 37) { player.pos.x--; if(collide(arena, player)) player.pos.x++; }
             if (e.keyCode === 39) { player.pos.x++; if(collide(arena, player)) player.pos.x--; }
             if (e.keyCode === 40) playerDrop();
-            if (e.keyCode === 38) { 
-                const matrix = player.matrix;
-                for (let y = 0; y < matrix.length; ++y) {
-                    for (let x = 0; x < y; ++x) [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
-                }
-                matrix.forEach(row => row.reverse());
-                if (collide(arena, player)) matrix.forEach(row => row.reverse()); 
-            }
+            if (e.keyCode === 38) rotate(player.matrix);
         });
+
+        // MOBILE TOUCH CONTROLS
+        let touchStartX = 0; let touchStartY = 0;
+        const container = document.getElementById('tetris-container');
+        
+        container.addEventListener('touchstart', e => {
+            touchStartX = e.touches[0].clientX;
+            touchStartY = e.touches[0].clientY;
+        }, {passive: true});
+
+        container.addEventListener('touchend', e => {
+            if (isPaused) return;
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            const dx = touchEndX - touchStartX;
+            const dy = touchEndY - touchStartY;
+            const absDx = Math.abs(dx);
+            const absDy = Math.abs(dy);
+
+            if (absDx < 10 && absDy < 10) { // Tap
+                rotate(player.matrix);
+            } else if (absDx > absDy) { // Horizontal Swipe
+                if (dx > 30) { player.pos.x++; if(collide(arena, player)) player.pos.x--; } 
+                else if (dx < -30) { player.pos.x--; if(collide(arena, player)) player.pos.x++; }
+            } else if (dy > 30) { // Down Swipe
+                playerDrop();
+            }
+        }, {passive: true});
 
         playerReset(); 
         update();
