@@ -1,2 +1,3 @@
 # keatonium.github.io
-Personal website
+Personal website using CSS, HTML, and JavaScript
+
