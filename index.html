@@ -3,63 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Keaton Wyrick | Computer Engineering</title>
+    <title>Keaton Wyrick | Engineering Portfolio</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
     <style>
         :root {
             /* Palette */
-            --bg-primary: #1e1e1e; /* Charcoal Grey */
-            --bg-secondary: #252525;
-            --bg-tertiary: #2d2d2d;
-            --text-primary: #f2f2f2;
-            --text-secondary: #a0a0a0;
-            --ut-orange: #FF8200; /* Official UT Orange */
-            --ut-orange-dim: rgba(255, 130, 0, 0.15);
+            --bg-primary: #1a1a1a; /* Deep Charcoal */
+            --bg-secondary: #242424;
+            --text-primary: #f0f0f0;
+            --text-secondary: #888888;
+            --ut-orange: #FF8200;
             
-            /* Spacing & Layout */
-            --nav-height: 70px;
-            --max-width: 1200px;
-            --radius: 8px;
+            /* Typography */
+            --font-display: 'Playfair Display', serif; /* Artsy */
+            --font-body: 'Inter', sans-serif; /* Clean */
+            --font-mono: 'Space Mono', monospace; /* Tech */
             
-            /* Animation */
-            --ease: cubic-bezier(0.23, 1, 0.32, 1);
-            --transition-speed: 0.4s;
+            /* Layout */
+            --nav-height: 80px;
+            --max-width: 1100px;
+            --ease: cubic-bezier(0.16, 1, 0.3, 1);
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background-color: var(--bg-primary);
             color: var(--text-primary);
-            font-family: 'Segoe UI', Inter, -apple-system, sans-serif;
-            line-height: 1.6;
+            font-family: var(--font-body);
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* Subtle Tech Background Pattern */
-        body::before {
-            content: "";
+        /* --- Artsy Background FX --- */
+        
+        /* 1. Grain Texture Overlay */
+        .noise {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background-image: radial-gradient(var(--text-secondary) 1px, transparent 1px);
-            background-size: 40px 40px;
-            opacity: 0.07;
             pointer-events: none;
+            z-index: 5000;
+            opacity: 0.05;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+
+        /* 2. Ambient Moving Glow */
+        .glow-orb {
+            position: fixed;
+            top: -10%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 130, 0, 0.15) 0%, rgba(0,0,0,0) 70%);
+            border-radius: 50%;
             z-index: -1;
+            animation: float 20s infinite ease-in-out;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0); }
+            50% { transform: translate(-50px, 100px); }
+            100% { transform: translate(0, 0); }
         }
 
         /* --- Navigation --- */
         .navbar {
             position: fixed;
-            top: 0;
-            width: 100%;
+            top: 0; width: 100%;
             height: var(--nav-height);
-            background: rgba(30, 30, 30, 0.85);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            background: rgba(26, 26, 26, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             z-index: 1000;
             display: flex;
             align-items: center;
@@ -67,516 +86,342 @@
         }
 
         .nav-container {
-            width: 100%;
-            max-width: var(--max-width);
-            padding: 0 20px;
+            width: 100%; max-width: var(--max-width);
+            padding: 0 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        /* Power T Logo */
-        .logo-container {
-            width: 40px;
-            height: 40px;
+        /* Name Brand */
+        .brand {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700; /* Bold */
             cursor: pointer;
-            transition: transform 0.3s var(--ease);
-        }
-        
-        .logo-container svg {
-            fill: var(--text-primary);
-            transition: fill 0.3s ease;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: color 0.4s var(--ease);
+            letter-spacing: -0.02em;
         }
 
-        .logo-container:hover {
-            transform: scale(1.1);
-        }
-        
-        .logo-container:hover svg {
-            fill: var(--ut-orange);
-            filter: drop-shadow(0 0 8px rgba(255, 130, 0, 0.6));
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 30px;
-        }
-
-        .nav-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            position: relative;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: color 0.3s ease;
-        }
-
-        .nav-btn::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background: var(--ut-orange);
-            transition: width 0.3s var(--ease);
-        }
-
-        .nav-btn:hover, .nav-btn.active {
+        .brand:hover {
             color: var(--ut-orange);
         }
 
-        .nav-btn:hover::after, .nav-btn.active::after {
-            width: 100%;
+        .nav-links { display: flex; gap: 2rem; }
+
+        .nav-btn {
+            background: none; border: none;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.3s;
+            letter-spacing: 0.05em;
         }
 
-        /* --- Main Content Area --- */
+        .nav-btn:hover, .nav-btn.active { color: var(--ut-orange); }
+
+        /* --- Layout & Router --- */
         #app {
-            margin-top: var(--nav-height);
-            min-height: calc(100vh - var(--nav-height));
+            padding-top: var(--nav-height);
+            min-height: 100vh;
             position: relative;
         }
 
-        /* Page Transitions */
         .page {
             display: none;
-            padding: 60px 20px;
+            padding: 4rem 2rem;
             max-width: var(--max-width);
             margin: 0 auto;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeIn 0.6s var(--ease) forwards;
+            animation: fadeUp 0.8s var(--ease) forwards;
         }
 
-        .page.active {
-            display: block;
-        }
+        .page.active { display: block; }
 
-        @keyframes fadeIn {
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- Home Section --- */
-        .hero {
-            height: 80vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: flex-start;
-        }
-
-        .hero h1 {
-            font-size: 4rem;
-            line-height: 1.1;
-            margin-bottom: 20px;
-        }
-
-        .hero h1 span {
+        /* --- Typography Helpers --- */
+        h1, h2, h3 { font-family: var(--font-display); font-weight: 400; }
+        .mono-label {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
             color: var(--ut-orange);
-        }
-
-        .hero p {
-            font-size: 1.5rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin-bottom: 40px;
-        }
-
-        .cta-btn {
-            padding: 15px 35px;
-            background: transparent;
-            border: 2px solid var(--ut-orange);
-            color: var(--ut-orange);
-            font-size: 1rem;
-            font-weight: bold;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border-radius: 4px;
+            letter-spacing: 0.1em;
+            margin-bottom: 1rem;
+            display: block;
         }
 
-        .cta-btn:hover {
-            background: var(--ut-orange);
-            color: #fff;
-            box-shadow: 0 0 20px rgba(255, 130, 0, 0.4);
-        }
-
-        /* --- Projects Grid --- */
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 40px;
-        }
-
-        .card {
-            background: var(--bg-secondary);
-            border: 1px solid rgba(255,255,255,0.05);
-            border-radius: var(--radius);
-            padding: 30px;
-            cursor: pointer;
-            transition: all 0.3s var(--ease);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card:hover {
-            transform: translateY(-10px);
-            border-color: var(--ut-orange);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-
-        .card::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 4px; height: 100%;
-            background: var(--ut-orange);
-            transform: scaleY(0);
-            transition: transform 0.3s var(--ease);
-            transform-origin: bottom;
-        }
-
-        .card:hover::before {
-            transform: scaleY(1);
-        }
-
-        .card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
-
-        .card p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin-bottom: 20px;
-        }
-
-        .tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .tag {
-            font-family: 'Courier New', monospace;
-            font-size: 0.8rem;
-            color: var(--ut-orange);
-            background: var(--ut-orange-dim);
-            padding: 5px 10px;
-            border-radius: 4px;
-        }
-
-        /* --- Education Timeline --- */
-        .edu-entry {
-            display: flex;
-            border-left: 2px solid var(--ut-orange);
-            padding-left: 30px;
-            margin-bottom: 40px;
-            position: relative;
-        }
-
-        .edu-entry::before {
-            content: "";
-            position: absolute;
-            left: -6px; top: 0;
-            width: 10px; height: 10px;
-            background: var(--ut-orange);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--ut-orange);
-        }
-
-        .edu-date {
-            min-width: 150px;
-            font-family: 'Courier New', monospace;
-            color: var(--ut-orange);
-            font-weight: bold;
-        }
-
-        .edu-content h3 {
-            margin-bottom: 5px;
+        /* --- HERO SECTION --- */
+        .hero { min-height: 70vh; display: flex; flex-direction: column; justify-content: center; }
+        
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            line-height: 0.95;
+            margin-bottom: 2rem;
         }
         
-        .edu-content h4 {
+        .hero h1 i { font-style: italic; color: var(--text-secondary); }
+
+        .hero-desc {
+            max-width: 500px;
+            font-size: 1.1rem;
             color: var(--text-secondary);
-            font-weight: 400;
-            margin-bottom: 15px;
+            line-height: 1.7;
+            border-left: 2px solid var(--ut-orange);
+            padding-left: 1.5rem;
         }
 
-        /* --- Project Detail View (Overlay) --- */
-        .detail-view {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-primary);
-            z-index: 2000;
-            overflow-y: auto;
-            transform: translateX(100%);
-            transition: transform 0.5s var(--ease);
-            display: flex;
-            flex-direction: column;
+        /* --- PROJECTS GRID --- */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
         }
 
-        .detail-view.active {
-            transform: translateX(0);
-        }
-
-        .detail-header {
-            max-width: var(--max-width);
-            width: 100%;
-            margin: 0 auto;
-            padding: 40px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .back-btn {
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: color 0.3s;
-        }
-
-        .back-btn:hover { color: var(--ut-orange); }
-
-        .detail-content {
-            max-width: 900px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 0 20px 60px;
-        }
-
-        .detail-image {
-            width: 100%;
-            height: 400px;
+        .project-card {
+            group: relative;
             background: var(--bg-secondary);
-            border-radius: var(--radius);
-            margin-bottom: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid rgba(255,255,255,0.05);
-            color: var(--text-secondary);
-            font-family: monospace;
+            padding: 2rem;
+            transition: transform 0.4s var(--ease);
+            border: 1px solid rgba(255,255,255,0.03);
+            cursor: pointer;
         }
 
-        .detail-meta {
+        .project-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--ut-orange);
+        }
+
+        .project-header {
+            display: flex; justify-content: space-between; align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+        
+        .project-number {
+            font-family: var(--font-mono);
+            font-size: 2rem;
+            color: rgba(255,255,255,0.1);
+            font-weight: 700;
+        }
+
+        /* --- ABOUT PAGE --- */
+        .about-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
+            gap: 4rem;
+            align-items: center;
+        }
+        
+        .stat-row {
+            display: flex; justify-content: space-between;
+            padding: 1rem 0;
             border-bottom: 1px solid rgba(255,255,255,0.1);
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
         }
 
-        .meta-item h4 { color: var(--ut-orange); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        /* --- CONTACT PAGE --- */
+        .terminal {
+            background: #111;
+            padding: 2rem;
+            border: 1px solid #333;
+            font-family: var(--font-mono);
+            color: #bbb;
+            max-width: 600px;
+        }
+        .cursor {
+            display: inline-block;
+            width: 10px; height: 1.2em;
+            background: var(--ut-orange);
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
 
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-            .grid { grid-template-columns: 1fr; }
-            .edu-entry { flex-direction: column; gap: 10px; }
-            .detail-meta { grid-template-columns: 1fr; }
+        /* --- UTILS --- */
+        .btn-link {
+            display: inline-block;
+            margin-top: 1rem;
+            color: var(--ut-orange);
+            text-decoration: none;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            border-bottom: 1px solid transparent;
+        }
+        .btn-link:hover { border-bottom-color: var(--ut-orange); }
+
+        @media(max-width: 768px) {
+            .about-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
 
+    <div class="noise"></div>
+    <div class="glow-orb"></div>
+
     <nav class="navbar">
         <div class="nav-container">
-            <div class="logo-container" onclick="router.navigate('home')">
-                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M10,10 L90,10 L90,35 L65,35 L65,90 L35,90 L35,35 L10,35 Z" />
-                </svg>
+            <div class="brand" onclick="router.navigate('home')">
+                Keaton Wyrick
             </div>
+            
             <div class="nav-links">
-                <button class="nav-btn active" onclick="router.navigate('home')">Home</button>
-                <button class="nav-btn" onclick="router.navigate('projects')">Projects</button>
-                <button class="nav-btn" onclick="router.navigate('education')">Education</button>
+                <button class="nav-btn" data-target="projects" onclick="router.navigate('projects')">Work</button>
+                <button class="nav-btn" data-target="education" onclick="router.navigate('education')">Education</button>
+                <button class="nav-btn" data-target="about" onclick="router.navigate('about')">About</button>
+                <button class="nav-btn" data-target="contact" onclick="router.navigate('contact')">Contact</button>
             </div>
         </div>
     </nav>
 
     <main id="app">
-        
+
         <section id="home" class="page active">
             <div class="hero">
-                <p>Hello, I'm Keaton Wyrick.</p>
-                <h1>Computer Engineering <br> Student <span>@ UTK</span></h1>
-                <p>Building embedded systems, FPGA logic, and efficient software solutions. Passionate about hardware-software co-design.</p>
-                <button class="cta-btn" onclick="router.navigate('projects')">View My Work</button>
+                <span class="mono-label">Portfolio 2026</span>
+                <h1>Engineering <br> <i>Precision</i> & <br> <span style="color:var(--ut-orange)">Performance.</span></h1>
+                <div class="hero-desc">
+                    <p>Computer Engineering Undergraduate at the University of Tennessee. Specializing in embedded systems, FPGA architecture, and bridging the gap between hardware and high-level software.</p>
+                </div>
             </div>
         </section>
 
         <section id="projects" class="page">
-            <h2 style="font-size: 2.5rem; margin-bottom: 10px;">Engineering Projects</h2>
-            <p style="color: var(--text-secondary); margin-bottom: 40px;">Select a project to view technical details.</p>
+            <span class="mono-label">Selected Works</span>
+            <h2 style="font-size: 3rem; margin-bottom: 2rem;">Technical Projects</h2>
             
-            <div class="grid" id="project-grid">
+            <div class="grid" id="project-container">
                 </div>
         </section>
 
         <section id="education" class="page">
-            <h2 style="font-size: 2.5rem; margin-bottom: 50px;">Education & Experience</h2>
+            <span class="mono-label">The Background</span>
+            <h2 style="font-size: 3rem; margin-bottom: 3rem;">Education & Exp.</h2>
             
-            <div class="edu-entry">
-                <div class="edu-date">2023 - 2027</div>
-                <div class="edu-content">
-                    <h3>University of Tennessee, Knoxville</h3>
-                    <h4>B.S. Computer Engineering | Minor in Cybersecurity</h4>
-                    <p style="color:var(--text-secondary)">Relevant Coursework: Digital Logic Design (Verilog), Microcontroller Systems (C/ASM), Data Structures & Algorithms, Circuit Analysis.</p>
+            <div style="display: grid; gap: 3rem;">
+                <div>
+                    <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">University of Tennessee</h3>
+                    <p style="font-family: var(--font-mono); color: var(--ut-orange);">B.S. Computer Engineering, Honors</p>
+                    <p style="color: var(--text-secondary); margin-top: 1rem; max-width: 600px;">
+                        Focused on Computer Architecture and Embedded Systems. 
+                        Dean's List 2023-Present. Member of IEEE and HackUTK.
+                    </p>
+                </div>
+                
+                <div>
+                    <h3 style="font-size: 1.8rem; margin-bottom: 0.5rem;">Research Assistant</h3>
+                    <p style="font-family: var(--font-mono); color: var(--ut-orange);">Innovative Computing Laboratory (ICL)</p>
+                    <p style="color: var(--text-secondary); margin-top: 1rem; max-width: 600px;">
+                        Developing benchmarking scripts for supercomputing clusters. 
+                        Analyzing memory bandwidth bottlenecks in distributed systems.
+                    </p>
                 </div>
             </div>
+        </section>
 
-            <div class="edu-entry">
-                <div class="edu-date">2024 - Present</div>
-                <div class="edu-content">
-                    <h3>Undergraduate Research Assistant</h3>
-                    <h4>Innovative Computing Laboratory (ICL)</h4>
-                    <p style="color:var(--text-secondary)">Assisting in performance analysis of high-performance computing clusters. Python scripting for data visualization and system benchmarking.</p>
+        <section id="about" class="page">
+            <div class="about-grid">
+                <div>
+                    <span class="mono-label">Philosophy</span>
+                    <h2 style="font-size: 2.5rem; line-height: 1.2; margin-bottom: 2rem;">
+                        I believe in code that runs close to the metal.
+                    </h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">
+                        My passion lies in understanding how electricity becomes information. Whether it's optimizing a C++ loop for cache efficiency or routing traces on a PCB, I enjoy the constrained chaos of engineering.
+                    </p>
+                    <p style="color: var(--text-secondary);">
+                        When I'm not in the lab, I'm likely hiking the Smokies or analyzing game engine architectures.
+                    </p>
+                </div>
+                
+                <div style="background: var(--bg-secondary); padding: 2rem; border: 1px solid rgba(255,255,255,0.05);">
+                    <h3 style="margin-bottom: 1.5rem;">The Stack</h3>
+                    <div class="stat-row"><span>Languages</span> <span>C++, Python, Verilog</span></div>
+                    <div class="stat-row"><span>Hardware</span> <span>FPGA, STM32, ESP32</span></div>
+                    <div class="stat-row"><span>Tools</span> <span>Vivado, Altium, Git</span></div>
+                    <div class="stat-row"><span>OS</span> <span>Linux, RTOS</span></div>
                 </div>
             </div>
+        </section>
 
-            <div class="edu-entry">
-                <div class="edu-date">Skills</div>
-                <div class="edu-content">
-                    <div class="tags">
-                        <span class="tag">C++</span>
-                        <span class="tag">Python</span>
-                        <span class="tag">Verilog</span>
-                        <span class="tag">MATLAB</span>
-                        <span class="tag">ARM Assembly</span>
-                        <span class="tag">Git</span>
-                        <span class="tag">Linux</span>
-                    </div>
-                </div>
+        <section id="contact" class="page">
+            <span class="mono-label">Communication</span>
+            <h2 style="font-size: 3rem; margin-bottom: 2rem;">Get in Touch</h2>
+            
+            <div class="terminal">
+                <p>> initiating_handshake...</p>
+                <p>> status: <span style="color: var(--ut-orange)">open_to_work</span></p>
+                <p>> email: <a href="mailto:keaton@utk.edu" style="color:#fff; text-decoration:none;">keaton@utk.edu</a></p>
+                <p>> location: Knoxville, TN</p>
+                <br>
+                <p>> user_input: <span class="cursor"></span></p>
+            </div>
+            
+            <div style="margin-top: 2rem; display: flex; gap: 2rem;">
+                <a href="#" class="btn-link">LinkedIn ↗</a>
+                <a href="#" class="btn-link">GitHub ↗</a>
+                <a href="#" class="btn-link">Resume (PDF) ⬇</a>
             </div>
         </section>
 
     </main>
 
-    <div id="detail-view" class="detail-view">
-        <div class="detail-header">
-            <button class="back-btn" onclick="router.closeDetail()">← Back to Projects</button>
-            <div class="logo-container" style="width:30px; height:30px;">
-                <svg viewBox="0 0 100 100"><path d="M10,10 L90,10 L90,35 L65,35 L65,90 L35,90 L35,35 L10,35 Z" style="fill:var(--ut-orange)"/></svg>
-            </div>
-        </div>
-        <div class="detail-content" id="detail-content">
-            </div>
-    </div>
-
     <script>
-        // Data Store
-        const projectsData = [
-            {
-                id: 1,
-                title: "FPGA VGA Controller",
-                desc: "A custom VGA timing controller written in Verilog for the Basys 3 FPGA.",
-                tags: ["Verilog", "FPGA", "Hardware"],
-                role: "Lead Engineer",
-                duration: "Fall 2024",
-                fullDesc: "Designed and implemented a VGA controller module from scratch using Verilog HDL. The system outputs 640x480 resolution at 60Hz. Included a sprite generation engine to render moving graphics based on user input from the board's buttons. Verified timing using Vivado simulation tools.",
-                imagePlaceholder: "Simulation Waveforms & RTL Schematic"
-            },
-            {
-                id: 2,
-                title: "Autonomous Line Follower",
-                desc: "PID-controlled robot using an STM32 microcontroller and IR sensor array.",
-                tags: ["C", "Embedded", "Robotics"],
-                role: "Firmware Dev",
-                duration: "Spring 2024",
-                fullDesc: "Developed firmware for an autonomous robot car. Utilized PID control algorithms to interpret data from an 8-channel IR sensor array and adjust motor PWM signals in real-time. Implemented using bare-metal C on an STM32 Nucleo board, optimizing for low-latency interrupt handling.",
-                imagePlaceholder: "Robot Chassis & Wiring Diagram"
-            },
-            {
-                id: 3,
-                title: "Smart Home Weather Station",
-                desc: "IoT device measuring temp/humidity and pushing data to a cloud dashboard.",
-                tags: ["Python", "IoT", "ESP32"],
-                role: "Full Stack",
-                duration: "Summer 2024",
-                fullDesc: "Built a weather monitoring node using an ESP32 and DHT11 sensor. The firmware (MicroPython) connects to WiFi and publishes MQTT messages to an AWS IoT Core broker. A React frontend visualizes the historical data using Chart.js.",
-                imagePlaceholder: "Dashboard Screenshot"
-            }
+        // --- DATA ---
+        const projects = [
+            { id: 1, title: "FPGA Video Processor", tags: "Verilog / Hardware", desc: "Real-time edge detection on 1080p video stream." },
+            { id: 2, title: "Autonomous Robot", tags: "C / Embedded", desc: "LIDAR-based mapping and pathfinding algorithms." },
+            { id: 3, title: "Neural Net Optimizer", tags: "Python / CUDA", desc: "Reducing inference latency on edge devices." }
         ];
 
-        // Router & View Logic
-        const router = {
-            currentPage: 'home',
-            
-            navigate: (pageId) => {
-                // Remove active class from all pages
-                document.querySelectorAll('.page').forEach(el => el.classList.remove('active'));
-                document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
-                
-                // Add active class to target
-                document.getElementById(pageId).classList.add('active');
-                
-                // Update Nav State
-                const navIndex = ['home', 'projects', 'education'].indexOf(pageId);
-                if(navIndex !== -1) {
-                    document.querySelectorAll('.nav-btn')[navIndex].classList.add('active');
-                }
-                
-                router.currentPage = pageId;
-                window.scrollTo(0,0);
-            },
-
-            openDetail: (projectId) => {
-                const project = projectsData.find(p => p.id === projectId);
-                if(!project) return;
-
-                const container = document.getElementById('detail-content');
-                
-                container.innerHTML = `
-                    <h1 style="font-size:3rem; line-height:1.1; margin-bottom:10px;">${project.title}</h1>
-                    <p style="color:var(--ut-orange); font-size:1.2rem; margin-bottom:30px; font-family:monospace;">${project.tags.join(' // ')}</p>
-                    
-                    <div class="detail-image">${project.imagePlaceholder}</div>
-                    
-                    <div class="detail-meta">
-                        <div class="meta-item"><h4>Role</h4><p>${project.role}</p></div>
-                        <div class="meta-item"><h4>Timeline</h4><p>${project.duration}</p></div>
-                        <div class="meta-item"><h4>Tech Stack</h4><p>${project.tags.join(', ')}</p></div>
+        // --- RENDER PROJECTS ---
+        const projContainer = document.getElementById('project-container');
+        projects.forEach((p, index) => {
+            projContainer.innerHTML += `
+                <div class="project-card" onclick="alert('Link to full project page would go here!')">
+                    <div class="project-header">
+                        <span style="font-family:var(--font-mono); color:var(--ut-orange); font-size:0.8rem;">${p.tags}</span>
+                        <span class="project-number">0${index + 1}</span>
                     </div>
+                    <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">${p.title}</h3>
+                    <p style="color: var(--text-secondary);">${p.desc}</p>
+                </div>
+            `;
+        });
 
-                    <h3 style="margin-bottom:15px; color:var(--text-primary);">Project Overview</h3>
-                    <p style="color:var(--text-secondary); white-space: pre-line;">${project.fullDesc}</p>
-                `;
+        // --- ROUTER ---
+        const pages = document.querySelectorAll('.page');
+        const navBtns = document.querySelectorAll('.nav-btn');
 
-                document.getElementById('detail-view').classList.add('active');
-            },
+        const router = {
+            navigate: (targetId) => {
+                // Update Pages
+                pages.forEach(page => {
+                    page.classList.remove('active');
+                    if(page.id === targetId) page.classList.add('active');
+                });
+                
+                // Update Nav Buttons
+                navBtns.forEach(btn => {
+                    btn.classList.remove('active');
+                    if(btn.dataset.target === targetId) btn.classList.add('active');
+                });
 
-            closeDetail: () => {
-                document.getElementById('detail-view').classList.remove('active');
+                window.scrollTo(0,0);
             }
         };
 
-        // Render Projects
-        const grid = document.getElementById('project-grid');
-        projectsData.forEach(p => {
-            const card = document.createElement('div');
-            card.className = 'card';
-            card.onclick = () => router.openDetail(p.id);
-            card.innerHTML = `
-                <h3>${p.title}</h3>
-                <p>${p.desc}</p>
-                <div class="tags">
-                    ${p.tags.map(t => `<span class="tag">${t}</span>`).join('')}
-                </div>
-            `;
-            grid.appendChild(card);
-        });
-
+        // Init
+        router.navigate('home');
     </script>
 </body>
 </html>
