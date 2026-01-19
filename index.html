@@ -25,124 +25,43 @@
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            background-color: var(--bg-primary);
-            color: var(--text-primary);
-            font-family: var(--font-body);
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        .noise {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            pointer-events: none; z-index: 5000; opacity: 0.05;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-        }
+        body { background-color: var(--bg-primary); color: var(--text-primary); font-family: var(--font-body); overflow-x: hidden; }
+        
+        .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5000; opacity: 0.05; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); }
 
         /* Navigation */
-        .navbar {
-            position: fixed;
-            top: 0; width: 100%; height: var(--nav-height);
-            background: rgba(26, 26, 26, 0.85);
-            backdrop-filter: blur(12px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            z-index: 1000;
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .nav-container {
-            width: 100%; max-width: var(--max-width);
-            padding: 0 2rem; display: flex; justify-content: space-between; align-items: center;
-        }
-
-        .brand {
-            font-family: var(--font-display); font-size: 1.6rem; font-weight: 700;
-            cursor: pointer; color: var(--text-primary); text-decoration: none;
-            transition: color 0.4s var(--ease); letter-spacing: -0.02em;
-        }
-
+        .navbar { position: fixed; top: 0; width: 100%; height: var(--nav-height); background: rgba(26, 26, 26, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .nav-container { width: 100%; max-width: var(--max-width); padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .brand { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; cursor: pointer; text-decoration: none; color: var(--text-primary); }
         .nav-links { display: flex; gap: 2rem; }
-        .nav-btn {
-            background: none; border: none; font-family: var(--font-mono);
-            font-size: 0.8rem; text-transform: uppercase; color: var(--text-secondary);
-            cursor: pointer; transition: color 0.3s; letter-spacing: 0.05em;
-        }
+        .nav-btn { background: none; border: none; font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase; color: var(--text-secondary); cursor: pointer; letter-spacing: 0.05em; transition: 0.3s; }
         .nav-btn:hover, .nav-btn.active { color: var(--ut-orange); }
 
-        /* Mobile Menu Toggle (Three Lines) */
-        .menu-toggle {
-            display: none;
-            flex-direction: column;
-            gap: 6px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            z-index: 1100;
-        }
+        /* Mobile Menu */
+        .menu-toggle { display: none; flex-direction: column; gap: 6px; background: none; border: none; cursor: pointer; z-index: 1100; }
+        .menu-toggle span { display: block; width: 25px; height: 2px; background-color: var(--text-primary); transition: 0.3s; }
 
-        .menu-toggle span {
-            display: block;
-            width: 25px;
-            height: 2px;
-            background-color: var(--text-primary);
-            transition: 0.3s;
-        }
-
-        /* Hero / Content */
+        /* Content Pages */
         #app { padding-top: var(--nav-height); min-height: 100vh; }
-        .page {
-            display: none; padding: 2rem; max-width: var(--max-width);
-            margin: 0 auto; animation: fadeUp 0.8s var(--ease) forwards;
-        }
+        .page { display: none; padding: 2rem; max-width: var(--max-width); margin: 0 auto; animation: fadeUp 0.8s var(--ease) forwards; }
         .page.active { display: block; }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        /* Tetris */
+        .hero-layout { display: grid; grid-template-columns: 1fr 300px; gap: 4rem; align-items: center; min-height: 70vh; }
+        #tetris-container { background: #000; border: 2px solid #333; padding: 10px; box-shadow: 0 0 30px rgba(255, 130, 0, 0.1); position: relative; }
+        .score-board { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ut-orange); margin-bottom: 10px; }
+        .pause-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10; font-family: var(--font-mono); color: var(--ut-orange); }
+        .game-btn { background: none; border: 1px solid var(--ut-orange); color: var(--ut-orange); padding: 5px 10px; cursor: pointer; font-family: var(--font-mono); font-size: 0.7rem; margin-top: 5px; }
 
-        .hero-layout {
-            display: grid; grid-template-columns: 1fr 300px;
-            gap: 4rem; align-items: center; min-height: 70vh;
-        }
+        /* UI Elements */
+        .terminal-window { background: #0d0d0d; border: 1px solid #333; padding: 20px; font-family: var(--font-mono); height: 350px; overflow-y: auto; margin-top: 2rem; }
+        .terminal-input { background: transparent; border: none; color: var(--ut-orange); font-family: var(--font-mono); outline: none; width: 80%; }
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem; margin-top: 3rem; }
 
-        #tetris-container {
-            background: #000; border: 2px solid #333; padding: 10px;
-            box-shadow: 0 0 30px rgba(255, 130, 0, 0.1);
-        }
-
-        .score-board {
-            display: flex; justify-content: space-between;
-            font-family: var(--font-mono); font-size: 0.75rem;
-            color: var(--ut-orange); margin-bottom: 10px;
-        }
-
-        .terminal-window {
-            background: #0d0d0d; border: 1px solid #333; padding: 20px;
-            font-family: var(--font-mono); height: 400px; overflow-y: auto;
-        }
-
-        .terminal-input {
-            background: transparent; border: none; color: var(--ut-orange);
-            font-family: var(--font-mono); outline: none; width: 100%;
-        }
-
-        /* Mobile Adjustments */
         @media (max-width: 768px) {
             .menu-toggle { display: flex; }
-            .nav-links {
-                position: fixed;
-                top: 0; right: -100%;
-                width: 70%; height: 100vh;
-                background: var(--bg-secondary);
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                transition: 0.4s var(--ease);
-                z-index: 1000;
-            }
+            .nav-links { position: fixed; top: 0; right: -100%; width: 75%; height: 100vh; background: var(--bg-secondary); flex-direction: column; justify-content: center; align-items: center; transition: 0.4s var(--ease); z-index: 1000; }
             .nav-links.open { right: 0; }
             .hero-layout { grid-template-columns: 1fr; text-align: center; }
             #tetris-container { margin: 0 auto; }
@@ -156,9 +75,7 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="brand" onclick="router.navigate('home')">Keaton Wyrick</div>
-            <button class="menu-toggle" id="mobile-toggle">
-                <span></span><span></span><span></span>
-            </button>
+            <button class="menu-toggle" id="mobile-toggle"><span></span><span></span><span></span></button>
             <div class="nav-links" id="nav-links">
                 <button class="nav-btn" data-target="projects" onclick="router.navigate('projects')">Projects</button>
                 <button class="nav-btn" data-target="education" onclick="router.navigate('education')">Education</button>
@@ -175,8 +92,8 @@
                     <h1 style="font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.1;">
                         I believe in <i>code</i> <br> that runs close <br> to the <span style="color:var(--ut-orange)">bare metal.</span>
                     </h1>
-                    <p style="margin-top: 2rem; color: var(--text-secondary); font-family: var(--font-mono); font-size: 0.9rem;">
-                        [ Arrows to Move & Rotate ]
+                    <p style="margin-top: 2rem; color: var(--text-secondary); font-family: var(--font-mono); font-size: 0.8rem;">
+                        ARROWS: Move & Rotate | P: Pause
                     </p>
                 </div>
                 <div id="tetris-container">
@@ -184,63 +101,83 @@
                         <span>Score: <span id="score">0</span></span>
                         <span>Best: <span id="high-score">0</span></span>
                     </div>
+                    <div class="pause-overlay" id="pause-overlay">
+                        <h2>PAUSED</h2>
+                        <button class="game-btn" onclick="togglePause()">RESUME</button>
+                    </div>
                     <canvas id="tetris" width="240" height="400"></canvas>
+                    <button class="game-btn" style="width:100%" onclick="togglePause()">PAUSE GAME</button>
                 </div>
             </div>
         </section>
 
         <section id="projects" class="page">
-            <h2 style="font-family: var(--font-display); font-size: 3rem; margin-bottom: 2rem;">Selected Works</h2>
+            <h2 style="font-family: var(--font-display); font-size: 3rem; margin-bottom: 2rem;">Selected Projects</h2>
             <div id="project-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem;"></div>
         </section>
 
         <section id="education" class="page">
-            <h2 style="font-family: var(--font-display); font-size: 3rem; margin-bottom: 3rem;">Foundation</h2>
-            <div style="border-left: 2px solid var(--ut-orange); padding-left: 2rem;">
-                <h3 style="font-family: var(--font-display); font-size: 1.8rem;">University of Tennessee</h3>
-                <p style="font-family: var(--font-mono); color: var(--ut-orange);">B.S. Computer Engineering, Honors</p>
+            <h2 style="font-family: var(--font-display); font-size: 3rem; margin-bottom: 2rem;">Foundation</h2>
+            <div style="border-left: 2px solid var(--ut-orange); padding: 1rem 0 1rem 2rem;">
+                <h3 style="font-family: var(--font-display); font-size: 1.8rem;">University of Tennessee, Knoxville</h3>
+                <p style="font-family: var(--font-mono); color: var(--ut-orange); margin-bottom: 1rem;">Computer Engineering, Honors (2023-2027)</p>
+                <p style="color: var(--text-secondary); max-width: 600px; line-height: 1.6;">Minoring in Cybersecurity. Currently a researcher at the Innovative Computing Laboratory (ICL).</p>
             </div>
         </section>
 
         <section id="about" class="page">
-            <h2 style="font-family: var(--font-display); font-size: 3rem; margin-bottom: 2rem;">About</h2>
-            <p style="color: var(--text-secondary); line-height: 1.8;">Specializing in low-level firmware and FPGA logic design.</p>
-        </section>
-
-        <section id="contact" class="page">
-            <h2 style="font-family: var(--font-display); font-size: 3rem; margin-bottom: 2rem;">Terminal</h2>
+            <h2 style="font-family: var(--font-display); font-size: 3rem;">About</h2>
+            <p style="color: var(--text-secondary); line-height: 1.8; max-width: 700px; margin-top: 1rem;">
+                Specializing in the intersection of hardware and high-performance software. I focus on making systems faster, more secure, and more efficient through low-level optimization.
+            </p>
             <div class="terminal-window" onclick="document.getElementById('term-input').focus()">
-                <div id="terminal-output" style="white-space: pre-wrap; color: #bbb;">Keatonium-OS v1.0.4... type 'help'</div>
+                <div id="terminal-output" style="white-space: pre-wrap; color: #bbb; line-height: 1.4;">[SYSTEM DIAGNOSTIC LOADED] Type 'help' to begin.</div>
                 <div style="display: flex; gap: 10px; margin-top: 10px;">
                     <span style="color: var(--ut-orange)">keaton@wyrick:~$</span>
                     <input type="text" id="term-input" class="terminal-input" autofocus autocomplete="off">
                 </div>
             </div>
         </section>
+
+        <section id="contact" class="page">
+            <h2 style="font-family: var(--font-display); font-size: 3rem;">Contact</h2>
+            <p style="color: var(--text-secondary); margin-top: 1rem;">Looking for collaboration or technical inquiries?</p>
+            <div class="contact-grid">
+                <div>
+                    <h4 style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.8rem;">EMAIL</h4>
+                    <p style="font-size: 1.2rem; margin-top: 0.5rem;">kwyrick@vols.utk.edu</p>
+                </div>
+                <div>
+                    <h4 style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.8rem;">LOCATION</h4>
+                    <p style="font-size: 1.2rem; margin-top: 0.5rem;">Knoxville, TN</p>
+                </div>
+                <div>
+                    <h4 style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.8rem;">SOCIAL</h4>
+                    <p style="font-size: 1.2rem; margin-top: 0.5rem;">
+                        <a href="https://github.com/keatonium" target="_blank" style="color: inherit; text-decoration: none; border-bottom: 1px solid var(--ut-orange);">GitHub</a><br>
+                        <a href="#" style="color: inherit; text-decoration: none; border-bottom: 1px solid var(--ut-orange);">LinkedIn</a>
+                    </p>
+                </div>
+            </div>
+        </section>
     </main>
 
     <script>
-        // --- MOBILE NAV LOGIC ---
+        // --- NAVIGATION ---
         const mobileToggle = document.getElementById('mobile-toggle');
         const navLinks = document.getElementById('nav-links');
-        
-        mobileToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('open');
-        });
+        mobileToggle.addEventListener('click', () => navLinks.classList.toggle('open'));
 
-        // --- ROUTER ---
-        const pages = document.querySelectorAll('.page');
-        const navBtns = document.querySelectorAll('.nav-btn');
         const router = {
             navigate: (id) => {
-                pages.forEach(p => p.classList.toggle('active', p.id === id));
-                navBtns.forEach(b => b.classList.toggle('active', b.dataset.target === id));
+                document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === id));
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.dataset.target === id));
                 navLinks.classList.remove('open');
                 window.scrollTo(0,0);
             }
         };
 
-        // --- TETRIS + SHADOW LOGIC ---
+        // --- TETRIS (FIXED) ---
         const canvas = document.getElementById('tetris');
         const context = canvas.getContext('2d');
         const scoreVal = document.getElementById('score');
@@ -248,6 +185,7 @@
         context.scale(20, 20);
 
         let score = 0;
+        let isPaused = false;
         let highScore = localStorage.getItem('keaton-tetris-best') || 0;
         highScoreVal.innerText = highScore;
 
@@ -259,6 +197,22 @@
             if (type === 'Z') return [[5,5,0],[0,5,5],[0,0,0]];
             if (type === 'S') return [[0,6,6],[6,6,0],[0,0,0]];
             if (type === 'T') return [[0,7,0],[7,7,7],[0,0,0]];
+        }
+
+        // --- BORDER FIX COLLISION ---
+        function collide(arena, p) {
+            const [m, o] = [p.matrix, p.pos];
+            for (let y = 0; y < m.length; ++y) {
+                for (let x = 0; x < m[y].length; ++x) {
+                    if (m[y][x] !== 0) {
+                        // Check if block is inside bounds and not hitting existing arena blocks
+                        if (!arena[y + o.y] || arena[y + o.y][x + o.x] !== 0 || x + o.x < 0 || x + o.x >= arena[0].length) {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
 
         function drawMatrix(matrix, offset, color = '#FF8200', opacity = 1) {
@@ -282,46 +236,17 @@
             context.fillRect(0, 0, canvas.width, canvas.height);
             drawMatrix(arena, {x: 0, y: 0});
             
-            // Draw Ghost Piece
-            const ghostPos = Object.assign({}, player.pos);
-            while (!collide(arena, {pos: ghostPos, matrix: player.matrix})) {
-                ghostPos.y++;
-            }
-            ghostPos.y--;
-            drawMatrix(player.matrix, ghostPos, '#FF8200', 0.15); // Subtle shadow
+            // Ghost Piece
+            const ghost = { pos: {x: player.pos.x, y: player.pos.y}, matrix: player.matrix };
+            while (!collide(arena, ghost)) { ghost.pos.y++; }
+            ghost.pos.y--;
+            drawMatrix(ghost.matrix, ghost.pos, '#FF8200', 0.15);
             
             drawMatrix(player.matrix, player.pos);
         }
 
-        function collide(arena, p) {
-            const [m, o] = [p.matrix, p.pos];
-            for (let y = 0; y < m.length; ++y) {
-                for (let x = 0; x < m[y].length; ++x) {
-                    if (m[y][x] !== 0) {
-                        if (x + o.x < 0 || x + o.x >= arena[0].length || y + o.y >= arena.length || (arena[y + o.y] && arena[y + o.y][x + o.x] !== 0)) return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        function arenaSweep() {
-            let rowCount = 1;
-            outer: for (let y = arena.length - 1; y > 0; --y) {
-                for (let x = 0; x < arena[y].length; ++x) { if (arena[y][x] === 0) continue outer; }
-                const row = arena.splice(y, 1)[0].fill(0);
-                arena.unshift(row);
-                ++y;
-                score += rowCount * 10; rowCount *= 2;
-            }
-            scoreVal.innerText = score;
-            if (score > highScore) { 
-                highScore = score; highScoreVal.innerText = highScore; 
-                localStorage.setItem('keaton-tetris-best', highScore);
-            }
-        }
-
         function playerDrop() {
+            if (isPaused) return;
             player.pos.y++;
             if (collide(arena, player)) {
                 player.pos.y--;
@@ -339,7 +264,30 @@
             player.matrix = createPiece(pieces[Math.floor(Math.random() * pieces.length)]);
             player.pos.y = 0;
             player.pos.x = Math.floor(arena[0].length / 2) - Math.floor(player.matrix[0].length / 2);
-            if (collide(arena, player)) arena.forEach(row => row.fill(0));
+            if (collide(arena, player)) {
+                arena.forEach(row => row.fill(0));
+                score = 0;
+                scoreVal.innerText = score;
+            }
+        }
+
+        function arenaSweep() {
+            let rowCount = 1;
+            outer: for (let y = arena.length - 1; y > 0; --y) {
+                for (let x = 0; x < arena[y].length; ++x) { if (arena[y][x] === 0) continue outer; }
+                const row = arena.splice(y, 1)[0].fill(0);
+                arena.unshift(row);
+                ++y;
+                score += rowCount * 10;
+                rowCount *= 2;
+            }
+            scoreVal.innerText = score;
+            if (score > highScore) { highScore = score; highScoreVal.innerText = highScore; localStorage.setItem('keaton-tetris-best', highScore); }
+        }
+
+        function togglePause() {
+            isPaused = !isPaused;
+            document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
         }
 
         const arena = Array.from({length: 20}, () => new Array(12).fill(0));
@@ -347,14 +295,21 @@
         let dropCounter = 0, lastTime = 0;
 
         function update(time = 0) {
-            const deltaTime = time - lastTime; lastTime = time;
-            dropCounter += deltaTime;
-            if (dropCounter > 1000) playerDrop();
-            draw();
+            if (!isPaused) {
+                const deltaTime = time - lastTime;
+                lastTime = time;
+                dropCounter += deltaTime;
+                if (dropCounter > 1000) playerDrop();
+                draw();
+            } else {
+                lastTime = time; // Keep timer consistent when unpausing
+            }
             requestAnimationFrame(update);
         }
 
         document.addEventListener('keydown', e => {
+            if (e.key.toLowerCase() === 'p') togglePause();
+            if (isPaused) return;
             if (e.keyCode === 37) { player.pos.x--; if(collide(arena, player)) player.pos.x++; }
             if (e.keyCode === 39) { player.pos.x++; if(collide(arena, player)) player.pos.x--; }
             if (e.keyCode === 40) playerDrop();
@@ -373,15 +328,39 @@
             }
         });
 
-        playerReset(); update();
+        playerReset(); 
+        update();
 
-        // Projects Filler
+        // --- TERMINAL LOGIC ---
+        const termInput = document.getElementById('term-input');
+        const termOutput = document.getElementById('terminal-output');
+        const cmds = {
+            help: "Commands: ls, whoami, clear, sysinfo, skills",
+            whoami: "Keaton Wyrick. Computer Engineer.",
+            ls: "projects/ research_papers/ bios.bin",
+            sysinfo: "OS: Keatonium v1.0 | CPU: 8-Core Logic | Kernel: Honors-CSE",
+            skills: "Verilog, Embedded C, Python, FPGA Design, RTOS, Cyber-Security",
+            clear: ""
+        };
+
+        termInput.addEventListener('keydown', e => {
+            if (e.key === 'Enter') {
+                const cmd = termInput.value.toLowerCase().trim();
+                if (cmd === 'clear') { termOutput.innerHTML = ''; }
+                else if (cmds[cmd]) { termOutput.innerHTML += `\n<span style="color:var(--ut-orange)">$</span> ${cmd}\n${cmds[cmd]}`; }
+                else { termOutput.innerHTML += `\n$ ${cmd}\nCommand not found.`; }
+                termInput.value = '';
+                termOutput.parentElement.scrollTop = termOutput.parentElement.scrollHeight;
+            }
+        });
+
+        // Filler Projects
         const projData = [
-            { title: "FPGA Image Processor", tags: "Verilog", desc: "Edge detection logic." },
-            { title: "RTOS Scheduler", tags: "Embedded C", desc: "Preemptive kernel." }
+            { title: "FPGA Image Processor", tags: "Verilog", desc: "Hardware-accelerated edge detection logic." },
+            { title: "RTOS Scheduler", tags: "Embedded C", desc: "Preemptive multitasking kernel for ARM." }
         ];
         projData.forEach(p => {
-            document.getElementById('project-container').innerHTML += `<div style="background:var(--bg-secondary); padding:20px; border:1px solid #333"><h3>${p.title}</h3><p>${p.desc}</p></div>`;
+            document.getElementById('project-container').innerHTML += `<div style="background:var(--bg-secondary); padding:2rem; border:1px solid #333"><h3>${p.title}</h3><p style="color:var(--text-secondary)">${p.desc}</p></div>`;
         });
     </script>
 </body>
