@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Keaton Wyrick — Computer Engineering projects portfolio" />
+  <title>Keaton Wyrick | Projects</title>
+
+  <!--
+    Single-file site for GitHub Pages (keatonium.github.io)
+    Drop this in: /index.html
+  -->
+
+  <style>
+    :root{
+      --bg: #0b0f17;
+      --panel: #111827;
+      --panel2: #0f172a;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --line: rgba(255,255,255,.10);
+      --brand: #60a5fa;
+      --brand2: #34d399;
+      --shadow: 0 12px 40px rgba(0,0,0,.45);
+      --radius: 18px;
+      --max: 1080px;
+    }
+
+    *{ box-sizing: border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background:
+        radial-gradient(900px 600px at 15% 5%, rgba(96,165,250,.18), transparent 60%),
+        radial-gradient(900px 600px at 85% 10%, rgba(52,211,153,.14), transparent 55%),
+        radial-gradient(900px 600px at 60% 90%, rgba(96,165,250,.10), transparent 60%),
+        var(--bg);
+      color:var(--text);
+      line-height:1.55;
+    }
+
+    a{ color:inherit; text-decoration:none; }
+    a:hover{ text-decoration:underline; }
+
+    .wrap{ max-width: var(--max); margin:0 auto; padding: 28px 18px 60px; }
+
+    /* top nav */
+    .nav{
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      backdrop-filter: blur(10px);
+      background: rgba(11, 15, 23, .55);
+      border-bottom: 1px solid var(--line);
+    }
+    .navInner{ max-width: var(--max); margin:0 auto; padding: 12px 18px; display:flex; gap:12px; align-items:center; justify-content:space-between; }
+    .brand{ display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.2px; }
+    .dot{ width:10px; height:10px; border-radius:50%; background: linear-gradient(135deg, var(--brand), var(--brand2)); box-shadow: 0 0 0 3px rgba(96,165,250,.12); }
+
+    .navLinks{ display:flex; gap:12px; flex-wrap:wrap; justify-content:flex-end; }
+    .chip{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      padding:8px 10px;
+      border-radius: 999px;
+      color: var(--text);
+      font-size: 13px;
+    }
+    .chip:hover{ background: rgba(255,255,255,.08); text-decoration:none; }
+
+    /* hero */
+    .hero{ padding: 28px 0 10px; }
+    .heroGrid{ display:grid; grid-template-columns: 1.25fr .75fr; gap:16px; align-items:stretch; }
+    @media (max-width: 860px){ .heroGrid{ grid-template-columns: 1fr; } }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .heroMain{ padding: 22px 22px 18px; }
+    h1{ margin:0 0 8px; font-size: 34px; line-height:1.15; letter-spacing:-.2px; }
+    .subtitle{ color: var(--muted); margin:0 0 14px; font-size: 15px; }
+
+    .pillRow{ display:flex; gap:10px; flex-wrap:wrap; margin-top: 14px; }
+    .pill{
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      padding: 8px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .heroSide{ padding: 18px 18px 16px; display:flex; flex-direction:column; gap:12px; }
+    .kpi{ display:flex; gap:12px; align-items:flex-start; padding: 12px; border-radius: 14px; border:1px solid var(--line); background: rgba(15, 23, 42, .55); }
+    .kpi strong{ display:block; font-size: 13px; }
+    .kpi span{ color: var(--muted); font-size: 13px; display:block; margin-top:2px; }
+    .kpiIcon{ width:34px; height:34px; border-radius: 12px; background: rgba(96,165,250,.16); border:1px solid rgba(96,165,250,.28); display:flex; align-items:center; justify-content:center; }
+
+    /* sections */
+    .section{ margin-top: 22px; }
+    .sectionHeader{ display:flex; align-items:flex-end; justify-content:space-between; gap:14px; margin-bottom: 12px; }
+    .sectionHeader h2{ margin:0; font-size: 18px; letter-spacing:.2px; }
+    .sectionHeader p{ margin:0; color: var(--muted); font-size: 13px; }
+
+    /* project controls */
+    .controls{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between; }
+    .search{
+      flex: 1;
+      min-width: 220px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding: 10px 12px;
+      border:1px solid var(--line);
+      border-radius: 14px;
+      background: rgba(255,255,255,.04);
+    }
+    .search input{
+      width:100%;
+      border:0;
+      outline:none;
+      background: transparent;
+      color: var(--text);
+      font-size: 14px;
+    }
+    .filters{ display:flex; gap:8px; flex-wrap:wrap; justify-content:flex-end; }
+    button.tag{
+      cursor:pointer;
+      border:1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: var(--muted);
+      border-radius: 999px;
+      padding: 8px 10px;
+      font-size: 13px;
+    }
+    button.tag[aria-pressed="true"]{
+      color: var(--text);
+      border-color: rgba(96,165,250,.38);
+      background: rgba(96,165,250,.14);
+    }
+
+    /* projects grid */
+    .grid{ display:grid; grid-template-columns: repeat(12, 1fr); gap: 14px; }
+    .project{ grid-column: span 6; padding: 16px; }
+    @media (max-width: 860px){ .project{ grid-column: span 12; } }
+
+    .projectTop{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; }
+    .project h3{ margin:0; font-size: 16px; }
+    .meta{ margin-top: 6px; display:flex; gap:8px; flex-wrap:wrap; }
+    .badge{ font-size: 12px; color: var(--muted); border:1px solid var(--line); background: rgba(255,255,255,.03); border-radius: 999px; padding: 5px 8px; }
+    .project p{ margin: 10px 0 0; color: var(--muted); font-size: 13.5px; }
+
+    .actions{ margin-top: 12px; display:flex; gap:10px; flex-wrap:wrap; }
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border-radius: 12px;
+      padding: 9px 11px;
+      font-size: 13px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.04);
+      color: var(--text);
+    }
+    .btn.primary{ border-color: rgba(52,211,153,.36); background: rgba(52,211,153,.12); }
+    .btn:hover{ text-decoration:none; background: rgba(255,255,255,.07); }
+
+    /* timeline */
+    .timeline{ padding: 16px; }
+    .tlItem{ padding: 12px; border-radius: 14px; border:1px solid var(--line); background: rgba(15, 23, 42, .55); }
+    .tlItem + .tlItem{ margin-top: 10px; }
+    .tlItem strong{ display:block; font-size: 14px; }
+    .tlItem span{ display:block; font-size: 13px; color: var(--muted); margin-top:2px; }
+    .tlItem em{ display:block; font-size: 13px; color: var(--muted); margin-top:6px; font-style: normal; }
+
+    /* footer */
+    footer{ margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+    .footRow{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+
+    /* reduced motion */
+    @media (prefers-reduced-motion: reduce){
+      *{ scroll-behavior:auto !important; transition:none !important; animation:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="nav">
+    <div class="navInner">
+      <div class="brand">
+        <span class="dot" aria-hidden="true"></span>
+        <span>Keaton Wyrick</span>
+      </div>
+      <nav class="navLinks" aria-label="Primary">
+        <a class="chip" href="#projects">Projects</a>
+        <a class="chip" href="#experience">Experience</a>
+        <a class="chip" href="#skills">Skills</a>
+        <a class="chip" href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hero" id="top">
+      <div class="heroGrid">
+        <div class="card heroMain">
+          <h1>Computer Engineering Projects</h1>
+          <p class="subtitle">
+            Honors Computer Engineering student at the University of Tennessee, Knoxville (Class of 2027). Interested in embedded systems and machine learning.
+          </p>
+          <div class="pillRow">
+            <span class="pill">Embedded Systems</span>
+            <span class="pill">Digital Logic</span>
+            <span class="pill">C/C++</span>
+            <span class="pill">Python</span>
+            <span class="pill">Verilog</span>
+          </div>
+        </div>
+
+        <aside class="card heroSide" aria-label="Quick info">
+          <div class="kpi">
+            <div class="kpiIcon" aria-hidden="true">⚡</div>
+            <div>
+              <strong>Looking for</strong>
+              <span>Co-op or internship (hardware, firmware, embedded)</span>
+            </div>
+          </div>
+          <div class="kpi">
+            <div class="kpiIcon" aria-hidden="true">🎓</div>
+            <div>
+              <strong>Education</strong>
+              <span>BS Computer Engineering, UTK</span>
+            </div>
+          </div>
+          <div class="kpi">
+            <div class="kpiIcon" aria-hidden="true">📍</div>
+            <div>
+              <strong>Location</strong>
+              <span>Knoxville, TN</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="projects">
+      <div class="sectionHeader">
+        <div>
+          <h2>Featured projects</h2>
+          <p>Search and filter, then click through to GitHub once you add your repo links.</p>
+        </div>
+        <div class="controls">
+          <div class="search" role="search">
+            <span aria-hidden="true">🔎</span>
+            <input id="q" type="search" placeholder="Search: FPGA, ESP32, PyTorch, UART…" autocomplete="off" />
+          </div>
+          <div class="filters" aria-label="Project filters">
+            <button class="tag" data-tag="all" aria-pressed="true">All</button>
+            <button class="tag" data-tag="embedded" aria-pressed="false">Embedded</button>
+            <button class="tag" data-tag="fpga" aria-pressed="false">FPGA</button>
+            <button class="tag" data-tag="ml" aria-pressed="false">ML</button>
+            <button class="tag" data-tag="systems" aria-pressed="false">Systems</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="projectGrid" class="grid" aria-live="polite"></div>
+    </section>
+
+    <section class="section" id="experience">
+      <div class="sectionHeader">
+        <div>
+          <h2>Experience</h2>
+          <p>Roles that sharpen communication, teamwork, and customer focus.</p>
+        </div>
+      </div>
+
+      <div class="card timeline">
+        <div class="tlItem">
+          <strong>Blackjack Dealer — Fantasy Casino Events</strong>
+          <span>Knoxville, TN • 2024–2025</span>
+          <em>Delivered an enjoyable client experience and helped new players learn rules and odds.</em>
+        </div>
+        <div class="tlItem">
+          <strong>Busser — Scrambled Jakes Breakfast Co.</strong>
+          <span>Knoxville, TN • 2021–2023</span>
+          <em>Supported wait staff, trained new hires, and kept service efficient in short-staffed shifts.</em>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="skills">
+      <div class="sectionHeader">
+        <div>
+          <h2>Skills</h2>
+          <p>Languages and tools (pulled from your resume) plus room to grow.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card project" style="grid-column: span 4;">
+          <h3>Languages</h3>
+          <p>C, C++, Python, Verilog, Arm Assembly</p>
+        </div>
+        <div class="card project" style="grid-column: span 4;">
+          <h3>Tools</h3>
+          <p>Git/GitHub, Arduino IDE, Keil, UART debugging, NumPy, Pandas, PyTorch</p>
+        </div>
+        <div class="card project" style="grid-column: span 4;">
+          <h3>Interests</h3>
+          <p>Embedded systems, machine learning, and building things that ship.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="sectionHeader">
+        <div>
+          <h2>Contact</h2>
+          <p>Swap these links if you want different usernames or platforms.</p>
+        </div>
+      </div>
+
+      <div class="grid">
+        <div class="card project" style="grid-column: span 12;">
+          <div class="actions">
+            <a class="btn primary" href="mailto:keatonwyrick4@gmail.com">Email</a>
+            <a class="btn" href="https://www.linkedin.com/in/keatonwyrick" target="_blank" rel="noreferrer">LinkedIn</a>
+            <a class="btn" href="https://github.com/keatonium" target="_blank" rel="noreferrer">GitHub</a>
+            <a class="btn" href="#top">Back to top</a>
+          </div>
+          <p style="margin-top:12px;">
+            Tip: add a PDF resume link (for example <span style="color:var(--text)">/resume.pdf</span>) once you upload it to this repo.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footRow">
+        <span>© <span id="year"></span> Keaton Wyrick</span>
+        <span>Built for GitHub Pages • Single-file HTML</span>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    // --- Project data (edit titles/descriptions/links as you add repos) ---
+    const projects = [
+      {
+        title: "Tetris on FPGA",
+        tags: ["embedded","fpga","systems"],
+        stack: ["Verilog","Basys 3","VGA"],
+        desc: "Tetris implemented on a Basys 3 FPGA with custom game logic, VGA synchronization, and parallel state updates for consistent visuals.",
+        links: {
+          repo: "https://github.com/keatonium" // TODO: replace with your repo URL
+        }
+      },
+      {
+        title: "Simon Game (TM4C123G)",
+        tags: ["embedded","systems"],
+        stack: ["C","TM4C123G","Keil","UART"],
+        desc: "Low-level Simon memory game on a TM4C123G microcontroller with GPIO timing logic, UART debug output, and a custom resistor-based input circuit.",
+        links: {
+          repo: "https://github.com/keatonium" // TODO
+        }
+      },
+      {
+        title: "Linear Regression Model (PyTorch)",
+        tags: ["ml","systems"],
+        stack: ["Python","PyTorch","NumPy","Pandas"],
+        desc: "Linear regression model that predicts linear functions using PyTorch, data cleaning in NumPy/Pandas, and optimization via stochastic gradient descent.",
+        links: {
+          repo: "https://github.com/keatonium" // TODO
+        }
+      },
+      {
+        title: "ESP32 Wi‑Fi Security Experiment",
+        tags: ["embedded","systems"],
+        stack: ["ESP32","Arduino IDE","Wi‑Fi"],
+        desc: "Hands-on exploration of Wi‑Fi management frame behavior and device hardening concepts (for example frame protection) using the ESP32 Wi‑Fi APIs.",
+        links: {
+          repo: "https://github.com/keatonium" // TODO
+        }
+      }
+    ];
+
+    const grid = document.getElementById('projectGrid');
+    const q = document.getElementById('q');
+    const year = document.getElementById('year');
+    year.textContent = new Date().getFullYear();
+
+    let activeTag = 'all';
+
+    function el(tag, attrs={}, children=[]) {
+      const node = document.createElement(tag);
+      for (const [k,v] of Object.entries(attrs)) {
+        if (k === 'class') node.className = v;
+        else if (k.startsWith('on') && typeof v === 'function') node.addEventListener(k.slice(2).toLowerCase(), v);
+        else node.setAttribute(k, v);
+      }
+      for (const child of children) {
+        if (typeof child === 'string') node.appendChild(document.createTextNode(child));
+        else node.appendChild(child);
+      }
+      return node;
+    }
+
+    function matches(project, query, tag) {
+      const q = query.trim().toLowerCase();
+      const blob = [project.title, project.desc, ...(project.stack||[]), ...(project.tags||[])].join(' ').toLowerCase();
+      const tagOk = (tag === 'all') || (project.tags || []).includes(tag);
+      const qOk = !q || blob.includes(q);
+      return tagOk && qOk;
+    }
+
+    function projectCard(p){
+      const top = el('div', {class:'projectTop'}, [
+        el('div', {}, [
+          el('h3', {}, [p.title]),
+          el('div', {class:'meta'}, (p.stack||[]).map(s => el('span', {class:'badge'}, [s])))
+        ]),
+        el('span', {class:'badge', title: 'Tags'}, [p.tags.map(t=>t.toUpperCase()).join(' · ')])
+      ]);
+
+      const actions = el('div', {class:'actions'}, [
+        el('a', {class:'btn primary', href: p.links.repo, target:'_blank', rel:'noreferrer'}, ['GitHub Repo']),
+        // Add optional links per project:
+        // el('a', {class:'btn', href: p.links.demo, target:'_blank', rel:'noreferrer'}, ['Demo']),
+      ]);
+
+      return el('article', {class:'card project', 'data-tags': (p.tags||[]).join(',')}, [
+        top,
+        el('p', {}, [p.desc]),
+        actions
+      ]);
+    }
+
+    function render(){
+      const query = q.value;
+      grid.innerHTML = '';
+      const filtered = projects.filter(p => matches(p, query, activeTag));
+
+      if (!filtered.length){
+        grid.appendChild(
+          el('div', {class:'card project', style:'grid-column: span 12;'}, [
+            el('h3', {}, ['No matches']),
+            el('p', {}, ['Try a different search term or switch filters.'])
+          ])
+        );
+        return;
+      }
+
+      for (const p of filtered) grid.appendChild(projectCard(p));
+    }
+
+    // filter buttons
+    const buttons = Array.from(document.querySelectorAll('button.tag'));
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const tag = btn.dataset.tag;
+        activeTag = tag;
+        buttons.forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+        render();
+      });
+    });
+
+    q.addEventListener('input', render);
+
+    // initial paint
+    render();
+  </script>
+</body>
+</html>
