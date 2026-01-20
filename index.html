@@ -295,9 +295,27 @@
             return false;
         }
 
+        function drawGrid() {
+            context.lineWidth = 0.05;
+            context.strokeStyle = '#111';
+            for (let x = 0; x <= 12; x++) {
+                context.beginPath();
+                context.moveTo(x, 0);
+                context.lineTo(x, 20);
+                context.stroke();
+            }
+            for (let y = 0; y <= 20; y++) {
+                context.beginPath();
+                context.moveTo(0, y);
+                context.lineTo(12, y);
+                context.stroke();
+            }
+        }
+
         function draw() {
             context.fillStyle = '#000';
             context.fillRect(0, 0, canvas.width, canvas.height);
+            drawGrid();
             drawMatrix(arena, {x: 0, y: 0});
             drawMatrix(player.matrix, player.pos);
         }
