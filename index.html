@@ -281,9 +281,32 @@
         let score = 0, isPaused = false, isGameOver = false;
         let lastTime = 0, dropCounter = 0, dropInterval = 1000;
         const arena = Array.from({length: 20}, () => new Array(12).fill(0));
-        const player = { pos: {x: 5, y: 0}, matrix: [[0,1,0],[1,1,1],[0,0,0]] };
+        
+        // --- UPDATED PIECE LOGIC ---
+        const player = { pos: {x: 0, y: 0}, matrix: null };
 
-        // ROTATION FUNCTIONS
+        function createPiece(type) {
+            if (type === 'I') return [[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]];
+            if (type === 'L') return [[0,2,0],[0,2,0],[0,2,2]];
+            if (type === 'J') return [[0,3,0],[0,3,0],[3,3,0]];
+            if (type === 'O') return [[4,4],[4,4]];
+            if (type === 'Z') return [[5,5,0],[0,5,5],[0,0,0]];
+            if (type === 'S') return [[0,6,6],[6,6,0],[0,0,0]];
+            if (type === 'T') return [[0,7,0],[7,7,7],[0,0,0]];
+        }
+
+        function playerReset() {
+            const pieces = 'TJLOSZI';
+            player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
+            player.pos.y = 0;
+            player.pos.x = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
+            if (collide(arena, player)) {
+                isGameOver = true;
+                document.getElementById('final-score').innerText = score;
+                document.getElementById('game-over-overlay').style.display = 'flex';
+            }
+        }
+
         function rotate(matrix, dir) {
             for (let y = 0; y < matrix.length; ++y) {
                 for (let x = 0; x < y; ++x) {
@@ -330,6 +353,8 @@
             }
         }
 
+        const colors = [null, '#FF8200', '#FF9F33', '#FFB366', '#FFC799', '#FFE0CC', '#FFF2E6', '#FFFFFF'];
+
         function draw() {
             context.fillStyle = '#000';
             context.fillRect(0, 0, canvas.width, canvas.height);
@@ -340,15 +365,15 @@
             ghost.pos.y--;
             drawMatrix(ghost.matrix, ghost.pos, 'rgba(255, 130, 0, 0.2)');
 
-            drawMatrix(arena, {x: 0, y: 0}, '#FF8200');
-            drawMatrix(player.matrix, player.pos, '#FF8200');
+            drawMatrix(arena, {x: 0, y: 0});
+            drawMatrix(player.matrix, player.pos);
         }
 
-        function drawMatrix(matrix, offset, color) {
+        function drawMatrix(matrix, offset, overrideColor) {
             matrix.forEach((row, y) => {
                 row.forEach((value, x) => {
                     if (value !== 0) {
-                        context.fillStyle = color;
+                        context.fillStyle = overrideColor || colors[value];
                         context.fillRect(x + offset.x + 0.05, y + offset.y + 0.05, 0.9, 0.9);
                     }
                 });
@@ -362,12 +387,7 @@
                 player.matrix.forEach((row, y) => {
                     row.forEach((value, x) => { if (value !== 0) arena[y + player.pos.y][x + player.pos.x] = value; });
                 });
-                player.pos.y = 0; player.pos.x = 5;
-                if (collide(arena, player)) {
-                    isGameOver = true;
-                    document.getElementById('final-score').innerText = score;
-                    document.getElementById('game-over-overlay').style.display = 'flex';
-                }
+                playerReset();
             }
             dropCounter = 0;
         }
@@ -381,6 +401,7 @@
             arena.forEach(row => row.fill(0));
             score = 0; document.getElementById('score').innerText = 0;
             isGameOver = false; document.getElementById('game-over-overlay').style.display = 'none';
+            playerReset();
         }
 
         function update(time = 0) {
@@ -402,6 +423,7 @@
             if (e.keyCode === 38) playerRotate(1);
         });
 
+        playerReset();
         update();
     </script>
 </body>
