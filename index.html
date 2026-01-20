@@ -33,7 +33,6 @@
         .nav-container { width: 100%; max-width: var(--max-width); padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
         .brand { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; cursor: pointer; text-decoration: none; color: var(--text-primary); z-index: 1100; }
         
-        /* HAMBURGER LOGIC */
         .menu-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1100; border: none; background: none; padding: 10px; }
         .menu-toggle span { display: block; width: 25px; height: 2px; background-color: var(--text-primary); transition: 0.3s; }
 
@@ -52,7 +51,10 @@
         #tetris-container { background: #000; border: 2px solid #333; padding: 10px; box-shadow: 0 0 30px rgba(255, 130, 0, 0.1); position: relative; width: fit-content; touch-action: none; }
         canvas { display: block; background-color: #000; image-rendering: pixelated; }
         .score-board { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ut-orange); margin-bottom: 10px; }
-        .pause-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10; font-family: var(--font-mono); color: var(--ut-orange); }
+        
+        /* OVERLAYS */
+        .pause-overlay, .game-over-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10; font-family: var(--font-mono); color: var(--ut-orange); text-align: center; }
+        
         .game-btn { background: none; border: 1px solid var(--ut-orange); color: var(--ut-orange); padding: 8px 12px; cursor: pointer; font-family: var(--font-mono); font-size: 0.7rem; margin-top: 10px; transition: 0.2s; }
         .game-btn:hover { background: var(--ut-orange); color: #000; }
 
@@ -81,8 +83,6 @@
         @media (max-width: 768px) {
             .hero-layout { grid-template-columns: 1fr; text-align: center; }
             #tetris-container { margin: 0 auto; }
-
-            /* MOBILE MENU STYLES */
             .menu-toggle { display: flex; }
             .nav-links { 
                 position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; 
@@ -92,8 +92,6 @@
             }
             .nav-links.open { right: 0; }
             .nav-btn { font-size: 1.5rem; }
-            
-            /* Burger animation */
             .open-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
             .open-burger span:nth-child(2) { opacity: 0; }
             .open-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
@@ -107,13 +105,9 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="brand" onclick="router.navigate('home')">Keaton Wyrick</div>
-            
             <button class="menu-toggle" id="menu-toggle" onclick="toggleMenu()">
-                <span></span>
-                <span></span>
-                <span></span>
+                <span></span><span></span><span></span>
             </button>
-
             <div class="nav-links" id="nav-links">
                 <button class="nav-btn" onclick="router.navigate('projects')">Projects</button>
                 <button class="nav-btn" onclick="router.navigate('education')">Education</button>
@@ -139,6 +133,12 @@
                     <div class="pause-overlay" id="pause-overlay">
                         <h2 style="letter-spacing: 4px;">PAUSED</h2>
                         <button class="game-btn" onclick="togglePause()">RESUME</button>
+                    </div>
+                    <div class="game-over-overlay" id="game-over-overlay">
+                        <h2 style="letter-spacing: 4px; margin-bottom: 10px;">GAME OVER</h2>
+                        <p style="font-size: 0.8rem; margin-bottom: 5px;">SCORE: <span id="final-score">0</span></p>
+                        <p style="font-size: 0.8rem; margin-bottom: 15px;">BEST: <span id="final-high-score">0</span></p>
+                        <button class="game-btn" onclick="resetGame()">RETRY</button>
                     </div>
                     <canvas id="tetris" width="240" height="400"></canvas>
                     <button class="game-btn" style="width:100%" onclick="togglePause()">PAUSE GAME</button>
@@ -183,18 +183,15 @@
         <section id="contact" class="page">
             <h2 style="font-family: var(--font-display); font-size: 3.5rem; margin-bottom: 1rem;">Contact</h2>
             <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 600px;">Available for collaboration on hardware systems, FPGA research, and low-level software projects.</p>
-            
             <div class="contact-grid">
                 <a href="mailto:kwyrick@vols.utk.edu" class="contact-card">
                     <span class="contact-label">EMAIL</span>
                     <span class="contact-value">kwyrick@vols.utk.edu</span>
                 </a>
-                
                 <a href="https://github.com/keatonium" target="_blank" class="contact-card">
                     <span class="contact-label">GITHUB</span>
                     <span class="contact-value">@keatonium</span>
                 </a>
-
                 <div class="contact-card">
                     <span class="contact-label">LOCATION</span>
                     <span class="contact-value">Knoxville, TN</span>
@@ -204,7 +201,6 @@
     </main>
 
     <script>
-        // Updated router to also close mobile menu
         const router = { 
             navigate: (id) => { 
                 document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === id)); 
@@ -213,21 +209,11 @@
             } 
         };
 
-        // NEW: MOBILE MENU LOGIC
         const menuToggle = document.getElementById('menu-toggle');
         const navLinks = document.getElementById('nav-links');
+        function toggleMenu() { navLinks.classList.toggle('open'); menuToggle.classList.toggle('open-burger'); }
+        function closeMenu() { navLinks.classList.remove('open'); menuToggle.classList.remove('open-burger'); }
 
-        function toggleMenu() {
-            navLinks.classList.toggle('open');
-            menuToggle.classList.toggle('open-burger');
-        }
-
-        function closeMenu() {
-            navLinks.classList.remove('open');
-            menuToggle.classList.remove('open-burger');
-        }
-
-        // TERMINAL LOGIC (same as input)
         const termInput = document.getElementById('term-input');
         const termOutput = document.getElementById('terminal-output');
         const cmds = {
@@ -247,14 +233,14 @@
             }
         });
 
-        // TETRIS ENGINE (same as input)
+        // TETRIS ENGINE
         const canvas = document.getElementById('tetris');
         const context = canvas.getContext('2d');
         const scoreVal = document.getElementById('score');
         const highScoreVal = document.getElementById('high-score');
         context.scale(20, 20);
 
-        let score = 0, isPaused = false;
+        let score = 0, isPaused = false, isGameOver = false;
         let dropInterval = 1000, dropCounter = 0, lastTime = 0;
         let highScore = localStorage.getItem('keaton-tetris-best') || 0;
         highScoreVal.innerText = highScore;
@@ -314,12 +300,10 @@
         function draw() {
             context.fillStyle = '#000';
             context.fillRect(0, 0, canvas.width, canvas.height);
-            
             const ghostPos = { x: player.pos.x, y: player.pos.y };
             while (!collide(arena, { pos: ghostPos, matrix: player.matrix })) { ghostPos.y++; }
             ghostPos.y--;
             drawMatrix(player.matrix, ghostPos, '#FF8200', 0.3, true);
-
             drawMatrix(arena, {x: 0, y: 0}, '#FF8200');
             drawMatrix(player.matrix, player.pos, '#FF8200');
         }
@@ -342,10 +326,27 @@
             player.matrix = createPiece(pieces[Math.floor(Math.random() * pieces.length)]);
             player.pos.y = 0; player.pos.x = 4;
             if (collide(arena, player)) {
-                arena.forEach(row => row.fill(0));
-                score = 0; dropInterval = 1000;
-                scoreVal.innerText = score;
+                gameOver();
             }
+        }
+
+        // NEW: GAME OVER HANDLER
+        function gameOver() {
+            isGameOver = true;
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('final-high-score').innerText = highScore;
+            document.getElementById('game-over-overlay').style.display = 'flex';
+        }
+
+        // NEW: RESET HANDLER
+        function resetGame() {
+            arena.forEach(row => row.fill(0));
+            score = 0;
+            dropInterval = 1000;
+            scoreVal.innerText = score;
+            isGameOver = false;
+            document.getElementById('game-over-overlay').style.display = 'none';
+            playerReset();
         }
 
         function arenaSweep() {
@@ -363,12 +364,13 @@
         }
 
         function togglePause() {
+            if (isGameOver) return;
             isPaused = !isPaused;
             document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
         }
 
         function update(time = 0) {
-            if (!isPaused) {
+            if (!isPaused && !isGameOver) {
                 const deltaTime = time - lastTime;
                 lastTime = time;
                 dropCounter += deltaTime;
@@ -379,30 +381,27 @@
         }
 
         document.addEventListener('keydown', e => {
-            if (isPaused) return;
+            if (isPaused || isGameOver) return;
             if (e.keyCode === 37) { player.pos.x--; if(collide(arena, player)) player.pos.x++; }
             if (e.keyCode === 39) { player.pos.x++; if(collide(arena, player)) player.pos.x--; }
             if (e.keyCode === 40) playerDrop();
             if (e.keyCode === 38) rotate(player.matrix);
         });
 
-        let touchStartX = 0; let touchStartY = 0;
+        let touchStartX = 0, touchStartY = 0;
         const container = document.getElementById('tetris-container');
-        
         container.addEventListener('touchstart', e => {
             touchStartX = e.touches[0].clientX;
             touchStartY = e.touches[0].clientY;
         }, {passive: true});
 
         container.addEventListener('touchend', e => {
-            if (isPaused) return;
+            if (isPaused || isGameOver) return;
             const touchEndX = e.changedTouches[0].clientX;
             const touchEndY = e.changedTouches[0].clientY;
             const dx = touchEndX - touchStartX;
             const dy = touchEndY - touchStartY;
-            const absDx = Math.abs(dx);
-            const absDy = Math.abs(dy);
-
+            const absDx = Math.abs(dx), absDy = Math.abs(dy);
             if (absDx < 10 && absDy < 10) { rotate(player.matrix); } 
             else if (absDx > absDy) {
                 if (dx > 30) { player.pos.x++; if(collide(arena, player)) player.pos.x--; } 
