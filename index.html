@@ -283,7 +283,36 @@
         let score = 0, isPaused = false, isGameOver = false;
         let lastTime = 0, dropCounter = 0, dropInterval = 1000;
         const arena = Array.from({length: 20}, () => new Array(12).fill(0));
-        const player = { pos: {x: 5, y: 0}, matrix: [[0,1,0],[1,1,1],[0,0,0]] };
+
+        // 1. Added createPiece function to define all Tetris shapes
+        function createPiece(type) {
+            if (type === 'T') return [[0, 1, 0], [1, 1, 1], [0, 0, 0]];
+            if (type === 'O') return [[2, 2], [2, 2]];
+            if (type === 'L') return [[0, 3, 0], [0, 3, 0], [0, 3, 3]];
+            if (type === 'J') return [[0, 4, 0], [0, 4, 0], [4, 4, 0]];
+            if (type === 'I') return [[0, 5, 0, 0], [0, 5, 0, 0], [0, 5, 0, 0], [0, 5, 0, 0]];
+            if (type === 'S') return [[0, 6, 6], [6, 6, 0], [0, 0, 0]];
+            if (type === 'Z') return [[7, 7, 0], [0, 7, 7], [0, 0, 0]];
+        }
+
+        const player = { 
+            pos: {x: 0, y: 0}, 
+            matrix: null 
+        };
+
+        // 2. Added playerReset to spawn a random new piece
+        function playerReset() {
+            const pieces = 'ILJOTSZ';
+            player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
+            player.pos.y = 0;
+            player.pos.x = (arena[0].length / 2 | 0) - (player.matrix[0].length / 2 | 0);
+            
+            if (collide(arena, player)) {
+                isGameOver = true;
+                document.getElementById('final-score').innerText = score;
+                document.getElementById('game-over-overlay').style.display = 'flex';
+            }
+        }
 
         function collide(arena, p) {
             const [m, o] = [p.matrix, p.pos];
@@ -297,19 +326,9 @@
 
         function drawGrid() {
             context.lineWidth = 0.05;
-            context.strokeStyle = '#111';
-            for (let x = 0; x <= 12; x++) {
-                context.beginPath();
-                context.moveTo(x, 0);
-                context.lineTo(x, 20);
-                context.stroke();
-            }
-            for (let y = 0; y <= 20; y++) {
-                context.beginPath();
-                context.moveTo(0, y);
-                context.lineTo(12, y);
-                context.stroke();
-            }
+            context.strokeStyle = '#222';
+            for (let x = 0; x <= 12; x++) { context.beginPath(); context.moveTo(x, 0); context.lineTo(x, 20); context.stroke(); }
+            for (let y = 0; y <= 20; y++) { context.beginPath(); context.moveTo(0, y); context.lineTo(12, y); context.stroke(); }
         }
 
         function draw() {
@@ -317,11 +336,11 @@
             context.fillRect(0, 0, canvas.width, canvas.height);
             drawGrid();
             
-            // Draw Ghost/Shadow Piece
+            // Ghost Piece
             const ghost = { pos: { ...player.pos }, matrix: player.matrix };
             while (!collide(arena, ghost)) { ghost.pos.y++; }
             ghost.pos.y--;
-            drawMatrix(ghost.matrix, ghost.pos, 'rgba(255, 130, 0, 0.2)');
+            drawMatrix(ghost.matrix, ghost.pos, 'rgba(255, 130, 0, 0.15)');
 
             drawMatrix(arena, {x: 0, y: 0}, '#FF8200');
             drawMatrix(player.matrix, player.pos, '#FF8200');
@@ -332,13 +351,13 @@
                 row.forEach((value, x) => {
                     if (value !== 0) {
                         context.fillStyle = color;
-                        // Use slightly smaller rect to let grid borders show through
                         context.fillRect(x + offset.x + 0.05, y + offset.y + 0.05, 0.9, 0.9);
                     }
                 });
             });
         }
 
+        // 3. Updated drop to call playerReset when a piece lands
         function playerDrop() {
             player.pos.y++;
             if (collide(arena, player)) {
@@ -346,14 +365,26 @@
                 player.matrix.forEach((row, y) => {
                     row.forEach((value, x) => { if (value !== 0) arena[y + player.pos.y][x + player.pos.x] = value; });
                 });
-                player.pos.y = 0; player.pos.x = 5;
-                if (collide(arena, player)) {
-                    isGameOver = true;
-                    document.getElementById('final-score').innerText = score;
-                    document.getElementById('game-over-overlay').style.display = 'flex';
-                }
+                playerReset(); // Spawn new piece
+                arenaSweep();  // Check for line clears
             }
             dropCounter = 0;
+        }
+
+        // 4. Added arenaSweep to actually clear lines and update score
+        function arenaSweep() {
+            let rowCount = 1;
+            outer: for (let y = arena.length - 1; y > 0; --y) {
+                for (let x = 0; x < arena[y].length; ++x) {
+                    if (arena[y][x] === 0) continue outer;
+                }
+                const row = arena.splice(y, 1)[0].fill(0);
+                arena.unshift(row);
+                ++y;
+                score += rowCount * 10;
+                rowCount *= 2;
+            }
+            document.getElementById('score').innerText = score;
         }
 
         function togglePause() { 
@@ -363,8 +394,11 @@
 
         function resetGame() {
             arena.forEach(row => row.fill(0));
-            score = 0; document.getElementById('score').innerText = 0;
-            isGameOver = false; document.getElementById('game-over-overlay').style.display = 'none';
+            score = 0; 
+            document.getElementById('score').innerText = 0;
+            isGameOver = false; 
+            document.getElementById('game-over-overlay').style.display = 'none';
+            playerReset();
         }
 
         function update(time = 0) {
@@ -379,11 +413,14 @@
         }
 
         document.addEventListener('keydown', e => {
+            if (isPaused || isGameOver) return;
             if (e.keyCode === 37) { player.pos.x--; if(collide(arena, player)) player.pos.x++; }
             if (e.keyCode === 39) { player.pos.x++; if(collide(arena, player)) player.pos.x--; }
             if (e.keyCode === 40) playerDrop();
         });
 
+        // Initialize first piece
+        playerReset();
         update();
     </script>
 </body>
