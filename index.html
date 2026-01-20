@@ -43,7 +43,6 @@
 
         @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* TETRIS ENGINE UI */
         .hero-layout { display: grid; grid-template-columns: 1fr 300px; gap: 4rem; align-items: center; min-height: 70vh; }
         #tetris-container { background: #000; border: 2px solid #333; padding: 10px; box-shadow: 0 0 30px rgba(255, 130, 0, 0.1); position: relative; width: fit-content; }
         canvas { display: block; background-color: #000; image-rendering: pixelated; }
@@ -54,7 +53,6 @@
         .game-btn { background: none; border: 1px solid var(--ut-orange); color: var(--ut-orange); padding: 8px 12px; cursor: pointer; font-family: var(--font-mono); font-size: 0.7rem; margin-top: 10px; transition: 0.2s; width: 100%; }
         .game-btn:hover { background: var(--ut-orange); color: #000; }
 
-        /* UI COMPONENTS */
         .info-card { background: var(--bg-secondary); border: 1px solid #333; padding: 2.5rem; border-radius: 4px; height: 100%; }
         .terminal-window { background: #0d0d0d; border: 1px solid #333; padding: 20px; font-family: var(--font-mono); height: 350px; overflow-y: auto; margin-top: 2rem; border-radius: 4px; }
         .terminal-input { background: transparent; border: none; color: var(--ut-orange); font-family: var(--font-mono); outline: none; width: 70%; font-size: 1rem; }
@@ -127,9 +125,99 @@
                         <li>Implemented screen rotation and VGA synchronization in Verilog.</li>
                     </ul>
                 </div>
+                <div class="info-card">
+                    <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">EMBEDDED C / FIRMWARE</span>
+                    <h3 style="margin: 0.5rem 0 1rem;">Low-Level Simon Game</h3>
+                    <ul style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; padding-left: 1rem;">
+                        <li>Developed on TM4C123G microcontroller using C and Keil IDE.</li>
+                        <li>Built custom resistor-based input circuits and handled UART debugging.</li>
+                    </ul>
                 </div>
+                <div class="info-card">
+                    <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">NETWORKING / ARDUINO</span>
+                    <h3 style="margin: 0.5rem 0 1rem;">ESP-32 Web De-Authenticator</h3>
+                    <ul style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; padding-left: 1rem;">
+                        <li>Used ESP-32 Wi-Fi API to create a device de-authentication platform.</li>
+                        <li>Explored frame protection and beacon spamming for network security testing.</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">PYTHON / PYTORCH</span>
+                    <h3 style="margin: 0.5rem 0 1rem;">Machine Learning Model</h3>
+                    <ul style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; padding-left: 1rem;">
+                        <li>Deployed linear regression models using PyTorch, NumPy, and Pandas.</li>
+                        <li>Optimized via stochastic gradient descent and backpropagation.</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">TYPESCRIPT / MOBILE</span>
+                    <h3 style="margin: 0.5rem 0 1rem;">Food Health App</h3>
+                    <ul style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; padding-left: 1rem;">
+                        <li>Led frontend development for a barcode-scanning nutrition app in Expo Go.</li>
+                        <li>Applied user-centered design to implement allergen flagging systems.</li>
+                    </ul>
+                </div>
+            </div>
         </section>
-        </main>
+
+        <section id="education" class="page">
+            <h2 style="font-family: var(--font-display); font-size: 3.5rem; margin-bottom: 2rem;">Education</h2>
+            <div class="info-card">
+                <h3 style="font-size: 2rem;">University of Tennessee, Knoxville</h3>
+                <p style="color: var(--ut-orange); font-family: var(--font-mono); margin: 0.5rem 0 1.5rem;">B.S. Computer Engineering | GPA: 3.42  | Graduation Date: May 2027</p>
+                <h4 style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.8rem; text-transform: uppercase; border-top: 1px solid #333; padding-top: 1.5rem; margin-bottom: 1.5rem;">Relevant Coursework</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-secondary);">
+                    <div>
+                        <p style="color: var(--text-primary); margin-bottom: 5px;">Hardware</p>
+                        <ul style="list-style: none; opacity: 0.8;">
+                            <li>Computer Architecture</li>
+                            <li>Digital Systems</li>
+                            <li>FPGA (Verilog/VHDL)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p style="color: var(--text-primary); margin-bottom: 5px;">Circuits</p>
+                        <ul style="list-style: none; opacity: 0.8;">
+                            <li>AC/DC Circuits</li>
+                            <li>Analog Circuits</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p style="color: var(--text-primary); margin-bottom: 5px;">Software</p>
+                        <ul style="list-style: none; opacity: 0.8;">
+                            <li>Data Structures & Algos</li>
+                            <li>C / C++ Programming</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="page">
+            <h2 style="font-family: var(--font-display); font-size: 3.5rem;">About</h2>
+            <div class="terminal-window" onclick="document.getElementById('term-input').focus()">
+                <div id="terminal-output" style="white-space: pre-wrap; color: #bbb;">[SYSTEM_DIAGNOSTIC] Type 'help' to start.</div>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <span style="color: var(--ut-orange)">keaton@wyrick:~$</span>
+                    <input type="text" id="term-input" class="terminal-input" autocomplete="off">
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="page">
+            <h2 style="font-family: var(--font-display); font-size: 3.5rem;">Contact</h2>
+            <div class="contact-grid">
+                <a href="mailto:keatonwyrick4@gmail.com" class="contact-card">
+                    <span class="contact-label">EMAIL</span>
+                    <span class="contact-value">keatonwyrick4@gmail.com</span>
+                </a>
+                <a href="https://linkedin.com/in/keatonwyrick" target="_blank" class="contact-card">
+                    <span class="contact-label">LINKEDIN</span>
+                    <span class="contact-value">keatonwyrick</span>
+                </a>
+            </div>
+        </section>
+    </main>
 
     <script>
         const router = { 
@@ -152,9 +240,8 @@
         const termInput = document.getElementById('term-input');
         const termOutput = document.getElementById('terminal-output');
         const cmds = {
-            help: "Commands: ls, cd [dir], whoami, hobbies, clear",
+            help: "Commands: ls, cd [dir], whoami, clear",
             whoami: "Keaton Wyrick: Computer Engineering @ UTK.",
-            hobbies: "Creating robots, working on fun projects, snowboarding, wakeboarding, and reading."
             ls: "projects/  education/  about/  contact/  resume.pdf"
         };
 
@@ -196,7 +283,7 @@
         const arena = Array.from({length: 20}, () => new Array(12).fill(0));
         const player = { pos: {x: 5, y: 0}, matrix: [[0,1,0],[1,1,1],[0,0,0]] };
 
-        // --- NEW ROTATION LOGIC ---
+        // ROTATION FUNCTIONS
         function rotate(matrix, dir) {
             for (let y = 0; y < matrix.length; ++y) {
                 for (let x = 0; x < y; ++x) {
@@ -221,7 +308,6 @@
                 }
             }
         }
-        // --------------------------
 
         function collide(arena, p) {
             const [m, o] = [p.matrix, p.pos];
@@ -237,16 +323,10 @@
             context.lineWidth = 0.05;
             context.strokeStyle = '#111';
             for (let x = 0; x <= 12; x++) {
-                context.beginPath();
-                context.moveTo(x, 0);
-                context.lineTo(x, 20);
-                context.stroke();
+                context.beginPath(); context.moveTo(x, 0); context.lineTo(x, 20); context.stroke();
             }
             for (let y = 0; y <= 20; y++) {
-                context.beginPath();
-                context.moveTo(0, y);
-                context.lineTo(12, y);
-                context.stroke();
+                context.beginPath(); context.moveTo(0, y); context.lineTo(12, y); context.stroke();
             }
         }
 
@@ -315,10 +395,11 @@
         }
 
         document.addEventListener('keydown', e => {
+            if (isPaused || isGameOver) return;
             if (e.keyCode === 37) { player.pos.x--; if(collide(arena, player)) player.pos.x++; }
             if (e.keyCode === 39) { player.pos.x++; if(collide(arena, player)) player.pos.x--; }
             if (e.keyCode === 40) playerDrop();
-            if (e.keyCode === 38) playerRotate(1); // Added Up Arrow rotation
+            if (e.keyCode === 38) playerRotate(1);
         });
 
         update();
