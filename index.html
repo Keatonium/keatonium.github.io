@@ -33,9 +33,6 @@
         .nav-container { width: 100%; max-width: var(--max-width); padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
         .brand { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; cursor: pointer; text-decoration: none; color: var(--text-primary); z-index: 1100; }
         
-        .menu-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; z-index: 1100; border: none; background: none; padding: 10px; }
-        .menu-toggle span { display: block; width: 25px; height: 2px; background-color: var(--text-primary); transition: 0.3s; }
-
         .nav-links { display: flex; gap: 2rem; }
         .nav-btn { background: none; border: none; font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase; color: var(--text-secondary); cursor: pointer; letter-spacing: 0.05em; transition: 0.3s; }
         .nav-btn:hover, .nav-btn.active { color: var(--ut-orange); }
@@ -48,52 +45,30 @@
 
         /* TETRIS ENGINE UI */
         .hero-layout { display: grid; grid-template-columns: 1fr 300px; gap: 4rem; align-items: center; min-height: 70vh; }
-        #tetris-container { background: #000; border: 2px solid #333; padding: 10px; box-shadow: 0 0 30px rgba(255, 130, 0, 0.1); position: relative; width: fit-content; touch-action: none; }
+        #tetris-container { background: #000; border: 2px solid #333; padding: 10px; box-shadow: 0 0 30px rgba(255, 130, 0, 0.1); position: relative; width: fit-content; }
         canvas { display: block; background-color: #000; image-rendering: pixelated; }
         .score-board { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ut-orange); margin-bottom: 10px; }
         
         .pause-overlay, .game-over-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10; font-family: var(--font-mono); color: var(--ut-orange); text-align: center; }
         
-        .game-btn { background: none; border: 1px solid var(--ut-orange); color: var(--ut-orange); padding: 8px 12px; cursor: pointer; font-family: var(--font-mono); font-size: 0.7rem; margin-top: 10px; transition: 0.2s; }
+        .game-btn { background: none; border: 1px solid var(--ut-orange); color: var(--ut-orange); padding: 8px 12px; cursor: pointer; font-family: var(--font-mono); font-size: 0.7rem; margin-top: 10px; transition: 0.2s; width: 100%; }
         .game-btn:hover { background: var(--ut-orange); color: #000; }
 
         /* UI COMPONENTS */
-        .info-card { background: var(--bg-secondary); border: 1px solid #333; padding: 2.5rem; border-radius: 4px; }
-        .terminal-window { background: #0d0d0d; border: 1px solid #333; padding: 20px; font-family: var(--font-mono); height: 350px; overflow-y: auto; margin-top: 2rem; cursor: text; border-radius: 4px; }
+        .info-card { background: var(--bg-secondary); border: 1px solid #333; padding: 2.5rem; border-radius: 4px; height: 100%; }
+        .terminal-window { background: #0d0d0d; border: 1px solid #333; padding: 20px; font-family: var(--font-mono); height: 350px; overflow-y: auto; margin-top: 2rem; border-radius: 4px; }
         .terminal-input { background: transparent; border: none; color: var(--ut-orange); font-family: var(--font-mono); outline: none; width: 70%; font-size: 1rem; }
         
         .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
-        .contact-card { 
-            background: var(--bg-secondary); 
-            border: 1px solid rgba(255,255,255,0.05); 
-            padding: 2rem; 
-            border-radius: 4px; 
-            transition: transform 0.3s var(--ease), border-color 0.3s ease;
-            text-decoration: none;
-            display: block;
-        }
-        .contact-card:hover { 
-            transform: translateY(-5px); 
-            border-color: var(--ut-orange); 
-        }
+        .contact-card { background: var(--bg-secondary); border: 1px solid rgba(255,255,255,0.05); padding: 2rem; border-radius: 4px; text-decoration: none; display: block; transition: 0.3s; }
+        .contact-card:hover { border-color: var(--ut-orange); transform: translateY(-5px); }
         .contact-label { font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 0.75rem; display: block; }
-        .contact-value { font-size: 1.4rem; color: var(--text-primary); font-weight: 400; }
+        .contact-value { font-size: 1.4rem; color: var(--text-primary); }
 
         @media (max-width: 768px) {
             .hero-layout { grid-template-columns: 1fr; text-align: center; }
             #tetris-container { margin: 0 auto; }
-            .menu-toggle { display: flex; }
-            .nav-links { 
-                position: fixed; top: 0; right: -100%; width: 100%; height: 100vh; 
-                background: var(--bg-primary); flex-direction: column; 
-                align-items: center; justify-content: center; transition: 0.4s var(--ease);
-                z-index: 1050;
-            }
-            .nav-links.open { right: 0; }
-            .nav-btn { font-size: 1.5rem; }
-            .open-burger span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-            .open-burger span:nth-child(2) { opacity: 0; }
-            .open-burger span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+            .nav-links { display: none; }
         }
     </style>
 </head>
@@ -104,10 +79,7 @@
     <nav class="navbar">
         <div class="nav-container">
             <div class="brand" onclick="router.navigate('home')">Keaton Wyrick</div>
-            <button class="menu-toggle" id="menu-toggle" onclick="toggleMenu()">
-                <span></span><span></span><span></span>
-            </button>
-            <div class="nav-links" id="nav-links">
+            <div class="nav-links">
                 <button class="nav-btn" onclick="router.navigate('projects')">Projects</button>
                 <button class="nav-btn" onclick="router.navigate('education')">Education</button>
                 <button class="nav-btn" onclick="router.navigate('about')">About</button>
@@ -121,7 +93,7 @@
             <div class="hero-layout">
                 <div>
                     <h1 style="font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.1;">
-                        I believe in <i>code</i> <br> that runs close <br> to the <span style="color:var(--ut-orange)">bare metal.</span>
+                        I build <span style="color:var(--ut-orange)">hardware</span> <br> and the code <br> that speaks to it.
                     </h1>
                 </div>
                 <div id="tetris-container">
@@ -129,69 +101,100 @@
                         <span>Score: <span id="score">0</span></span>
                         <span>Best: <span id="high-score">0</span></span>
                     </div>
-                    
                     <div class="pause-overlay" id="pause-overlay">
-                        <h2 style="letter-spacing: 4px;">PAUSED</h2>
-                        <button class="game-btn" onclick="togglePause()">RESUME</button>
+                        <h2>PAUSED</h2>
+                        <button class="game-btn" onclick="togglePause()" style="width: auto; padding: 10px 20px;">RESUME</button>
                     </div>
-
                     <div class="game-over-overlay" id="game-over-overlay">
-                        <h2 style="letter-spacing: 4px; margin-bottom: 10px;">GAME OVER</h2>
-                        <p style="font-size: 0.8rem; margin-bottom: 5px;">SCORE: <span id="final-score">0</span></p>
-                        <p style="font-size: 0.8rem; margin-bottom: 15px;">BEST: <span id="final-high-score">0</span></p>
-                        <button class="game-btn" onclick="resetGame()">RETRY</button>
+                        <h2 style="margin-bottom: 10px;">GAME OVER</h2>
+                        <p>Score: <span id="final-score">0</span></p>
+                        <button class="game-btn" onclick="resetGame()" style="width: auto; padding: 10px 20px;">RETRY</button>
                     </div>
-
                     <canvas id="tetris" width="240" height="400"></canvas>
-                    <button class="game-btn" style="width:100%" onclick="togglePause()">PAUSE GAME</button>
+                    <button class="game-btn" onclick="togglePause()">PAUSE GAME</button>
                 </div>
             </div>
         </section>
 
         <section id="projects" class="page">
-            <h2 style="font-family: var(--font-display); font-size: 3.5rem;">Projects</h2>
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; margin-top: 2rem;">
+            <h2 style="font-family: var(--font-display); font-size: 3.5rem; margin-bottom: 2rem;">Projects</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+                
                 <div class="info-card">
-                    <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">API / DISCORD</span>
-                    <h3 style="margin-top: 0.5rem;">Discord Infrastructure</h3>
-                    <p style="color: var(--text-secondary); margin-top: 1rem;">Placeholder for Discord automation and bot development projects.</p>
+                    <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">HARDWARE / VERILOG</span>
+                    <h3 style="margin: 0.5rem 0 1rem;">Tetris on FPGA</h3>
+                    <ul style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; padding-left: 1rem;">
+                        <li>Constructed a Tetris game on Basys 3 FPGA with custom game logic.</li>
+                        <li>Implemented screen rotation and VGA synchronization in Verilog.</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">EMBEDDED C / FIRMWARE</span>
+                    <h3 style="margin: 0.5rem 0 1rem;">Low-Level Simon Game</h3>
+                    <ul style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; padding-left: 1rem;">
+                        <li>Developed on TM4C123G microcontroller using C and Keil IDE.</li>
+                        <li>Built custom resistor-based input circuits and handled UART debugging.</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">NETWORKING / ARDUINO</span>
+                    <h3 style="margin: 0.5rem 0 1rem;">ESP-32 Web De-Authenticator</h3>
+                    <ul style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; padding-left: 1rem;">
+                        <li>Used ESP-32 Wi-Fi API to create a device de-authentication platform.</li>
+                        <li>Explored frame protection and beacon spamming for network security testing.</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">PYTHON / PYTORCH</span>
+                    <h3 style="margin: 0.5rem 0 1rem;">Machine Learning Model</h3>
+                    <ul style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; padding-left: 1rem;">
+                        <li>Deployed linear regression models using PyTorch, NumPy, and Pandas.</li>
+                        <li>Optimized via stochastic gradient descent and backpropagation.</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">TYPESCRIPT / MOBILE</span>
+                    <h3 style="margin: 0.5rem 0 1rem;">Food Health App</h3>
+                    <ul style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; padding-left: 1rem;">
+                        <li>Led frontend development for a barcode-scanning nutrition app in Expo Go.</li>
+                        <li>Applied user-centered design to implement allergen flagging systems.</li>
+                    </ul>
                 </div>
             </div>
         </section>
 
         <section id="education" class="page">
-            <h2 style="font-family: var(--font-display); font-size: 3.5rem; margin-bottom: 3rem;">Education</h2>
+            <h2 style="font-family: var(--font-display); font-size: 3.5rem; margin-bottom: 2rem;">Education</h2>
             <div class="info-card">
-                <h3 style="font-size: 2rem; margin-bottom: 0.5rem;">University of Tennessee, Knoxville</h3>
-                <p style="color: var(--ut-orange); font-family: var(--font-mono); margin-bottom: 1.5rem;">B.S. Computer Engineering | Honors (2023 - 2027)</p>
-                <ul style="color: var(--text-secondary); line-height: 1.8; list-style-position: inside; margin-bottom: 2rem;">
-                    <li>Researcher at the Innovative Computing Laboratory (ICL)</li>
-                    <li>Focus: FPGA Architecture & High-Performance Computing</li>
-                </ul>
-
-                <h4 style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.8rem; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 1.5rem;">Relevant Coursework</h4>
+                <h3 style="font-size: 2rem;">University of Tennessee, Knoxville</h3>
+                <p style="color: var(--ut-orange); font-family: var(--font-mono); margin: 0.5rem 0 1.5rem;">B.S. Computer Engineering | GPA: 3.52 (2027)</p>
                 
+                <h4 style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.8rem; text-transform: uppercase; border-top: 1px solid #333; padding-top: 1.5rem; margin-bottom: 1.5rem;">Relevant Coursework</h4>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-secondary);">
-                    <div style="border-left: 1px solid var(--ut-orange); padding-left: 15px;">
-                        <p style="color: var(--text-primary); margin-bottom: 8px;">Hardware & Architecture</p>
-                        <ul style="list-style: none; line-height: 1.6; opacity: 0.8;">
+                    <div>
+                        <p style="color: var(--text-primary); margin-bottom: 5px;">Hardware</p>
+                        <ul style="list-style: none; opacity: 0.8;">
                             <li>Computer Architecture</li>
                             <li>Digital Systems</li>
-                            <li>FPGA (Verilog & VHDL)</li>
+                            <li>FPGA (Verilog/VHDL)</li>
                         </ul>
                     </div>
-                    <div style="border-left: 1px solid var(--ut-orange); padding-left: 15px;">
-                        <p style="color: var(--text-primary); margin-bottom: 8px;">Circuits & Systems</p>
-                        <ul style="list-style: none; line-height: 1.6; opacity: 0.8;">
+                    <div>
+                        <p style="color: var(--text-primary); margin-bottom: 5px;">Circuits</p>
+                        <ul style="list-style: none; opacity: 0.8;">
                             <li>AC/DC Circuits</li>
                             <li>Analog Circuits</li>
                         </ul>
                     </div>
-                    <div style="border-left: 1px solid var(--ut-orange); padding-left: 15px;">
-                        <p style="color: var(--text-primary); margin-bottom: 8px;">Software Engineering</p>
-                        <ul style="list-style: none; line-height: 1.6; opacity: 0.8;">
+                    <div>
+                        <p style="color: var(--text-primary); margin-bottom: 5px;">Software</p>
+                        <ul style="list-style: none; opacity: 0.8;">
+                            <li>Data Structures & Algos</li>
                             <li>C / C++ Programming</li>
-                            <li>Data Structures & Algorithms</li>
                         </ul>
                     </div>
                 </div>
@@ -204,27 +207,22 @@
                 <div id="terminal-output" style="white-space: pre-wrap; color: #bbb;">[SYSTEM_DIAGNOSTIC] Type 'help' to start.</div>
                 <div style="display: flex; gap: 10px; margin-top: 10px;">
                     <span style="color: var(--ut-orange)">keaton@wyrick:~$</span>
-                    <input type="text" id="term-input" class="terminal-input" autofocus autocomplete="off">
+                    <input type="text" id="term-input" class="terminal-input" autocomplete="off">
                 </div>
             </div>
         </section>
 
         <section id="contact" class="page">
-            <h2 style="font-family: var(--font-display); font-size: 3.5rem; margin-bottom: 1rem;">Contact</h2>
-            <p style="color: var(--text-secondary); font-size: 1.1rem; max-width: 600px;">Available for collaboration on hardware systems, FPGA research, and low-level software projects.</p>
+            <h2 style="font-family: var(--font-display); font-size: 3.5rem;">Contact</h2>
             <div class="contact-grid">
-                <a href="mailto:kwyrick@vols.utk.edu" class="contact-card">
+                <a href="mailto:keatonwyrick4@gmail.com" class="contact-card">
                     <span class="contact-label">EMAIL</span>
-                    <span class="contact-value">kwyrick@vols.utk.edu</span>
+                    <span class="contact-value">keatonwyrick4@gmail.com</span>
                 </a>
-                <a href="https://github.com/keatonium" target="_blank" class="contact-card">
-                    <span class="contact-label">GITHUB</span>
-                    <span class="contact-value">@keatonium</span>
+                <a href="https://linkedin.com/in/keatonwyrick" target="_blank" class="contact-card">
+                    <span class="contact-label">LINKEDIN</span>
+                    <span class="contact-value">/in/keatonwyrick</span>
                 </a>
-                <div class="contact-card">
-                    <span class="contact-label">LOCATION</span>
-                    <span class="contact-value">Knoxville, TN</span>
-                </div>
             </div>
         </section>
     </main>
@@ -234,58 +232,36 @@
             navigate: (id) => { 
                 document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === id)); 
                 window.scrollTo(0,0);
-                closeMenu(); 
             } 
         };
 
-        const menuToggle = document.getElementById('menu-toggle');
-        const navLinks = document.getElementById('nav-links');
-        function toggleMenu() { navLinks.classList.toggle('open'); menuToggle.classList.toggle('open-burger'); }
-        function closeMenu() { navLinks.classList.remove('open'); menuToggle.classList.remove('open-burger'); }
-
+        // Terminal Logic
         const termInput = document.getElementById('term-input');
         const termOutput = document.getElementById('terminal-output');
         const cmds = {
-            help: "Commands: ls, whoami, clear, sysinfo",
-            whoami: "Keaton Wyrick. Honors Computer Engineering student & researcher.",
-            ls: "projects/ research/ resume.pdf",
-            sysinfo: "OS: Keatonium v1.0 | Status: Active"
+            help: "Commands: ls, whoami, clear",
+            whoami: "Keaton Wyrick: Computer Engineering @ UTK.",
+            ls: "projects/  resume.pdf  research/"
         };
         termInput.addEventListener('keydown', e => {
             if (e.key === 'Enter') {
                 const cmd = termInput.value.toLowerCase().trim();
-                if (cmd === 'clear') { termOutput.innerHTML = ''; }
-                else if (cmds[cmd]) { termOutput.innerHTML += `\n<span style="color:var(--ut-orange)">$</span> ${cmd}\n${cmds[cmd]}`; }
-                else { termOutput.innerHTML += `\n$ ${cmd}\nCommand not found.`; }
+                if (cmd === 'clear') termOutput.innerHTML = '';
+                else termOutput.innerHTML += `\n$ ${cmd}\n${cmds[cmd] || 'Command not found.'}`;
                 termInput.value = '';
                 termOutput.parentElement.scrollTop = termOutput.parentElement.scrollHeight;
             }
         });
 
-        // TETRIS ENGINE
+        // Tetris Logic
         const canvas = document.getElementById('tetris');
         const context = canvas.getContext('2d');
-        const scoreVal = document.getElementById('score');
-        const highScoreVal = document.getElementById('high-score');
         context.scale(20, 20);
 
         let score = 0, isPaused = false, isGameOver = false;
-        let dropInterval = 1000, dropCounter = 0, lastTime = 0;
-        let highScore = localStorage.getItem('keaton-tetris-best') || 0;
-        highScoreVal.innerText = highScore;
-
+        let lastTime = 0, dropCounter = 0, dropInterval = 1000;
         const arena = Array.from({length: 20}, () => new Array(12).fill(0));
-        const player = { pos: {x: 0, y: 0}, matrix: null };
-
-        function createPiece(type) {
-            if (type === 'I') return [[0,1,0,0],[0,1,0,0],[0,1,0,0],[0,1,0,0]];
-            if (type === 'L') return [[0,2,0],[0,2,0],[0,2,2]];
-            if (type === 'J') return [[0,3,0],[0,3,0],[3,3,0]];
-            if (type === 'O') return [[4,4],[4,4]];
-            if (type === 'Z') return [[5,5,0],[0,5,5],[0,0,0]];
-            if (type === 'S') return [[0,6,6],[6,6,0],[0,0,0]];
-            if (type === 'T') return [[0,7,0],[7,7,7],[0,0,0]];
-        }
+        const player = { pos: {x: 5, y: 0}, matrix: [[0,1,0],[1,1,1],[0,0,0]] };
 
         function collide(arena, p) {
             const [m, o] = [p.matrix, p.pos];
@@ -297,44 +273,22 @@
             return false;
         }
 
-        function rotate(matrix) {
-            for (let y = 0; y < matrix.length; ++y) {
-                for (let x = 0; x < y; ++x) [matrix[x][y], matrix[y][x]] = [matrix[y][x], matrix[x][y]];
-            }
-            matrix.forEach(row => row.reverse());
-            if (collide(arena, player)) matrix.forEach(row => row.reverse()); 
-        }
-
-        function drawMatrix(matrix, offset, color, opacity = 1, isGhost = false) {
-            context.globalAlpha = opacity;
-            matrix.forEach((row, y) => {
-                row.forEach((value, x) => {
-                    if (value !== 0) {
-                        if (!isGhost) {
-                            context.fillStyle = '#333';
-                            context.fillRect(x + offset.x, y + offset.y, 1, 1);
-                            context.fillStyle = color;
-                            context.fillRect(x + offset.x + 0.05, y + offset.y + 0.05, 0.9, 0.9);
-                        } else {
-                            context.strokeStyle = color;
-                            context.lineWidth = 0.05;
-                            context.strokeRect(x + offset.x + 0.1, y + offset.y + 0.1, 0.8, 0.8);
-                        }
-                    }
-                });
-            });
-            context.globalAlpha = 1;
-        }
-
         function draw() {
             context.fillStyle = '#000';
             context.fillRect(0, 0, canvas.width, canvas.height);
-            const ghostPos = { x: player.pos.x, y: player.pos.y };
-            while (!collide(arena, { pos: ghostPos, matrix: player.matrix })) { ghostPos.y++; }
-            ghostPos.y--;
-            drawMatrix(player.matrix, ghostPos, '#FF8200', 0.3, true);
-            drawMatrix(arena, {x: 0, y: 0}, '#FF8200');
-            drawMatrix(player.matrix, player.pos, '#FF8200');
+            drawMatrix(arena, {x: 0, y: 0});
+            drawMatrix(player.matrix, player.pos);
+        }
+
+        function drawMatrix(matrix, offset) {
+            matrix.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    if (value !== 0) {
+                        context.fillStyle = '#FF8200';
+                        context.fillRect(x + offset.x, y + offset.y, 1, 1);
+                    }
+                });
+            });
         }
 
         function playerDrop() {
@@ -344,51 +298,25 @@
                 player.matrix.forEach((row, y) => {
                     row.forEach((value, x) => { if (value !== 0) arena[y + player.pos.y][x + player.pos.x] = value; });
                 });
-                playerReset();
-                arenaSweep();
+                player.pos.y = 0; player.pos.x = 5;
+                if (collide(arena, player)) {
+                    isGameOver = true;
+                    document.getElementById('final-score').innerText = score;
+                    document.getElementById('game-over-overlay').style.display = 'flex';
+                }
             }
             dropCounter = 0;
         }
 
-        function playerReset() {
-            const pieces = 'ILJOTSZ';
-            player.matrix = createPiece(pieces[Math.floor(Math.random() * pieces.length)]);
-            player.pos.y = 0; player.pos.x = 4;
-            if (collide(arena, player)) {
-                isGameOver = true;
-                document.getElementById('final-score').innerText = score;
-                document.getElementById('final-high-score').innerText = highScore;
-                document.getElementById('game-over-overlay').style.display = 'flex';
-            }
+        function togglePause() { 
+            isPaused = !isPaused; 
+            document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
         }
 
         function resetGame() {
             arena.forEach(row => row.fill(0));
-            score = 0;
-            scoreVal.innerText = 0;
-            isGameOver = false;
-            document.getElementById('game-over-overlay').style.display = 'none';
-            playerReset();
-        }
-
-        function arenaSweep() {
-            outer: for (let y = arena.length - 1; y > 0; --y) {
-                for (let x = 0; x < arena[y].length; ++x) { if (arena[y][x] === 0) continue outer; }
-                arena.unshift(arena.splice(y, 1)[0].fill(0));
-                score += 10; scoreVal.innerText = score;
-                dropInterval = Math.max(100, 1000 - (Math.floor(score / 100) * 100));
-                if (score > highScore) {
-                    highScore = score; highScoreVal.innerText = highScore;
-                    localStorage.setItem('keaton-tetris-best', highScore);
-                }
-                ++y;
-            }
-        }
-
-        function togglePause() {
-            if (isGameOver) return;
-            isPaused = !isPaused;
-            document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
+            score = 0; document.getElementById('score').innerText = 0;
+            isGameOver = false; document.getElementById('game-over-overlay').style.display = 'none';
         }
 
         function update(time = 0) {
@@ -403,34 +331,11 @@
         }
 
         document.addEventListener('keydown', e => {
-            if (isPaused || isGameOver) return;
             if (e.keyCode === 37) { player.pos.x--; if(collide(arena, player)) player.pos.x++; }
             if (e.keyCode === 39) { player.pos.x++; if(collide(arena, player)) player.pos.x--; }
             if (e.keyCode === 40) playerDrop();
-            if (e.keyCode === 38) rotate(player.matrix);
         });
 
-        const container = document.getElementById('tetris-container');
-        let touchStartX = 0, touchStartY = 0;
-        container.addEventListener('touchstart', e => {
-            touchStartX = e.touches[0].clientX;
-            touchStartY = e.touches[0].clientY;
-        }, {passive: true});
-
-        container.addEventListener('touchend', e => {
-            if (isPaused || isGameOver) return;
-            const touchEndX = e.changedTouches[0].clientX;
-            const touchEndY = e.changedTouches[0].clientY;
-            const dx = touchEndX - touchStartX, dy = touchEndY - touchStartY;
-            const absDx = Math.abs(dx), absDy = Math.abs(dy);
-            if (absDx < 10 && absDy < 10) { rotate(player.matrix); } 
-            else if (absDx > absDy) {
-                if (dx > 30) { player.pos.x++; if(collide(arena, player)) player.pos.x--; } 
-                else if (dx < -30) { player.pos.x--; if(collide(arena, player)) player.pos.x++; }
-            } else if (dy > 30) { playerDrop(); }
-        }, {passive: true});
-
-        playerReset(); 
         update();
     </script>
 </body>
