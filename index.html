@@ -316,16 +316,24 @@
             context.fillStyle = '#000';
             context.fillRect(0, 0, canvas.width, canvas.height);
             drawGrid();
-            drawMatrix(arena, {x: 0, y: 0});
-            drawMatrix(player.matrix, player.pos);
+            
+            // Draw Ghost/Shadow Piece
+            const ghost = { pos: { ...player.pos }, matrix: player.matrix };
+            while (!collide(arena, ghost)) { ghost.pos.y++; }
+            ghost.pos.y--;
+            drawMatrix(ghost.matrix, ghost.pos, 'rgba(255, 130, 0, 0.2)');
+
+            drawMatrix(arena, {x: 0, y: 0}, '#FF8200');
+            drawMatrix(player.matrix, player.pos, '#FF8200');
         }
 
-        function drawMatrix(matrix, offset) {
+        function drawMatrix(matrix, offset, color) {
             matrix.forEach((row, y) => {
                 row.forEach((value, x) => {
                     if (value !== 0) {
-                        context.fillStyle = '#FF8200';
-                        context.fillRect(x + offset.x, y + offset.y, 1, 1);
+                        context.fillStyle = color;
+                        // Use slightly smaller rect to let grid borders show through
+                        context.fillRect(x + offset.x + 0.05, y + offset.y + 0.05, 0.9, 0.9);
                     }
                 });
             });
