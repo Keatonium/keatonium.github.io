@@ -89,7 +89,7 @@
     </nav>
 
     <main id="app">
-        <section id="home" class="page active">
+        <section id="home" class="page">
             <div class="hero-layout">
                 <div>
                     <h1 style="font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.1;">
@@ -119,7 +119,6 @@
         <section id="projects" class="page">
             <h2 style="font-family: var(--font-display); font-size: 3.5rem; margin-bottom: 2rem;">Projects</h2>
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
-                
                 <div class="info-card">
                     <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">HARDWARE / VERILOG</span>
                     <h3 style="margin: 0.5rem 0 1rem;">Tetris on FPGA</h3>
@@ -128,7 +127,6 @@
                         <li>Implemented screen rotation and VGA synchronization in Verilog.</li>
                     </ul>
                 </div>
-
                 <div class="info-card">
                     <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">EMBEDDED C / FIRMWARE</span>
                     <h3 style="margin: 0.5rem 0 1rem;">Low-Level Simon Game</h3>
@@ -137,7 +135,6 @@
                         <li>Built custom resistor-based input circuits and handled UART debugging.</li>
                     </ul>
                 </div>
-
                 <div class="info-card">
                     <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">NETWORKING / ARDUINO</span>
                     <h3 style="margin: 0.5rem 0 1rem;">ESP-32 Web De-Authenticator</h3>
@@ -146,7 +143,6 @@
                         <li>Explored frame protection and beacon spamming for network security testing.</li>
                     </ul>
                 </div>
-
                 <div class="info-card">
                     <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">PYTHON / PYTORCH</span>
                     <h3 style="margin: 0.5rem 0 1rem;">Machine Learning Model</h3>
@@ -155,7 +151,6 @@
                         <li>Optimized via stochastic gradient descent and backpropagation.</li>
                     </ul>
                 </div>
-
                 <div class="info-card">
                     <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">TYPESCRIPT / MOBILE</span>
                     <h3 style="margin: 0.5rem 0 1rem;">Food Health App</h3>
@@ -172,7 +167,6 @@
             <div class="info-card">
                 <h3 style="font-size: 2rem;">University of Tennessee, Knoxville</h3>
                 <p style="color: var(--ut-orange); font-family: var(--font-mono); margin: 0.5rem 0 1.5rem;">B.S. Computer Engineering | GPA: 3.52 (2027)</p>
-                
                 <h4 style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.8rem; text-transform: uppercase; border-top: 1px solid #333; padding-top: 1.5rem; margin-bottom: 1.5rem;">Relevant Coursework</h4>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-secondary);">
                     <div>
@@ -230,24 +224,52 @@
     <script>
         const router = { 
             navigate: (id) => { 
-                document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === id)); 
+                const target = id || 'home';
+                document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === target)); 
+                window.location.hash = target;
                 window.scrollTo(0,0);
-            } 
+            },
+            init: () => {
+                const hash = window.location.hash.replace('#', '');
+                router.navigate(hash || 'home');
+            }
         };
+
+        window.addEventListener('hashchange', () => router.init());
+        window.addEventListener('load', () => router.init());
 
         // Terminal Logic
         const termInput = document.getElementById('term-input');
         const termOutput = document.getElementById('terminal-output');
         const cmds = {
-            help: "Commands: ls, whoami, clear",
+            help: "Commands: ls, cd [dir], whoami, clear",
             whoami: "Keaton Wyrick: Computer Engineering @ UTK.",
-            ls: "projects/  resume.pdf  research/"
+            ls: "projects/  education/  about/  contact/  resume.pdf"
         };
+
         termInput.addEventListener('keydown', e => {
             if (e.key === 'Enter') {
-                const cmd = termInput.value.toLowerCase().trim();
-                if (cmd === 'clear') termOutput.innerHTML = '';
-                else termOutput.innerHTML += `\n$ ${cmd}\n${cmds[cmd] || 'Command not found.'}`;
+                const input = termInput.value.toLowerCase().trim();
+                const [cmd, arg] = input.split(' ');
+                
+                if (cmd === 'clear') {
+                    termOutput.innerHTML = '';
+                } else if (cmd === 'cd') {
+                    const dir = arg ? arg.replace('/', '') : '';
+                    if (['projects', 'education', 'about', 'contact', 'home'].includes(dir)) {
+                        termOutput.innerHTML += `\n$ ${input}\nNavigating to ${dir}...`;
+                        setTimeout(() => router.navigate(dir), 500);
+                    } else if (!dir) {
+                        router.navigate('home');
+                    } else {
+                        termOutput.innerHTML += `\n$ ${input}\ncd: no such directory: ${arg}`;
+                    }
+                } else if (cmds[cmd]) {
+                    termOutput.innerHTML += `\n$ ${input}\n${cmds[cmd]}`;
+                } else {
+                    termOutput.innerHTML += `\n$ ${input}\nCommand not found.`;
+                }
+                
                 termInput.value = '';
                 termOutput.parentElement.scrollTop = termOutput.parentElement.scrollHeight;
             }
