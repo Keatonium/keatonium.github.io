@@ -81,8 +81,8 @@
         .hero-trace path { fill: none; stroke: var(--trace); stroke-width: 2; filter: drop-shadow(0 0 6px var(--trace-glow)); stroke-dasharray: 1400; stroke-dashoffset: 1400; animation: route 1.9s cubic-bezier(0.7,0,0.3,1) 0.4s forwards; }
         @keyframes route { to { stroke-dashoffset: 0; } }
         .sq-to, .sq-the { position: absolute; font-family: var(--font-b); text-transform: none; font-weight: 400; font-style: italic; font-size: clamp(0.95rem, 1.7vw, 1.25rem); letter-spacing: 0; color: var(--solder); opacity: 0; }
-        .sq-to { left: 3%; top: 56%; animation: fadeup 0.6s ease 1.7s forwards; }
-        .sq-the { right: 6%; bottom: 56%; animation: fadeup 0.6s ease 1.95s forwards; }
+        .sq-to { left: 3%; bottom: 56%; animation: fadeup 0.6s ease 1.7s forwards; }
+        .sq-the { right: 6%; top: 56%; animation: fadeup 0.6s ease 1.95s forwards; }
         @keyframes rise { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
         @keyframes fadeup { from { opacity: 0; transform: translateY(8px); } to { opacity: 0.92; transform: none; } }
         @keyframes glowpulse { 0%,100% { text-shadow: 0 0 12px rgba(255,130,0,0.2); } 50% { text-shadow: 0 0 24px rgba(255,130,0,0.55); } }
@@ -167,7 +167,7 @@
 
         /* ---- Reach ---- */
         .reach { min-height: 78vh; display: flex; flex-direction: column; justify-content: center; }
-        .reach-mail { font-family: var(--font-d); font-weight: 800; letter-spacing: -0.02em; font-size: clamp(1.5rem, 5.5vw, 3.4rem); border-bottom: 3px solid var(--edge); padding-bottom: 0.3rem; transition: 0.25s; word-break: break-word; text-transform: none; }
+        .reach-mail { font-family: var(--font-d); font-weight: 700; letter-spacing: -0.01em; font-size: clamp(1.05rem, 3vw, 1.8rem); border-bottom: 2px solid var(--edge); padding-bottom: 0.25rem; transition: 0.25s; word-break: break-word; text-transform: none; }
         .reach-mail:hover { color: var(--trace); border-color: var(--trace); }
         .reach-links { display: flex; flex-wrap: wrap; gap: 1.8rem; margin-top: 2.2rem; font-family: var(--font-m); font-size: 0.8rem; color: var(--ghost); }
         .reach-links a { border-bottom: 1px dashed var(--edge); padding-bottom: 2px; }
@@ -236,7 +236,7 @@
                 <span class="pole">transistor</span>
                 <span class="hero-squiggle">
                     <svg class="hero-trace" viewBox="0 0 560 46" aria-hidden="true">
-                        <path d="M2 8 H180 Q196 8 196 24 V30 Q196 44 212 44 H560" />
+                        <path d="M2 38 H180 Q196 38 196 22 V16 Q196 2 212 2 H560" />
                     </svg>
                     <span class="sq-to">to</span>
                     <span class="sq-the">the</span>
@@ -421,7 +421,6 @@
         <!-- REACH -->
         <section id="reach" class="band reach">
             <p class="band-label">Contact</p>
-            <h2 class="band-title reveal" style="margin-bottom:1.6rem;">Let's talk.</h2>
             <a class="reach-mail" href="mailto:keatonwyrick4@gmail.com">keatonwyrick4@gmail.com</a>
             <div class="reach-links">
                 <a href="https://linkedin.com/in/keatonwyrick" target="_blank" rel="noopener">LinkedIn ↗</a>
