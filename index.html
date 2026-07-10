@@ -4,153 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Keaton Wyrick | Engineering Portfolio</title>
-
+    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg: #0a0a0b;
-            --bg-alt: #131315;
-            --bg-card: #18181a;
-            --border: rgba(255, 255, 255, 0.09);
-            --text: #f2f2f0;
-            --text-dim: #8a8a8e;
-            --orange: #FF8200;
-            --orange-soft: #ffb066;
-            --font-display: 'Space Grotesk', sans-serif;
+            --bg-primary: #1a1a1a; 
+            --bg-secondary: #242424;
+            --text-primary: #f0f0f0;
+            --text-secondary: #888888;
+            --ut-orange: #FF8200;
+            --font-display: 'Playfair Display', serif;
             --font-body: 'Inter', sans-serif;
             --font-mono: 'Space Mono', monospace;
-            --nav-height: 84px;
-            --max-width: 1160px;
+            --nav-height: 80px;
+            --max-width: 1100px;
             --ease: cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body { background-color: var(--bg); color: var(--text); font-family: var(--font-body); overflow-x: hidden; }
+        body { background-color: var(--bg-primary); color: var(--text-primary); font-family: var(--font-body); overflow-x: hidden; }
+        
+        .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5000; opacity: 0.05; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); }
 
-        .noise { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5000; opacity: 0.04; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); }
-
-        /* Nav */
-        .navbar { position: fixed; top: 0; width: 100%; height: var(--nav-height); background: rgba(10, 10, 11, 0.75); backdrop-filter: blur(14px); border-bottom: 1px solid var(--border); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .navbar { position: fixed; top: 0; width: 100%; height: var(--nav-height); background: rgba(26, 26, 26, 0.85); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); z-index: 1000; display: flex; align-items: center; justify-content: center; }
         .nav-container { width: 100%; max-width: var(--max-width); padding: 0 2rem; display: flex; justify-content: space-between; align-items: center; }
-        .brand { display: flex; align-items: center; gap: 0.7rem; cursor: pointer; text-decoration: none; color: var(--text); }
-        .brand-mark { width: 34px; height: 34px; border-radius: 8px; background: var(--orange); color: #0a0a0b; font-family: var(--font-mono); font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; }
-        .brand-name { font-family: var(--font-display); font-size: 1.05rem; font-weight: 600; letter-spacing: -0.01em; }
-
-        .nav-links { display: flex; gap: 0.25rem; background: var(--bg-alt); border: 1px solid var(--border); border-radius: 999px; padding: 0.3rem; }
-        .nav-btn { background: none; border: none; font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-dim); cursor: pointer; padding: 0.5rem 1rem; border-radius: 999px; transition: 0.25s; }
-        .nav-btn:hover { color: var(--text); }
-        .nav-btn.active { color: #0a0a0b; background: var(--orange); }
+        .brand { font-family: var(--font-display); font-size: 1.6rem; font-weight: 700; cursor: pointer; text-decoration: none; color: var(--text-primary); z-index: 1100; }
+        
+        .nav-links { display: flex; gap: 2rem; }
+        .nav-btn { background: none; border: none; font-family: var(--font-mono); font-size: 0.8rem; text-transform: uppercase; color: var(--text-secondary); cursor: pointer; letter-spacing: 0.05em; transition: 0.3s; }
+        .nav-btn:hover, .nav-btn.active { color: var(--ut-orange); }
 
         #app { padding-top: var(--nav-height); min-height: 100vh; }
-        .page { display: none; }
-        .page.active { display: block; animation: fadeUp 0.6s var(--ease) forwards; }
-        .page-inner { padding: 4.5rem 2rem; max-width: var(--max-width); margin: 0 auto; }
+        .page { display: none; padding: 4rem 2rem; max-width: var(--max-width); margin: 0 auto; animation: fadeUp 0.8s var(--ease) forwards; }
+        .page.active { display: block; }
 
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.01em; }
+        .hero-layout { display: grid; grid-template-columns: 1fr 300px; gap: 4rem; align-items: center; min-height: 70vh; }
+        #tetris-container { background: #000; border: 2px solid #333; padding: 10px; box-shadow: 0 0 30px rgba(255, 130, 0, 0.1); position: relative; width: fit-content; }
+        canvas { display: block; background-color: #000; image-rendering: pixelated; }
+        .score-board { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ut-orange); margin-bottom: 10px; }
+        
+        .pause-overlay, .game-over-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10; font-family: var(--font-mono); color: var(--ut-orange); text-align: center; }
+        
+        .game-btn { background: none; border: 1px solid var(--ut-orange); color: var(--ut-orange); padding: 8px 12px; cursor: pointer; font-family: var(--font-mono); font-size: 0.7rem; margin-top: 10px; transition: 0.2s; width: 100%; }
+        .game-btn:hover { background: var(--ut-orange); color: #000; }
 
-        .eyebrow { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--orange); border: 1px solid rgba(255, 130, 0, 0.35); background: rgba(255, 130, 0, 0.08); padding: 0.4rem 0.9rem; border-radius: 999px; margin-bottom: 1.5rem; }
-        .eyebrow-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 8px var(--orange); }
-
-        .page-heading { font-size: clamp(2.2rem, 5vw, 3rem); margin-bottom: 0.75rem; }
-        .section-intro { color: var(--text-dim); font-size: 1rem; max-width: 620px; line-height: 1.7; margin-bottom: 3rem; }
-
-        /* Hero */
-        #home .page-inner { padding-top: 3rem; position: relative; overflow: hidden; }
-        .glow { position: absolute; border-radius: 50%; filter: blur(110px); opacity: 0.28; background: var(--orange); z-index: -1; pointer-events: none; }
-        .glow-1 { width: 420px; height: 420px; top: -120px; left: -100px; }
-        .glow-2 { width: 320px; height: 320px; bottom: -80px; right: 10%; opacity: 0.16; }
-
-        .hero-layout { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 4rem; align-items: center; min-height: 62vh; }
-        .hero-title { font-size: clamp(2.6rem, 6vw, 4.6rem); line-height: 1.02; font-weight: 700; }
-        .hero-title .accent { background: linear-gradient(120deg, var(--orange), var(--orange-soft)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-        .hero-sub { color: var(--text-dim); font-size: 1.05rem; line-height: 1.75; max-width: 480px; margin-top: 1.75rem; }
-
-        .hero-tags { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.75rem; }
-        .tag-chip { font-family: var(--font-mono); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-dim); border: 1px solid var(--border); padding: 0.45rem 0.9rem; border-radius: 999px; transition: 0.2s; }
-        .tag-chip:hover { color: var(--orange); border-color: rgba(255, 130, 0, 0.4); }
-
-        .hero-cta { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 2.5rem; }
-        .btn-primary, .btn-secondary { font-family: var(--font-mono); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.95rem 1.7rem; border-radius: 8px; text-decoration: none; transition: 0.2s; display: inline-flex; align-items: center; gap: 0.5rem; }
-        .btn-primary { background: var(--orange); color: #0a0a0b; font-weight: 700; border: 1px solid var(--orange); }
-        .btn-primary:hover { box-shadow: 0 0 24px rgba(255, 130, 0, 0.4); transform: translateY(-2px); }
-        .btn-secondary { border: 1px solid var(--border); color: var(--text); }
-        .btn-secondary:hover { border-color: var(--orange); color: var(--orange); }
-
-        /* Marquee */
-        .marquee { overflow: hidden; white-space: nowrap; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg-alt); padding: 1.1rem 0; margin-top: 3rem; width: 100vw; position: relative; left: 50%; right: 50%; margin-left: -50vw; margin-right: -50vw; }
-        .marquee-track { display: inline-block; animation: scroll 22s linear infinite; }
-        .marquee-track span { font-family: var(--font-mono); font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-dim); margin: 0 1.4rem; }
-        .marquee-track span.sep { color: var(--orange); }
-        @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-        /* Game frame */
-        .game-frame { background: #000; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 0 70px rgba(255, 130, 0, 0.16), 0 30px 50px rgba(0,0,0,0.5); width: fit-content; margin: 0 auto; }
-        .frame-header { display: flex; align-items: center; gap: 0.4rem; padding: 0.7rem 1rem; background: #111113; border-bottom: 1px solid var(--border); }
-        .frame-dot { width: 10px; height: 10px; border-radius: 50%; }
-        .frame-dot.red { background: #ff5f57; } .frame-dot.yellow { background: #febc2e; } .frame-dot.green { background: #28c840; }
-        .frame-title { margin: 0 auto; font-family: var(--font-mono); font-size: 0.68rem; color: var(--text-dim); transform: translateX(-14px); }
-        .frame-body { padding: 14px; }
-
-        .score-board { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.75rem; color: var(--orange); margin-bottom: 10px; }
-        canvas { display: block; background-color: #000; image-rendering: pixelated; border-radius: 4px; }
-
-        .pause-overlay, .game-over-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.88); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 10; font-family: var(--font-mono); color: var(--orange); text-align: center; }
-        #tetris-container { position: relative; }
-
-        .game-btn { background: none; border: 1px solid var(--orange); color: var(--orange); padding: 8px 12px; cursor: pointer; font-family: var(--font-mono); font-size: 0.7rem; margin-top: 10px; transition: 0.2s; width: 100%; border-radius: 6px; }
-        .game-btn:hover { background: var(--orange); color: #0a0a0b; }
-
-        /* Projects bento */
-        .projects-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
-        .project-card { background: var(--bg-card); border: 1px solid var(--border); padding: 2rem; border-radius: 14px; transition: 0.25s; }
-        .project-card:hover { border-color: rgba(255, 130, 0, 0.4); transform: translateY(-4px); }
-        .project-card.featured { grid-column: 1 / -1; display: grid; grid-template-columns: auto 1fr; gap: 2.5rem; align-items: center; background: linear-gradient(135deg, rgba(255, 130, 0, 0.1), var(--bg-card) 65%); border-color: rgba(255, 130, 0, 0.5); }
-        .featured-index { font-family: var(--font-mono); font-size: 3.5rem; font-weight: 700; color: var(--orange); opacity: 0.85; line-height: 1; }
-        .card-label { font-family: var(--font-mono); color: var(--orange); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; }
-        .project-card h3 { margin: 0.6rem 0 0.75rem; font-size: 1.25rem; }
-        .project-card.featured h3 { font-size: 1.55rem; }
-        .project-card p, .project-card ul { color: var(--text-dim); font-size: 0.9rem; line-height: 1.7; }
-        .project-card ul { padding-left: 1.1rem; }
-        .featured-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
-        .featured-tags span { font-family: var(--font-mono); font-size: 0.68rem; color: var(--orange-soft); border: 1px solid rgba(255,130,0,0.3); padding: 0.3rem 0.7rem; border-radius: 999px; }
-
-        /* Education */
-        .edu-card { background: var(--bg-card); border: 1px solid var(--border); border-left: 3px solid var(--orange); padding: 2.5rem; border-radius: 4px 14px 14px 4px; }
-        .edu-meta { color: var(--orange); font-family: var(--font-mono); font-size: 0.85rem; margin: 0.5rem 0 1.75rem; }
-        .coursework-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-dim); border-top: 1px solid var(--border); padding-top: 1.75rem; }
-        .coursework-grid p { color: var(--text); margin-bottom: 0.5rem; }
-        .coursework-grid ul { list-style: none; opacity: 0.85; }
-
-        /* Terminal */
-        .terminal-window { background: #0d0d0e; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; box-shadow: 0 0 50px rgba(255,130,0,0.08); }
-        .terminal-body { padding: 20px; font-family: var(--font-mono); height: 340px; overflow-y: auto; font-size: 0.9rem; }
-        .terminal-input { background: transparent; border: none; color: var(--orange); font-family: var(--font-mono); outline: none; width: 70%; font-size: 0.95rem; }
-
-        /* Contact */
+        .info-card { background: var(--bg-secondary); border: 1px solid #333; padding: 2.5rem; border-radius: 4px; height: 100%; }
+        .terminal-window { background: #0d0d0d; border: 1px solid #333; padding: 20px; font-family: var(--font-mono); height: 350px; overflow-y: auto; margin-top: 2rem; border-radius: 4px; }
+        .terminal-input { background: transparent; border: none; color: var(--ut-orange); font-family: var(--font-mono); outline: none; width: 70%; font-size: 1rem; }
+        
         .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 3rem; }
-        .contact-card { background: var(--bg-card); border: 1px solid var(--border); padding: 2rem; border-radius: 14px; text-decoration: none; display: block; transition: 0.25s; }
-        .contact-card:hover { border-color: var(--orange); transform: translateY(-5px); box-shadow: 0 0 30px rgba(255,130,0,0.12); }
-        .contact-label { font-family: var(--font-mono); color: var(--orange); font-size: 0.7rem; letter-spacing: 0.12em; margin-bottom: 0.75rem; display: block; text-transform: uppercase; }
-        .contact-value { font-size: 1.35rem; color: var(--text); font-family: var(--font-display); }
+        .contact-card { background: var(--bg-secondary); border: 1px solid rgba(255,255,255,0.05); padding: 2rem; border-radius: 4px; text-decoration: none; display: block; transition: 0.3s; }
+        .contact-card:hover { border-color: var(--ut-orange); transform: translateY(-5px); }
+        .contact-label { font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 0.75rem; display: block; }
+        .contact-value { font-size: 1.4rem; color: var(--text-primary); }
 
-        footer { border-top: 1px solid var(--border); padding: 2rem; text-align: center; font-family: var(--font-mono); font-size: 0.75rem; color: var(--text-dim); }
-
-        @media (max-width: 860px) {
-            .hero-layout { grid-template-columns: 1fr; text-align: center; min-height: auto; }
-            .hero-sub { margin-left: auto; margin-right: auto; }
-            .hero-tags, .hero-cta { justify-content: center; }
-            #tetris-container, .game-frame { margin: 3rem auto 0; }
+        @media (max-width: 768px) {
+            .hero-layout { grid-template-columns: 1fr; text-align: center; }
+            #tetris-container { margin: 0 auto; }
             .nav-links { display: none; }
-            .project-card.featured { grid-template-columns: 1fr; }
-            .featured-index { display: none; }
-            .projects-grid { grid-template-columns: 1fr; }
-            .coursework-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -160,10 +76,7 @@
 
     <nav class="navbar">
         <div class="nav-container">
-            <a class="brand" onclick="router.navigate('home')">
-                <span class="brand-mark">KW</span>
-                <span class="brand-name">Keaton Wyrick</span>
-            </a>
+            <div class="brand" onclick="router.navigate('home')">Keaton Wyrick</div>
             <div class="nav-links">
                 <button class="nav-btn" onclick="router.navigate('projects')">Projects</button>
                 <button class="nav-btn" onclick="router.navigate('education')">Education</button>
@@ -175,203 +88,142 @@
 
     <main id="app">
         <section id="home" class="page">
-            <div class="page-inner">
-                <div class="glow glow-1"></div>
-                <div class="glow glow-2"></div>
-                <div class="hero-layout">
-                    <div>
-                        <span class="eyebrow"><span class="eyebrow-dot"></span>Computer Engineering @ UT Knoxville</span>
-                        <h1 class="hero-title">I build <span class="accent">AI systems</span> and the hardware that grounds them.</h1>
-                        <p class="hero-sub">Computer engineering student building agentic AI and local-first LLM tooling — routing, retrieval, and real tool use — on top of a foundation in embedded systems and digital design.</p>
-                        <div class="hero-tags">
-                            <span class="tag-chip">LLM Agents</span>
-                            <span class="tag-chip">RAG / Vector Search</span>
-                            <span class="tag-chip">Python</span>
-                            <span class="tag-chip">Embedded C / Verilog</span>
-                            <span class="tag-chip">FastAPI</span>
-                        </div>
-                        <div class="hero-cta">
-                            <a href="#" onclick="router.navigate('projects'); return false;" class="btn-primary">View Projects →</a>
-                            <a href="assets/Keaton_Resume_Firmware.pdf" target="_blank" class="btn-secondary">Resume (PDF)</a>
-                        </div>
-                    </div>
-                    <div class="game-frame">
-                        <div class="frame-header">
-                            <span class="frame-dot red"></span><span class="frame-dot yellow"></span><span class="frame-dot green"></span>
-                            <span class="frame-title">tetris.exe</span>
-                        </div>
-                        <div class="frame-body">
-                            <div id="tetris-container">
-                                <div class="score-board">
-                                    <span>Score: <span id="score">0</span></span>
-                                    <span>Best: <span id="high-score">0</span></span>
-                                </div>
-                                <div class="pause-overlay" id="pause-overlay">
-                                    <h2>PAUSED</h2>
-                                    <button class="game-btn" onclick="togglePause()" style="width: auto; padding: 10px 20px;">RESUME</button>
-                                </div>
-                                <div class="game-over-overlay" id="game-over-overlay">
-                                    <h2 style="margin-bottom: 10px;">GAME OVER</h2>
-                                    <p>Score: <span id="final-score">0</span></p>
-                                    <button class="game-btn" onclick="resetGame()" style="width: auto; padding: 10px 20px;">RETRY</button>
-                                </div>
-                                <canvas id="tetris" width="240" height="400"></canvas>
-                                <button class="game-btn" onclick="togglePause()">PAUSE GAME</button>
-                            </div>
-                        </div>
-                    </div>
+            <div class="hero-layout">
+                <div>
+                    <h1 style="font-family: var(--font-display); font-size: clamp(2.5rem, 6vw, 4.5rem); line-height: 1.1;">
+                        I build <span style="color:var(--ut-orange)">hardware</span> <br> and the code <br> that speaks to it.
+                    </h1>
                 </div>
-
-                <div class="marquee">
-                    <div class="marquee-track">
-                        <span>AI AGENTS</span><span class="sep">•</span><span>RAG</span><span class="sep">•</span><span>EMBEDDED SYSTEMS</span><span class="sep">•</span><span>FASTAPI</span><span class="sep">•</span><span>PYTORCH</span><span class="sep">•</span><span>VERILOG</span><span class="sep">•</span><span>LLM TOOLING</span><span class="sep">•</span>
-                        <span>AI AGENTS</span><span class="sep">•</span><span>RAG</span><span class="sep">•</span><span>EMBEDDED SYSTEMS</span><span class="sep">•</span><span>FASTAPI</span><span class="sep">•</span><span>PYTORCH</span><span class="sep">•</span><span>VERILOG</span><span class="sep">•</span><span>LLM TOOLING</span><span class="sep">•</span>
+                <div id="tetris-container">
+                    <div class="score-board">
+                        <span>Score: <span id="score">0</span></span>
+                        <span>Best: <span id="high-score">0</span></span>
                     </div>
+                    <div class="pause-overlay" id="pause-overlay">
+                        <h2>PAUSED</h2>
+                        <button class="game-btn" onclick="togglePause()" style="width: auto; padding: 10px 20px;">RESUME</button>
+                    </div>
+                    <div class="game-over-overlay" id="game-over-overlay">
+                        <h2 style="margin-bottom: 10px;">GAME OVER</h2>
+                        <p>Score: <span id="final-score">0</span></p>
+                        <button class="game-btn" onclick="resetGame()" style="width: auto; padding: 10px 20px;">RETRY</button>
+                    </div>
+                    <canvas id="tetris" width="240" height="400"></canvas>
+                    <button class="game-btn" onclick="togglePause()">PAUSE GAME</button>
                 </div>
             </div>
         </section>
 
         <section id="projects" class="page">
-            <div class="page-inner">
-                <h2 class="page-heading">Projects</h2>
-                <p class="section-intro">A mix of AI agents, embedded firmware, and full-stack builds. The common thread: making complex systems — hardware or model — easy to talk to and trust.</p>
-                <div class="projects-grid">
-                    <div class="project-card featured">
-                        <span class="featured-index">01</span>
-                        <div>
-                            <span class="card-label">Featured / AI Agents &amp; RAG</span>
-                            <h3>Local AI Assistant for Obsidian</h3>
-                            <p>A privacy-first AI agent that runs entirely offline on Ollama — an LLM router dispatches each message to the right skill (notes, weather, stocks, email), grounded with RAG over your notes and chat history.</p>
-                            <div class="featured-tags">
-                                <span>Agentic Routing</span>
-                                <span>RAG / Vector Search</span>
-                                <span>FastAPI + OpenAI-compatible API</span>
-                                <span>Live Tool Calls</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="project-card">
-                        <span class="card-label">Machine Learning / PyTorch</span>
-                        <h3>Regression Modeling in PyTorch</h3>
-                        <ul>
-                            <li>Built and trained regression models end-to-end — data prep in NumPy/Pandas through training and evaluation in PyTorch.</li>
-                            <li>Implemented gradient descent and backpropagation from first principles to understand the mechanics beneath the framework, not just call its API.</li>
-                        </ul>
-                    </div>
-                    <div class="project-card">
-                        <span class="card-label">Hardware / Verilog</span>
-                        <h3>Tetris on FPGA</h3>
-                        <ul>
-                            <li>Built a fully playable Tetris implementation on a Basys 3 FPGA, with custom game logic written from scratch in Verilog.</li>
-                            <li>Implemented VGA synchronization and screen rotation at the register-transfer level.</li>
-                        </ul>
-                    </div>
-                    <div class="project-card">
-                        <span class="card-label">Embedded C / Firmware</span>
-                        <h3>Low-Level Simon Game</h3>
-                        <ul>
-                            <li>Developed bare-metal on a TM4C123G microcontroller in C using Keil, with no application framework between code and hardware.</li>
-                            <li>Designed custom resistor-ladder input circuits and debugged timing over UART.</li>
-                        </ul>
-                    </div>
-                    <div class="project-card">
-                        <span class="card-label">Networking / Security</span>
-                        <h3>ESP-32 Wi-Fi Security Research</h3>
-                        <ul>
-                            <li>Used the ESP-32 Wi-Fi API to build a device de-authentication platform for hands-on 802.11 protocol testing.</li>
-                            <li>Studied frame-level attack and defense — deauth frames, beacon spam, and management-frame protection.</li>
-                        </ul>
-                    </div>
-                    <div class="project-card">
-                        <span class="card-label">TypeScript / Mobile</span>
-                        <h3>Food Health App</h3>
-                        <ul>
-                            <li>Led frontend development for a barcode-scanning nutrition app built in Expo Go.</li>
-                            <li>Designed and implemented an allergen-flagging system around real user needs.</li>
-                        </ul>
-                    </div>
+            <h2 style="font-family: var(--font-display); font-size: 3.5rem; margin-bottom: 2rem;">Projects</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2rem;">
+                <div class="info-card">
+                    <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">HARDWARE / VERILOG</span>
+                    <h3 style="margin: 0.5rem 0 1rem;">Tetris on FPGA</h3>
+                    <ul style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; padding-left: 1rem;">
+                        <li>Constructed a Tetris game on Basys 3 FPGA with custom game logic.</li>
+                        <li>Implemented screen rotation and VGA synchronization in Verilog.</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">EMBEDDED C / FIRMWARE</span>
+                    <h3 style="margin: 0.5rem 0 1rem;">Low-Level Simon Game</h3>
+                    <ul style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; padding-left: 1rem;">
+                        <li>Developed on TM4C123G microcontroller using C and Keil IDE.</li>
+                        <li>Built custom resistor-based input circuits and handled UART debugging.</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">NETWORKING / ARDUINO</span>
+                    <h3 style="margin: 0.5rem 0 1rem;">ESP-32 Web De-Authenticator</h3>
+                    <ul style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; padding-left: 1rem;">
+                        <li>Used ESP-32 Wi-Fi API to create a device de-authentication platform.</li>
+                        <li>Explored frame protection and beacon spamming for network security testing.</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">PYTHON / PYTORCH</span>
+                    <h3 style="margin: 0.5rem 0 1rem;">Machine Learning Model</h3>
+                    <ul style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; padding-left: 1rem;">
+                        <li>Deployed linear regression models using PyTorch, NumPy, and Pandas.</li>
+                        <li>Optimized via stochastic gradient descent and backpropagation.</li>
+                    </ul>
+                </div>
+                <div class="info-card">
+                    <span style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.7rem;">TYPESCRIPT / MOBILE</span>
+                    <h3 style="margin: 0.5rem 0 1rem;">Food Health App</h3>
+                    <ul style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; padding-left: 1rem;">
+                        <li>Led frontend development for a barcode-scanning nutrition app in Expo Go.</li>
+                        <li>Applied user-centered design to implement allergen flagging systems.</li>
+                    </ul>
                 </div>
             </div>
         </section>
 
         <section id="education" class="page">
-            <div class="page-inner">
-                <h2 class="page-heading">Education</h2>
-                <div class="edu-card">
-                    <h3 style="font-size: 1.8rem;">University of Tennessee, Knoxville</h3>
-                    <p class="edu-meta">B.S. Computer Engineering | GPA: 3.42 | Graduation Date: May 2027</p>
-                    <div class="coursework-grid">
-                        <div>
-                            <p>Hardware</p>
-                            <ul>
-                                <li>Computer Architecture</li>
-                                <li>Digital Systems</li>
-                                <li>FPGA (Verilog/VHDL)</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <p>Circuits</p>
-                            <ul>
-                                <li>AC/DC Circuits</li>
-                                <li>Analog Circuits</li>
-                            </ul>
-                        </div>
-                        <div>
-                            <p>Software</p>
-                            <ul>
-                                <li>Data Structures & Algorithms</li>
-                                <li>C / C++ Programming</li>
-                            </ul>
-                        </div>
+            <h2 style="font-family: var(--font-display); font-size: 3.5rem; margin-bottom: 2rem;">Education</h2>
+            <div class="info-card">
+                <h3 style="font-size: 2rem;">University of Tennessee, Knoxville</h3>
+                <p style="color: var(--ut-orange); font-family: var(--font-mono); margin: 0.5rem 0 1.5rem;">B.S. Computer Engineering | GPA: 3.42  | Graduation Date: May 2027</p>
+                <h4 style="font-family: var(--font-mono); color: var(--ut-orange); font-size: 0.8rem; text-transform: uppercase; border-top: 1px solid #333; padding-top: 1.5rem; margin-bottom: 1.5rem;">Relevant Coursework</h4>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-secondary);">
+                    <div>
+                        <p style="color: var(--text-primary); margin-bottom: 5px;">Hardware</p>
+                        <ul style="list-style: none; opacity: 0.8;">
+                            <li>Computer Architecture</li>
+                            <li>Digital Systems</li>
+                            <li>FPGA (Verilog/VHDL)</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p style="color: var(--text-primary); margin-bottom: 5px;">Circuits</p>
+                        <ul style="list-style: none; opacity: 0.8;">
+                            <li>AC/DC Circuits</li>
+                            <li>Analog Circuits</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <p style="color: var(--text-primary); margin-bottom: 5px;">Software</p>
+                        <ul style="list-style: none; opacity: 0.8;">
+                            <li>Data Structures & Algorithms</li>
+                            <li>C / C++ Programming</li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="about" class="page">
-            <div class="page-inner">
-                <h2 class="page-heading">About</h2>
-                <div class="terminal-window" onclick="document.getElementById('term-input').focus()">
-                    <div class="frame-header">
-                        <span class="frame-dot red"></span><span class="frame-dot yellow"></span><span class="frame-dot green"></span>
-                        <span class="frame-title">keaton@wyrick: ~</span>
-                    </div>
-                    <div class="terminal-body">
-                        <div id="terminal-output" style="white-space: pre-wrap; color: #bbb;">[SYSTEM_DIAGNOSTIC] Type 'help' to start.</div>
-                        <div style="display: flex; gap: 10px; margin-top: 10px;">
-                            <span style="color: var(--orange)">keaton@wyrick:~$</span>
-                            <input type="text" id="term-input" class="terminal-input" autocomplete="off">
-                        </div>
-                    </div>
+            <h2 style="font-family: var(--font-display); font-size: 3.5rem;">About</h2>
+            <div class="terminal-window" onclick="document.getElementById('term-input').focus()">
+                <div id="terminal-output" style="white-space: pre-wrap; color: #bbb;">[SYSTEM_DIAGNOSTIC] Type 'help' to start.</div>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <span style="color: var(--ut-orange)">keaton@wyrick:~$</span>
+                    <input type="text" id="term-input" class="terminal-input" autocomplete="off">
                 </div>
             </div>
         </section>
 
         <section id="contact" class="page">
-            <div class="page-inner">
-                <h2 class="page-heading">Contact</h2>
-                <div class="contact-grid">
-                    <a href="mailto:keatonwyrick4@gmail.com" class="contact-card">
-                        <span class="contact-label">Email</span>
-                        <span class="contact-value">keatonwyrick4@gmail.com</span>
-                    </a>
-                    <a href="https://linkedin.com/in/keatonwyrick" target="_blank" class="contact-card">
-                        <span class="contact-label">LinkedIn</span>
-                        <span class="contact-value">keatonwyrick</span>
-                    </a>
-                </div>
+            <h2 style="font-family: var(--font-display); font-size: 3.5rem;">Contact</h2>
+            <div class="contact-grid">
+                <a href="mailto:keatonwyrick4@gmail.com" class="contact-card">
+                    <span class="contact-label">EMAIL</span>
+                    <span class="contact-value">keatonwyrick4@gmail.com</span>
+                </a>
+                <a href="https://linkedin.com/in/keatonwyrick" target="_blank" class="contact-card">
+                    <span class="contact-label">LINKEDIN</span>
+                    <span class="contact-value">keatonwyrick</span>
+                </a>
             </div>
         </section>
     </main>
 
-    <footer>© 2026 Keaton Wyrick — built from scratch, no framework.</footer>
-
     <script>
-        const router = {
-            navigate: (id) => {
+        const router = { 
+            navigate: (id) => { 
                 const target = id || 'home';
-                document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === target));
-                document.querySelectorAll('.nav-btn').forEach(b => b.classList.toggle('active', b.textContent.trim().toLowerCase() === target));
+                document.querySelectorAll('.page').forEach(p => p.classList.toggle('active', p.id === target)); 
                 window.location.hash = target;
                 window.scrollTo(0,0);
             },
@@ -388,10 +240,8 @@
         const termInput = document.getElementById('term-input');
         const termOutput = document.getElementById('terminal-output');
         const cmds = {
-            help: "Commands: ls, cd [dir], whoami, stack, focus, hobbies, clear",
-            whoami: "Keaton Wyrick: Computer Engineering @ UTK. Embedded systems background, now building AI agents and local-first LLM tooling.",
-            stack: "Python, PyTorch, FastAPI, C, Verilog, TypeScript. Currently deep in LLM agents, RAG, and tool-use architectures.",
-            focus: "Right now: AI integration - agentic routing, retrieval, and grounding LLMs in real data and real hardware.",
+            help: "Commands: ls, cd [dir], whoami, hobbies, clear",
+            whoami: "Keaton Wyrick: Computer Engineering @ UTK.",
             hobbies: "Building and prototyping, Snowboarding, Reading",
             ls: "projects/  education/  about/  contact/  resume.pdf"
         };
@@ -400,7 +250,7 @@
             if (e.key === 'Enter') {
                 const input = termInput.value.toLowerCase().trim();
                 const [cmd, arg] = input.split(' ');
-
+                
                 if (cmd === 'clear') {
                     termOutput.innerHTML = '';
                 } else if (cmd === 'cd') {
@@ -418,7 +268,7 @@
                 } else {
                     termOutput.innerHTML += `\n$ ${input}\nCommand not found.`;
                 }
-
+                
                 termInput.value = '';
                 termOutput.parentElement.scrollTop = termOutput.parentElement.scrollHeight;
             }
@@ -432,7 +282,8 @@
         let score = 0, isPaused = false, isGameOver = false;
         let lastTime = 0, dropCounter = 0, dropInterval = 400;
         const arena = Array.from({length: 20}, () => new Array(12).fill(0));
-
+        
+        // --- UPDATED PIECE LOGIC ---
         const player = { pos: {x: 0, y: 0}, matrix: null };
 
         function createPiece(type) {
@@ -500,12 +351,13 @@
                         continue outer;
                     }
                 }
+                // Row is full: remove it
                 const row = arena.splice(y, 1)[0].fill(0);
-                arena.unshift(row);
+                arena.unshift(row); // Add empty row to top
                 ++y;
 
                 score += rowCount * 10;
-                rowCount *= 2;
+                rowCount *= 2; // Bonus for multi-line clears
             }
             updateScore();
         }
@@ -531,7 +383,7 @@
             context.fillStyle = '#000';
             context.fillRect(0, 0, canvas.width, canvas.height);
             drawGrid();
-
+            
             const ghost = { pos: { ...player.pos }, matrix: player.matrix };
             while (!collide(arena, ghost)) { ghost.pos.y++; }
             ghost.pos.y--;
@@ -565,8 +417,8 @@
             dropCounter = 0;
         }
 
-        function togglePause() {
-            isPaused = !isPaused;
+        function togglePause() { 
+            isPaused = !isPaused; 
             document.getElementById('pause-overlay').style.display = isPaused ? 'flex' : 'none';
         }
 
