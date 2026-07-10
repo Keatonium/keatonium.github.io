@@ -147,6 +147,9 @@
         .cell.x { color: var(--solder); }
         .cell.o { color: var(--trace); }
 
+        .egg-toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(12px); background: var(--carbon); border: 1px solid var(--trace-dim); color: var(--solder); font-family: var(--font-m); font-size: 0.74rem; letter-spacing: 0.02em; padding: 0.7rem 1.1rem; border-radius: 8px; box-shadow: 0 0 30px rgba(255,130,0,0.18); opacity: 0; pointer-events: none; z-index: 3000; transition: opacity 0.35s, transform 0.35s; max-width: 90vw; text-align: center; }
+        .egg-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
         /* ---- Console + education ---- */
         .console-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 2rem; margin-top: 2.8rem; align-items: stretch; }
         .console { background: #0d0d10; border: 1px solid var(--edge); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
@@ -375,7 +378,7 @@
                     </div>
                 </div>
                 <div class="unit reveal">
-                    <div class="unit-bar"><span>Tic-Tac-Toe</span><span class="r">minimax</span></div>
+                    <div class="unit-bar"><span id="egg-tic">Tic-Tac-Toe</span><span class="r" id="egg-mini">minimax</span></div>
                     <div class="unit-in">
                         <p class="ttt-msg" id="ttt-msg">Your move. You're <b>X</b>.</p>
                         <div class="ttt-wrap">
@@ -433,6 +436,8 @@
         </footer>
     </div>
 
+    <div class="egg-toast" id="egg-toast" role="status" aria-live="polite"></div>
+
     <script>
         // ---- Signal rail: scroll progress + active node ----
         const railFill = document.getElementById('rail-fill');
@@ -474,11 +479,27 @@
             education: "University of Tennessee, Knoxville. B.S. Computer Engineering, GPA 3.45, expected May 2027.",
             hobbies: "Building and prototyping, snowboarding, reading."
         };
+        // Hidden commands, not listed in help.
+        const EGGCMDS = {
+            sudo: "nice try. you don't have root here.",
+            hire: "smart move. -> keatonwyrick4@gmail.com",
+            "hire me": "smart move. -> keatonwyrick4@gmail.com",
+            "42": "the answer to life, the universe, and everything.",
+            coffee: "brewing... compiling caffeine.",
+            konami: "up up down down left right left right B A",
+            keaton: "that's me.",
+            fpga: "somewhere, an LED is blinking because of me.",
+            vim: "you're trapped forever. (jk: :q!)",
+            secrets: "try clicking around the lab. or: letmewin",
+            "ls secrets/": "beat_the_ai.exe  konami.txt  coffee.log"
+        };
         cin.addEventListener('keydown', e => {
             if (e.key !== 'Enter') return;
             const v = cin.value.toLowerCase().trim();
             if (v === 'clear') { cout.textContent = ''; }
+            else if (v === 'letmewin' || v === 'iddqd') { cout.textContent += `\n$ ${v}\nthe tic-tac-toe AI will now let you win.`; eggUnlockTTT("cheat code accepted. the AI will let you win."); }
             else if (CMDS[v]) { cout.textContent += `\n$ ${v}\n${CMDS[v]}`; }
+            else if (EGGCMDS[v]) { cout.textContent += `\n$ ${v}\n${EGGCMDS[v]}`; }
             else if (v) { cout.textContent += `\n$ ${v}\ncommand not found, try 'help'.`; }
             cin.value = '';
             cout.parentElement.scrollTop = cout.parentElement.scrollHeight;
@@ -678,15 +699,62 @@
             if (full(ttt.board)) { ttt.over=true; tttShowEnd("Draw."); return true; }
             return false;
         }
+        // Easy mode: anti-minimax. Pick (randomly among) the moves worst for the AI,
+        // so it actively throws the game and lets a competent player win.
+        function tttEasyMove(b) {
+            const moves = [];
+            for (let i = 0; i < 9; i++) if (!b[i]) { const n = b.slice(); n[i] = 'O'; moves.push({ i, s: minimax(n, false).score }); }
+            const min = Math.min(...moves.map(m => m.s));
+            const worst = moves.filter(m => m.s === min);
+            return worst[Math.random() * worst.length | 0].i;
+        }
         function tttPlay(i) {
             if (ttt.over || ttt.board[i]) return;
             ttt.board[i]='X'; tttRender();
             if (tttEnd()) return;
-            tttMsg.textContent = "AI searching…";
-            setTimeout(()=>{ const best=minimax(ttt.board,true); ttt.board[best.index]='O'; tttRender(); if(!tttEnd()) tttMsg.innerHTML="Your move. You're <b>X</b>."; }, 320);
+            tttMsg.textContent = tttEasy ? "AI fumbling…" : "AI searching…";
+            setTimeout(()=>{
+                const idx = tttEasy ? tttEasyMove(ttt.board) : minimax(ttt.board, true).index;
+                ttt.board[idx]='O'; tttRender();
+                if(!tttEnd()) tttMsg.innerHTML = tttEasy ? "Your move. It's gone easy." : "Your move. You're <b>X</b>.";
+            }, 300);
         }
-        function tttReset() { ttt.board=Array(9).fill(null); ttt.over=false; tttOver.classList.remove('show'); tttMsg.innerHTML="Your move. You're <b>X</b>."; tttRender(); }
+        function tttReset() { ttt.board=Array(9).fill(null); ttt.over=false; tttOver.classList.remove('show'); tttMsg.innerHTML = tttEasy ? "Your move. It's gone easy." : "Your move. You're <b>X</b>."; tttRender(); }
         tttRender();
+
+        // ---- Easter eggs ----
+        let eggToastTimer;
+        function eggToast(msg) {
+            const el = document.getElementById('egg-toast');
+            el.textContent = msg;
+            el.classList.add('show');
+            clearTimeout(eggToastTimer);
+            eggToastTimer = setTimeout(() => el.classList.remove('show'), 3400);
+        }
+        let tttEasy = false, eggTic = 0, eggMini = 0;
+        function eggUnlockTTT(note) {
+            if (tttEasy) return;
+            tttEasy = true;
+            const label = document.getElementById('egg-mini');
+            if (label) label.textContent = 'beatable';
+            eggToast(note || "🥚 the tic-tac-toe AI just got beatable. go win.");
+            tttReset();
+        }
+        document.getElementById('egg-tic').addEventListener('click', () => { if (++eggTic >= 2 && eggMini >= 2) eggUnlockTTT(); });
+        document.getElementById('egg-mini').addEventListener('click', () => { if (++eggMini >= 2 && eggTic >= 2) eggUnlockTTT(); });
+
+        // Konami code: ↑ ↑ ↓ ↓ ← → ← → B A
+        const KONAMI = ['arrowup','arrowup','arrowdown','arrowdown','arrowleft','arrowright','arrowleft','arrowright','b','a'];
+        let konamiPos = 0;
+        document.addEventListener('keydown', e => {
+            if (document.activeElement === cin) return;
+            const k = e.key.toLowerCase();
+            konamiPos = (k === KONAMI[konamiPos]) ? konamiPos + 1 : (k === KONAMI[0] ? 1 : 0);
+            if (konamiPos === KONAMI.length) {
+                konamiPos = 0;
+                eggUnlockTTT("↑↑↓↓←→←→BA. dev mode: the AI folds.");
+            }
+        });
     </script>
 </body>
 </html>
