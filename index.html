@@ -369,7 +369,7 @@
                                 <button class="pill" onclick="resetGame()">RETRY</button>
                             </div>
                             <canvas id="tetris" width="240" height="400"></canvas>
-                            <p class="swipe-hint">swipe ◀ ▶ to move · swipe ▼ to speed up · tap to rotate</p>
+                            <p class="swipe-hint">drag ◀ ▶ to move · flick ▼ to drop · tap to rotate</p>
                             <button class="pill" style="width:100%;margin-top:10px;" onclick="togglePause()">PAUSE</button>
                         </div>
                     </div>
@@ -490,7 +490,6 @@
         context.scale(20, 20);
         let score = 0, isPaused = false, isGameOver = false;
         let lastTime = 0, dropCounter = 0, dropInterval = 400;
-        let softDrop = false, softFactor = 1;
         const arena = Array.from({length: 20}, () => new Array(12).fill(0));
         const player = { pos: {x: 0, y: 0}, matrix: null };
 
@@ -504,7 +503,6 @@
             if (t==='T') return [[0,7,0],[7,7,7],[0,0,0]];
         }
         function playerReset() {
-            softDrop = false; softFactor = 1; // each new piece starts at normal speed
             const pieces = 'TJLOSZI';
             player.matrix = createPiece(pieces[pieces.length * Math.random() | 0]);
             player.pos.y = 0;
@@ -581,53 +579,66 @@
         function update(time=0) {
             if (!isPaused && !isGameOver) {
                 const dt = time-lastTime; lastTime=time; dropCounter+=dt;
-                let interval = dropInterval;
-                if (softDrop) { softFactor = Math.max(0.08, softFactor - dt*0.0009); interval = dropInterval * softFactor; }
-                if (dropCounter>interval) playerDrop();
+                if (dropCounter>dropInterval) playerDrop();
                 draw();
             } else { lastTime = time; }
             requestAnimationFrame(update);
         }
         function move(dir) { player.pos.x += dir; if (collide(arena, player)) player.pos.x -= dir; }
+        function hardDrop() {
+            if (isPaused || isGameOver) return;
+            while (!collide(arena, player)) player.pos.y++;
+            player.pos.y--;
+            playerDrop();  // merge, spawn next piece, clear lines
+            draw();
+        }
         function act(a) {
             if (isPaused || isGameOver) return;
             if (a === 'left') move(-1);
             else if (a === 'right') move(1);
             else if (a === 'rotate') playerRotate(1);
             else if (a === 'down') playerDrop();
+            else if (a === 'drop') hardDrop();
             draw();
         }
         document.addEventListener('keydown', e => {
             if (document.activeElement === cin) return;
-            if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)) e.preventDefault();
+            if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(e.key)) e.preventDefault();
             if (e.keyCode===37) act('left');
             if (e.keyCode===39) act('right');
-            if (e.keyCode===40) act('down');
+            if (e.keyCode===40) act('down');   // soft: one row
             if (e.keyCode===38) act('rotate');
+            if (e.keyCode===32) act('drop');   // space: hard drop
         });
 
-        // Touch: swipe L/R to move, swipe down engages a gradual speed-up, tap rotates.
+        // Touch: drag ◀ ▶ to move, flick ▼ to hard-drop (slam & place), tap to rotate.
         const CELL = 20; // canvas px per cell (240 / 12)
-        let tx0, ty0, txLast, tt0, tMoved;
+        let tx0, ty0, txLast, tt0, tMoved, dropped;
         canvas.addEventListener('touchstart', e => {
             const t = e.touches[0];
-            tx0 = txLast = t.clientX; ty0 = t.clientY; tt0 = Date.now(); tMoved = false;
+            tx0 = txLast = t.clientX; ty0 = t.clientY; tt0 = Date.now(); tMoved = false; dropped = false;
             e.preventDefault();
         }, { passive: false });
         canvas.addEventListener('touchmove', e => {
-            if (isPaused || isGameOver) { e.preventDefault(); return; }
+            if (isPaused || isGameOver || dropped) { e.preventDefault(); return; }
             const t = e.touches[0];
+            const dx = t.clientX - tx0, dy = t.clientY - ty0;
+            // A committed downward flick hard-drops immediately (fast, decisive placement).
+            if (dy > 46 && dy > Math.abs(dx) * 1.5) { hardDrop(); dropped = true; tMoved = true; e.preventDefault(); return; }
+            // Otherwise, drag horizontally: one cell per CELL px moved.
             while (Math.abs(t.clientX - txLast) >= CELL) {
                 const dir = t.clientX > txLast ? 1 : -1;
                 act(dir > 0 ? 'right' : 'left');
                 txLast += dir * CELL; tMoved = true;
             }
-            const dy = t.clientY - ty0;
-            if (dy > CELL && dy > Math.abs(t.clientX - tx0)) { softDrop = true; tMoved = true; }
             e.preventDefault();
         }, { passive: false });
         canvas.addEventListener('touchend', e => {
-            if (!tMoved && Date.now() - tt0 < 250) act('rotate'); // tap = rotate
+            if (dropped) { e.preventDefault(); return; }
+            const t = e.changedTouches[0];
+            const dx = t.clientX - tx0, dy = t.clientY - ty0;
+            if (dy > 28 && dy > Math.abs(dx)) hardDrop();          // shorter downward swipe still drops
+            else if (!tMoved && Date.now() - tt0 < 250) act('rotate'); // tap = rotate
             e.preventDefault();
         }, { passive: false });
 
