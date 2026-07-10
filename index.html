@@ -76,11 +76,10 @@
         .hero-h1 .pole:not(.energized) { animation: rise 0.7s cubic-bezier(0.16,1,0.3,1) 0.2s both; }
         .hero-h1 .pole.energized { color: var(--trace); animation: rise 0.7s cubic-bezier(0.16,1,0.3,1) 0.34s both, glowpulse 3.4s ease-in-out 2.6s infinite; }
 
-        .hero-squiggle { display: block; position: relative; width: min(560px, 88vw); height: 60px; margin: 0.3rem 0; }
+        .hero-squiggle { display: block; position: relative; width: min(560px, 88vw); height: 48px; margin: 0.4rem 0 0.2rem; }
         .hero-trace { display: block; width: 100%; height: 100%; overflow: visible; }
-        .hero-trace path { fill: none; stroke: var(--trace); stroke-width: 2.5; filter: drop-shadow(0 0 6px var(--trace-glow)); stroke-linecap: round; stroke-dasharray: 1600; stroke-dashoffset: 1600; animation: route 2s cubic-bezier(0.7,0,0.3,1) 0.4s forwards, squigfloat 6s ease-in-out 2.6s infinite; }
+        .hero-trace path { fill: none; stroke: var(--trace); stroke-width: 2; filter: drop-shadow(0 0 6px var(--trace-glow)); stroke-dasharray: 1400; stroke-dashoffset: 1400; animation: route 1.9s cubic-bezier(0.7,0,0.3,1) 0.4s forwards; }
         @keyframes route { to { stroke-dashoffset: 0; } }
-        @keyframes squigfloat { 0%,100% { transform: translateX(0); } 50% { transform: translateX(10px); } }
         .sq-to, .sq-the { position: absolute; font-family: var(--font-b); text-transform: none; font-weight: 400; font-style: italic; font-size: clamp(0.95rem, 1.7vw, 1.25rem); letter-spacing: 0; color: var(--solder); opacity: 0; }
         .sq-to { left: 3%; top: 56%; animation: fadeup 0.6s ease 1.7s forwards; }
         .sq-the { right: 6%; bottom: 56%; animation: fadeup 0.6s ease 1.95s forwards; }
@@ -236,8 +235,8 @@
                 <span class="lo">From the</span><br>
                 <span class="pole">transistor</span>
                 <span class="hero-squiggle">
-                    <svg class="hero-trace" viewBox="0 0 560 60" aria-hidden="true">
-                        <path d="M6 30 q 46 -26 92 0 t 92 0 t 92 0 t 92 0 t 92 0 t 92 0" />
+                    <svg class="hero-trace" viewBox="0 0 560 46" aria-hidden="true">
+                        <path d="M2 8 H180 Q196 8 196 24 V30 Q196 44 212 44 H560" />
                     </svg>
                     <span class="sq-to">to</span>
                     <span class="sq-the">the</span>
@@ -349,8 +348,8 @@
         <!-- LAB -->
         <section id="lab" class="band">
             <p class="band-label">Lab</p>
-            <h2 class="band-title reveal">A couple of things I built for fun.</h2>
-            <p class="band-note">Tetris, and a tic-tac-toe that plays perfect minimax. A draw is the best you'll get.</p>
+            <h2 class="band-title reveal">Have Fun!</h2>
+            <p class="band-note">Good luck beating the Tic Tac Toe AI - you can't.</p>
             <div class="lab-grid">
                 <div class="unit reveal">
                     <div class="unit-bar"><span>Tetris</span><span class="r">L0 → canvas</span></div>
@@ -396,7 +395,7 @@
         <section id="console" class="band">
             <p class="band-label">About</p>
             <h2 class="band-title reveal">A bit more about me.</h2>
-            <p class="band-note">Type a command, or read the details on the right.</p>
+            <p class="band-note">Type a command, or read the details.</p>
             <div class="console-grid">
                 <div class="console reveal" onclick="document.getElementById('cin').focus()">
                     <div class="console-bar"><span>keaton@wyrick</span><span>type 'help'</span></div>
