@@ -898,6 +898,18 @@
             busy = false;
         }
 
+        // "Why should I hire you?" — let the work speak, don't sell.
+        function isHireQuestion(q) {
+            const s = q.toLowerCase();
+            if (/\bhir(e|ing|ed)\b/.test(s)) return true;
+            if (/convince me|sell me|\bwhy you\b/.test(s)) return true;
+            if (/why (are|should) you.*(best|right|good|ideal).*(candidate|fit|choice|person|pick)/.test(s)) return true;
+            if (/what makes you.*(good|great|best|right).*(candidate|fit|choice)/.test(s)) return true;
+            if (/why should (i|we|they|you) (pick|choose|go with|bet on|select) (you|keaton)/.test(s)) return true;
+            return false;
+        }
+        const HIRE_REPLY = "Honestly? I think you should decide that for yourself. Everything I've built is right here on this page: the projects, the code, and the range from silicon to AI. Take a look and make the call.";
+
         function leadIn(s) {
             if (s > 0.5) return "Here's the most relevant thing from my work:";
             if (s > 0.38) return "Closest match from my portfolio:";
@@ -910,6 +922,12 @@
         async function ask(q) {
             addMsg('user', esc(q));
             const typing = addMsg('bot', '<span class="ask-dots"><i></i><i></i><i></i></span>');
+            if (isHireQuestion(q)) {
+                await new Promise(r => setTimeout(r, 650));
+                typing.remove();
+                addMsg('bot', HIRE_REPLY);
+                return;
+            }
             const qv = await embed(q);
             const scored = KB.map((d, i) => ({ d, s: cos(qv, docVecs[i]) })).sort((a, b) => b.s - a.s);
             typing.remove();
