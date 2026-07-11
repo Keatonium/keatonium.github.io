@@ -675,8 +675,12 @@
             else if (a === 'drop') hardDrop();
             draw();
         }
+        // True while the user is typing in any text field, so game shortcuts don't hijack input.
+        function isTypingTarget(el) {
+            return !!el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable);
+        }
         document.addEventListener('keydown', e => {
-            if (document.activeElement === cin) return;
+            if (isTypingTarget(document.activeElement)) return;
             if (['ArrowLeft','ArrowRight','ArrowUp','ArrowDown',' '].includes(e.key)) e.preventDefault();
             if (e.keyCode===37) act('left');
             if (e.keyCode===39) act('right');
@@ -800,7 +804,7 @@
         const KONAMI = ['arrowup','arrowup','arrowdown','arrowdown','arrowleft','arrowright','arrowleft','arrowright','b','a'];
         let konamiPos = 0;
         document.addEventListener('keydown', e => {
-            if (document.activeElement === cin) return;
+            if (isTypingTarget(document.activeElement)) return;
             const k = e.key.toLowerCase();
             konamiPos = (k === KONAMI[konamiPos]) ? konamiPos + 1 : (k === KONAMI[0] ? 1 : 0);
             if (konamiPos === KONAMI.length) {
