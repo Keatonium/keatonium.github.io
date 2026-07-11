@@ -114,7 +114,8 @@
         .entry h3 { font-family: var(--font-d); font-weight: 700; font-size: 1.24rem; letter-spacing: -0.01em; }
         .entry .stack { font-family: var(--font-m); font-size: 0.66rem; letter-spacing: 0.1em; color: var(--ghost); text-transform: uppercase; margin-top: 0.35rem; }
         .entry p { color: var(--ghost); font-size: 0.94rem; margin-top: 0.7rem; max-width: 620px; }
-        .entry.flag { border: 1px solid var(--trace-dim); border-radius: 10px; padding: 1.6rem; background: linear-gradient(180deg, rgba(255,130,0,0.06), transparent 70%); position: relative; }
+        .entry.flag { border: 1px solid var(--trace-dim); border-radius: 10px; padding: 1.6rem; background: linear-gradient(180deg, rgba(255,130,0,0.06), transparent 70%); position: relative; transition: box-shadow 0.3s ease, border-color 0.3s ease; }
+        .entry.flag:hover { box-shadow: 0 0 42px var(--trace-glow); border-color: var(--trace); }
         .entry.flag::before { content: 'FLAGSHIP'; position: absolute; top: 1.6rem; right: 1.6rem; font-family: var(--font-m); font-size: 0.58rem; letter-spacing: 0.18em; color: var(--trace); }
         .entry.flag h3 { font-size: 1.5rem; }
         .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
@@ -150,41 +151,19 @@
         .egg-toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(12px); background: var(--carbon); border: 1px solid var(--trace-dim); color: var(--solder); font-family: var(--font-m); font-size: 0.74rem; letter-spacing: 0.02em; padding: 0.7rem 1.1rem; border-radius: 8px; box-shadow: 0 0 30px rgba(255,130,0,0.18); opacity: 0; pointer-events: none; z-index: 3000; transition: opacity 0.35s, transform 0.35s; max-width: 90vw; text-align: center; }
         .egg-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-        /* ---- Ask (in-browser AI search, ChatGPT-style) ---- */
-        .ask { max-width: 720px; background: var(--carbon); border: 1px solid var(--edge); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: 540px; margin-top: 2.6rem; }
-        .ask-bar { display: flex; justify-content: space-between; align-items: center; padding: 0.9rem 1.2rem; border-bottom: 1px solid var(--edge); font-family: var(--font-m); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; }
-        .ask-bar-title { color: var(--solder); }
-        .ask-bar-note { color: var(--trace); }
-        .ask-log { flex: 1; overflow-y: auto; padding: 1.4rem; display: flex; flex-direction: column; gap: 1.3rem; }
-        .ask-empty { margin: auto; text-align: center; max-width: 430px; display: flex; flex-direction: column; align-items: center; gap: 1rem; color: var(--ghost); }
-        .ask-spark { width: 46px; height: 46px; border-radius: 12px; background: linear-gradient(135deg, var(--trace), #b35a00); display: flex; align-items: center; justify-content: center; color: #000; font-size: 1.2rem; box-shadow: 0 0 24px var(--trace-glow); }
-        .ask-empty p { font-size: 0.92rem; line-height: 1.6; }
-        .ask-chips { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
-        .ask-chip { font-family: var(--font-m); font-size: 0.68rem; color: var(--solder); background: var(--panel); border: 1px solid var(--edge); border-radius: 999px; padding: 0.5rem 0.9rem; cursor: pointer; transition: 0.2s; }
-        .ask-chip:hover { border-color: var(--trace); color: var(--trace); }
-        .ask-start { margin-top: 0.3rem; font-family: var(--font-m); font-size: 0.74rem; font-weight: 700; color: #000; background: var(--trace); border: none; border-radius: 8px; padding: 0.75rem 1.2rem; cursor: pointer; transition: 0.2s; }
-        .ask-start:hover { box-shadow: 0 0 22px var(--trace-glow); }
-        .ask-start:disabled { opacity: 0.5; cursor: default; box-shadow: none; }
-        .msg { display: flex; gap: 0.7rem; }
-        .msg-user { justify-content: flex-end; }
-        .msg-user .bubble { background: rgba(255,130,0,0.14); border: 1px solid var(--trace-dim); color: var(--solder); border-radius: 14px 14px 4px 14px; padding: 0.7rem 1rem; max-width: 80%; font-size: 0.92rem; line-height: 1.5; }
-        .msg-bot .ask-av { width: 28px; height: 28px; border-radius: 7px; background: linear-gradient(135deg, var(--trace), #b35a00); color: #000; display: flex; align-items: center; justify-content: center; font-family: var(--font-m); font-weight: 700; font-size: 0.68rem; flex-shrink: 0; }
-        .msg-bot .bubble { color: var(--solder); font-size: 0.94rem; line-height: 1.6; max-width: 88%; }
-        .msg-bot .bubble p { margin-bottom: 0.55rem; }
-        .ask-card { background: var(--void); border: 1px solid var(--edge); border-left: 2px solid var(--trace); border-radius: 8px; padding: 0.8rem 1rem; margin-top: 0.5rem; }
-        .ask-card-tag { font-family: var(--font-m); font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--trace); }
-        .ask-card b { display: block; font-family: var(--font-d); font-size: 1rem; margin: 0.2rem 0 0.4rem; }
-        .ask-card p { color: var(--ghost); font-size: 0.85rem; line-height: 1.6; margin: 0; }
-        .ask-dots { display: inline-flex; gap: 4px; align-items: center; }
-        .ask-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--trace); animation: askblink 1.2s infinite; }
-        .ask-dots i:nth-child(2) { animation-delay: 0.2s; }
-        .ask-dots i:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes askblink { 0%,100% { opacity: 0.25; } 50% { opacity: 1; } }
-        .ask-form { display: flex; gap: 0.6rem; padding: 0.9rem; border-top: 1px solid var(--edge); }
-        .ask-input { flex: 1; background: var(--panel); border: 1px solid var(--edge); border-radius: 999px; padding: 0.75rem 1.1rem; color: var(--solder); font-family: var(--font-b); font-size: 0.92rem; outline: none; }
-        .ask-input:focus { border-color: var(--trace); }
-        .ask-send { width: 42px; height: 42px; border-radius: 50%; background: var(--trace); color: #000; border: none; font-size: 1.1rem; cursor: pointer; flex-shrink: 0; transition: 0.2s; }
-        .ask-send:hover { box-shadow: 0 0 18px var(--trace-glow); }
+        /* ---- Local AI Pipeline & Prompt Optimizer (simulated CLI demo) ---- */
+        .pipeline { max-width: 940px; margin-top: 2.6rem; display: grid; grid-template-columns: 1fr 1fr; background: var(--carbon); border: 1px solid var(--edge); border-radius: 16px; overflow: hidden; }
+        .pipeline-controls { padding: 1.7rem; display: flex; flex-direction: column; gap: 1.3rem; border-right: 1px solid var(--edge); }
+        .pipeline-label { font-family: var(--font-m); font-size: 0.64rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ghost); display: block; margin-bottom: 0.6rem; }
+        .pipeline-select { width: 100%; background: var(--void); border: 1px solid var(--edge-strong); border-radius: 8px; color: var(--solder); font-family: var(--font-m); font-size: 0.8rem; padding: 0.65rem 0.8rem; outline: none; cursor: pointer; }
+        .pipeline-select:focus { border-color: var(--trace); }
+        .pipeline-prompt { width: 100%; background: var(--void); border: 1px solid var(--edge); border-radius: 8px; color: var(--solder); font-family: var(--font-b); font-size: 0.88rem; padding: 0.8rem; resize: vertical; min-height: 84px; outline: none; }
+        .pipeline-prompt:focus { border-color: var(--trace); }
+        .pipeline-term { background: #0d0d10; display: flex; flex-direction: column; }
+        .pipeline-term-bar { padding: 0.75rem 1.1rem; border-bottom: 1px solid var(--edge); font-family: var(--font-m); font-size: 0.64rem; letter-spacing: 0.1em; color: var(--ghost); text-transform: uppercase; }
+        .pipeline-out { flex: 1; margin: 0; padding: 1.1rem; font-family: var(--font-m); font-size: 0.78rem; line-height: 1.8; color: #b9b6c0; white-space: pre-wrap; overflow-y: auto; min-height: 280px; max-height: 360px; }
+        .pipeline-out .ok { color: var(--trace); }
+        .pipeline-out .dim { color: var(--ghost); }
 
         /* ---- Console + education ---- */
         .console-grid { display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 2rem; margin-top: 2.8rem; align-items: stretch; }
@@ -232,7 +211,8 @@
             .layer-id .lv { font-size: 1.05rem; }
             .layer-id .nm { margin-top: 0; }
             .layer-id .hw { display: none; }
-            .lab-grid, .console-grid { grid-template-columns: 1fr; }
+            .lab-grid, .console-grid, .pipeline { grid-template-columns: 1fr; }
+            .pipeline-controls { border-right: none; border-bottom: 1px solid var(--edge); }
             .entry.flag::before { position: static; display: block; margin-bottom: 0.5rem; }
             .entry.flag h3 { font-size: 1.3rem; }
         }
@@ -257,7 +237,7 @@
             <div class="rail-nodes">
                 <a class="rail-node on" href="#top" data-target="top" data-label="TOP" aria-label="Top"></a>
                 <a class="rail-node" href="#stack" data-target="stack" data-label="THE STACK" aria-label="The stack"></a>
-                <a class="rail-node" href="#ask" data-target="ask" data-label="ASK" aria-label="Ask"></a>
+                <a class="rail-node" href="#pipeline" data-target="pipeline" data-label="PIPELINE" aria-label="Pipeline"></a>
                 <a class="rail-node" href="#lab" data-target="lab" data-label="LAB" aria-label="Lab"></a>
                 <a class="rail-node" href="#console" data-target="console" data-label="CONSOLE" aria-label="Console"></a>
                 <a class="rail-node" href="#reach" data-target="reach" data-label="REACH" aria-label="Reach"></a>
@@ -385,33 +365,39 @@
             </div>
         </section>
 
-        <!-- ASK (in-browser AI search) -->
-        <section id="ask" class="band">
-            <p class="band-label">Ask</p>
-            <h2 class="band-title reveal">Ask about my work.</h2>
-            <p class="band-note">A small language model runs entirely in your browser, so nothing you type is sent to any server. Ask about my projects, skills, or background and it answers from my portfolio.</p>
-            <div class="ask reveal">
-                <div class="ask-bar">
-                    <span class="ask-bar-title">portfolio assistant</span>
-                    <span class="ask-bar-note" id="ask-status">100% in-browser · private</span>
-                </div>
-                <div class="ask-log" id="ask-log">
-                    <div class="ask-empty" id="ask-empty">
-                        <div class="ask-spark">◆</div>
-                        <p>I'm a tiny AI that answers questions from Keaton's portfolio, running on your device, not a server.</p>
-                        <div class="ask-chips">
-                            <button class="ask-chip" type="button">What's your AI experience?</button>
-                            <button class="ask-chip" type="button">Do you know Verilog?</button>
-                            <button class="ask-chip" type="button">What did you build on an FPGA?</button>
-                            <button class="ask-chip" type="button">What's your GPA?</button>
-                        </div>
-                        <button class="ask-start" id="ask-start" type="button">Load the assistant (~30 MB, one time)</button>
+        <!-- LOCAL AI PIPELINE & PROMPT OPTIMIZER (simulated CLI demo) -->
+        <section id="pipeline" class="band">
+            <p class="band-label">Pipeline</p>
+            <h2 class="band-title reveal">Local AI Pipeline &amp; Prompt Optimizer.</h2>
+            <p class="band-note">A simulation of how a local inference launcher turns a prompt and a set of optimization flags into a startup script, the kind of thing that sits in front of a model like the one running my Obsidian assistant.</p>
+            <div class="pipeline reveal">
+                <div class="pipeline-controls">
+                    <div>
+                        <span class="pipeline-label">VRAM optimization mode</span>
+                        <select id="pipeline-vram" class="pipeline-select">
+                            <option value="--normalvram --fast-fp8">--normalvram --fast-fp8</option>
+                            <option value="--lowvram">--lowvram</option>
+                            <option value="--medvram">--medvram</option>
+                        </select>
                     </div>
+                    <div>
+                        <span class="pipeline-label">Sampler settings</span>
+                        <select id="pipeline-sampler" class="pipeline-select">
+                            <option value="Euler a">Euler a</option>
+                            <option value="DPM++ 2M Karras">DPM++ 2M Karras</option>
+                            <option value="DDIM">DDIM</option>
+                        </select>
+                    </div>
+                    <div>
+                        <span class="pipeline-label">Prompt</span>
+                        <textarea id="pipeline-prompt" class="pipeline-prompt" maxlength="300" placeholder="e.g. a weathered engineer's workbench, blueprints, warm light"></textarea>
+                    </div>
+                    <button id="pipeline-run" class="btn btn-solid" type="button" style="align-self:flex-start;">Inject Execution Arguments</button>
                 </div>
-                <form class="ask-form" id="ask-form" style="display:none;">
-                    <input id="ask-input" class="ask-input" placeholder="Ask about my projects…" autocomplete="off" aria-label="Ask about Keaton">
-                    <button class="ask-send" type="submit" aria-label="Send">↑</button>
-                </form>
+                <div class="pipeline-term">
+                    <div class="pipeline-term-bar">launch.log <span style="float:right; color: var(--trace);">SIMULATED</span></div>
+                    <pre class="pipeline-out" id="terminalOutput">$ awaiting input_</pre>
+                </div>
             </div>
         </section>
 
@@ -822,142 +808,64 @@
                 eggUnlockTTT("↑↑↓↓←→←→BA. dev mode: the AI folds.");
             }
         });
-    </script>
 
-    <!-- In-browser semantic search over the portfolio (transformers.js, runs client-side) -->
-    <script type="module">
-        import { pipeline, env } from 'https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2';
-        env.allowLocalModels = false;
+        // ---- Local AI Pipeline & Prompt Optimizer (simulated CLI demo) ----
+        // This does not call a real model. It's a themed simulation of how a local
+        // inference launcher turns a prompt + flags into a startup script.
+        const escHtml = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+        const pipelinePrompt = document.getElementById('pipeline-prompt');
+        const pipelineVram = document.getElementById('pipeline-vram');
+        const pipelineSampler = document.getElementById('pipeline-sampler');
+        const pipelineOut = document.getElementById('terminalOutput');
+        const pipelineRun = document.getElementById('pipeline-run');
 
-        // Knowledge base — drawn from the portfolio content on this page.
-        const KB = [
-            { title: 'Local AI Assistant for Obsidian', tag: 'AI Agents / RAG', text: "A privacy-first AI assistant that runs fully offline on Ollama. An LLM router classifies each message and sends it to the right skill (notes, weather, stocks, email), then answers with retrieval-augmented generation (RAG) over your notes and past chats. Built in Python with a FastAPI backend and an OpenAI-compatible endpoint, using a local vector index for semantic search." },
-            { title: 'Regression Modeling in PyTorch', tag: 'Machine Learning', text: "Built and trained machine-learning regression models end to end in PyTorch, with data prep in NumPy and Pandas, and implemented gradient descent and backpropagation from first principles." },
-            { title: 'ESP-32 Wi-Fi Security Research', tag: 'Networking / Security', text: "Built a Wi-Fi de-authentication platform on the ESP-32 microcontroller for hands-on 802.11 wireless protocol and network security testing, covering deauth frames, beacon spam, and management-frame protection." },
-            { title: 'Food Health App', tag: 'TypeScript / Mobile', text: "Led frontend development for a barcode-scanning nutrition and health mobile app built with TypeScript in Expo Go, including an allergen-flagging system." },
-            { title: 'Low-Level Simon Game', tag: 'Embedded C / Firmware', text: "Wrote bare-metal embedded firmware in C on a TM4C123G microcontroller using Keil, with custom resistor-ladder input circuits debugged over UART. No operating system or framework between the code and the silicon." },
-            { title: 'Tetris on FPGA', tag: 'Hardware / Verilog', text: "Built a fully playable Tetris game on a Basys 3 FPGA, written in Verilog at the register-transfer level (RTL), with custom game logic, VGA video synchronization, and screen rotation. Digital hardware design." },
-            { title: 'Education', tag: 'University of Tennessee, Knoxville', text: "Keaton is pursuing a B.S. in Computer Engineering at the University of Tennessee, Knoxville, with a GPA of 3.45, graduating May 2027. Coursework includes Computer Architecture, Digital Systems, FPGA design in Verilog and VHDL, AC/DC and analog circuits, Data Structures and Algorithms, and C/C++ programming." },
-            { title: 'Skills & Focus', tag: 'About Keaton', text: "Keaton Wyrick is a computer engineer with an embedded-systems background who now builds local-first AI agents and LLM tooling. His stack includes Python, PyTorch, FastAPI, C, Verilog, and TypeScript. Current focus: agentic AI, LLM routing, retrieval-augmented generation, vector search, and grounding language models in real data and hardware." },
-            { title: 'Contact', tag: 'Get in touch', text: "Reach Keaton by email at keatonwyrick4@gmail.com or on LinkedIn at keatonwyrick. He is open to internships and roles in embedded systems, AI, and software engineering." }
-        ];
-
-        const log = document.getElementById('ask-log');
-        const emptyState = document.getElementById('ask-empty');
-        const form = document.getElementById('ask-form');
-        const input = document.getElementById('ask-input');
-        const startBtn = document.getElementById('ask-start');
-        const status = document.getElementById('ask-status');
-
-        let extractor = null, docVecs = null, ready = false, busy = false;
-
-        const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-
-        function addMsg(role, html) {
-            const row = document.createElement('div');
-            row.className = 'msg msg-' + role;
-            row.innerHTML = role === 'bot'
-                ? `<span class="ask-av">KW</span><div class="bubble">${html}</div>`
-                : `<div class="bubble">${html}</div>`;
-            log.appendChild(row);
-            log.scrollTop = log.scrollHeight;
-            return row;
+        function pipelineLine(html) {
+            return new Promise(resolve => setTimeout(() => {
+                pipelineOut.innerHTML += (pipelineOut.innerHTML ? '\n' : '') + html;
+                pipelineOut.scrollTop = pipelineOut.scrollHeight;
+                resolve();
+            }, 280));
         }
 
-        async function embed(text) {
-            const out = await extractor(text, { pooling: 'mean', normalize: true });
-            return out.data;
-        }
-        const cos = (a, b) => { let s = 0; for (let i = 0; i < a.length; i++) s += a[i] * b[i]; return s; };
+        async function runPipeline() {
+            if (pipelineRun.disabled) return;
+            pipelineRun.disabled = true;
+            const rawPrompt = pipelinePrompt.value.trim() || 'a portrait of a computer engineer at a workbench';
+            const tokens = rawPrompt.split(/\s+/).filter(Boolean).length;
+            const vram = pipelineVram.value;
+            const sampler = pipelineSampler.value;
+            const seed = Math.floor(Math.random() * 900000) + 100000;
 
-        async function loadModel() {
-            if (ready || busy) return;
-            busy = true;
-            startBtn.disabled = true;
-            try {
-                status.textContent = 'loading model…';
-                extractor = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2', {
-                    progress_callback: p => {
-                        if (p.status === 'progress' && typeof p.progress === 'number')
-                            status.textContent = `loading model… ${Math.round(p.progress)}%`;
-                    }
-                });
-                status.textContent = 'indexing portfolio…';
-                docVecs = [];
-                for (const d of KB) docVecs.push(await embed(`${d.title}. ${d.tag}. ${d.text}`));
-                ready = true;
-                status.textContent = '100% in-browser · private';
-                emptyState.style.display = 'none';
-                form.style.display = 'flex';
-                input.focus();
-            } catch (err) {
-                status.textContent = 'failed to load';
-                startBtn.disabled = false;
-                addMsg('bot', "I couldn't load the model. It needs to fetch the model files once, so check your connection and try again.");
-            }
-            busy = false;
+            pipelineOut.innerHTML = '';
+            await pipelineLine('$ inject --prompt-file stdin');
+            await pipelineLine(`<span class="dim">[BOOT] parsing prompt... ${tokens} token(s) detected</span>`);
+            await pipelineLine('<span class="ok">[OK] tokenizer initialized</span>');
+            await pipelineLine(`<span class="ok">[OK] allocating shared memory tensors... done</span>`);
+            await pipelineLine(`<span class="ok">[OK] flags validated: ${escHtml(vram)}</span>`);
+            await pipelineLine(`<span class="ok">[OK] sampler set: ${escHtml(sampler)}</span>`);
+            await pipelineLine('<span class="dim">[WRITE] building startup script...</span>');
+            const script = [
+                'python launch.py \\',
+                `  --prompt "${escHtml(rawPrompt).replace(/"/g, '\\"')}" \\`,
+                `  --sampler "${escHtml(sampler)}" --seed ${seed} --steps 28 --cfg 6.5 \\`,
+                '  ' + escHtml(vram)
+            ].join('\n');
+            await pipelineLine('<span class="ok">[DONE] launch script ready:</span>\n\n' + script);
+            pipelineRun.disabled = false;
         }
+        pipelineRun.addEventListener('click', runPipeline);
 
-        // "Why should I hire you?" — let the work speak, don't sell.
-        function isHireQuestion(q) {
-            const s = q.toLowerCase();
-            if (/\bhir(e|ing|ed)\b/.test(s)) return true;
-            if (/convince me|sell me|\bwhy you\b/.test(s)) return true;
-            if (/why (are|should) you.*(best|right|good|ideal).*(candidate|fit|choice|person|pick)/.test(s)) return true;
-            if (/what makes you.*(good|great|best|right).*(candidate|fit|choice)/.test(s)) return true;
-            if (/why should (i|we|they|you) (pick|choose|go with|bet on|select) (you|keaton)/.test(s)) return true;
-            return false;
-        }
-        const HIRE_REPLY = "Honestly? I think you should decide that for yourself. Everything I've built is right here on this page: the projects, the code, and the range from silicon to AI. Take a look and make the call.";
-
-        function leadIn(s) {
-            if (s > 0.5) return "Here's the most relevant thing from my work:";
-            if (s > 0.38) return "Closest match from my portfolio:";
-            return "This might be what you mean:";
-        }
-        function cardHTML(d) {
-            return `<div class="ask-card"><span class="ask-card-tag">${esc(d.tag)}</span><b>${esc(d.title)}</b><p>${esc(d.text)}</p></div>`;
-        }
-
-        async function ask(q) {
-            addMsg('user', esc(q));
-            const typing = addMsg('bot', '<span class="ask-dots"><i></i><i></i><i></i></span>');
-            if (isHireQuestion(q)) {
-                await new Promise(r => setTimeout(r, 650));
-                typing.remove();
-                addMsg('bot', HIRE_REPLY);
-                return;
-            }
-            const qv = await embed(q);
-            const scored = KB.map((d, i) => ({ d, s: cos(qv, docVecs[i]) })).sort((a, b) => b.s - a.s);
-            typing.remove();
-            const top = scored[0];
-            if (top.s < 0.22) {
-                addMsg('bot', "I don't have anything on that in my portfolio. Try asking about my AI/agent work, RAG, FPGA and Verilog, embedded firmware, my education, or how to reach me.");
-                return;
-            }
-            let html = `<p>${leadIn(top.s)}</p>${cardHTML(top.d)}`;
-            const second = scored[1];
-            if (second && second.s > 0.4 && (top.s - second.s) < 0.06) html += cardHTML(second.d);
-            addMsg('bot', html);
-        }
-
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            const q = input.value.trim();
-            if (!q || !ready) return;
-            input.value = '';
-            ask(q);
-        });
-
-        startBtn.addEventListener('click', () => loadModel());
-        document.querySelectorAll('.ask-chip').forEach(chip => {
-            chip.addEventListener('click', async () => {
-                const q = chip.textContent;
-                if (!ready) await loadModel();
-                if (ready) ask(q);
-            });
-        });
+        // ---- Hidden console easter egg ----
+        console.log('%cCRITICAL: Keaton Core Interface v2.6... OK.', 'color:#ff8200;font-family:monospace;font-weight:bold;font-size:13px;');
+        console.log('%cRecruiters: Type hire() into this console for advanced applicant routing logic.', 'color:#8b8792;font-family:monospace;font-size:12px;');
+        window.hire = function () {
+            const msg = '[HANDSHAKE ESTABLISHED] Automated application matrix bypass initialized. Alerting Keaton at keatonwyrick4@gmail.com... Secure your interview window immediately.';
+            console.log('%c' + msg, 'color:#ff8200;font-family:monospace;font-weight:bold;');
+            const footer = document.querySelector('footer');
+            if (footer) footer.innerHTML = `<span>${msg}</span>`;
+            eggToast('👋 hire() executed. check the footer.');
+            return msg;
+        };
     </script>
 </body>
 </html>
