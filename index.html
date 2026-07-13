@@ -148,6 +148,17 @@
         .cell.x { color: var(--solder); }
         .cell.o { color: var(--trace); }
 
+        .nn-stage { padding: 1.6rem; display: flex; flex-direction: column; align-items: center; }
+        .nn-svg { width: 100%; max-width: 640px; height: auto; overflow: visible; }
+        .nn-edge { stroke: var(--edge-strong); stroke-width: 1; transition: stroke 0.3s ease, filter 0.3s ease; }
+        .nn-edge.active { stroke: var(--trace); filter: drop-shadow(0 0 3px var(--trace-glow)); }
+        .nn-node { fill: var(--void); stroke: var(--edge-strong); stroke-width: 1.5; transition: fill 0.3s ease, stroke 0.3s ease, filter 0.3s ease; }
+        .nn-node.active { fill: var(--trace); stroke: var(--trace); filter: drop-shadow(0 0 6px var(--trace-glow)); }
+        .nn-labels { display: flex; justify-content: space-between; width: 100%; max-width: 640px; margin-top: 0.9rem; font-family: var(--font-m); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ghost); }
+        .nn-labels span { transition: color 0.3s ease; }
+        .nn-labels span.active { color: var(--trace); }
+        .nn-status { font-family: var(--font-m); font-size: 0.76rem; color: var(--ghost); margin-top: 1.1rem; min-height: 1.1em; text-align: center; }
+
         .egg-toast { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(12px); background: var(--carbon); border: 1px solid var(--trace-dim); color: var(--solder); font-family: var(--font-m); font-size: 0.74rem; letter-spacing: 0.02em; padding: 0.7rem 1.1rem; border-radius: 8px; box-shadow: 0 0 30px rgba(255,130,0,0.18); opacity: 0; pointer-events: none; z-index: 3000; transition: opacity 0.35s, transform 0.35s; max-width: 90vw; text-align: center; }
         .egg-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
@@ -405,7 +416,7 @@
         <section id="lab" class="band">
             <p class="band-label">Lab</p>
             <h2 class="band-title reveal">Have Fun!</h2>
-            <p class="band-note">Good luck beating the Tic Tac Toe AI - you can't.</p>
+            <p class="band-note">Good luck beating the Tic Tac Toe AI - you can't. Below that, a tiny forward pass: how a signal turns into a decision.</p>
             <div class="lab-grid">
                 <div class="unit reveal">
                     <div class="unit-bar"><span>Tetris</span><span class="r">L0 → canvas</span></div>
@@ -443,6 +454,19 @@
                         </div>
                         <button class="pill" style="margin-top:1.2rem;" onclick="tttReset()">NEW GAME</button>
                     </div>
+                </div>
+            </div>
+            <div class="unit reveal" style="margin-top: 1.6rem;">
+                <div class="unit-bar"><span>Neural Net</span><span class="r">forward pass</span></div>
+                <div class="nn-stage">
+                    <svg class="nn-svg" id="nn-svg" aria-hidden="true"></svg>
+                    <div class="nn-labels">
+                        <span>Input Layer</span>
+                        <span>Hidden Layers</span>
+                        <span>Output Layer</span>
+                    </div>
+                    <p class="nn-status" id="nn-status">Bits become weights, weights become a decision.</p>
+                    <button class="pill" id="nn-run" type="button">RUN FORWARD PASS</button>
                 </div>
             </div>
         </section>
@@ -544,13 +568,23 @@
             fpga: "somewhere, an LED is blinking because of me.",
             vim: "you're trapped forever. (jk: :q!)",
             secrets: "try clicking around the lab. or: letmewin",
-            "ls secrets/": "beat_the_ai.exe  konami.txt  coffee.log"
+            "ls secrets/": "beat_the_ai.exe  konami.txt  coffee.log  chip.svg",
+            chip: `        ┌───────────────┐
+   VCC ─┤ 1           16├─ GND
+   IN0 ─┤ 2           15├─ OUT
+   IN1 ─┤ 3   KW-2600 14├─ RDY
+   IN2 ─┤ 4    CORE   13├─ CLK
+   IN3 ─┤ 5           12├─ RST
+        │ · · · · · · ·│
+        └───────────────┘
+        "from transistor to transformer"`
         };
         cin.addEventListener('keydown', e => {
             if (e.key !== 'Enter') return;
             const v = cin.value.toLowerCase().trim();
             if (v === 'clear') { cout.textContent = ''; }
             else if (v === 'letmewin' || v === 'iddqd') { cout.textContent += `\n$ ${v}\nthe tic-tac-toe AI will now let you win.`; eggUnlockTTT("cheat code accepted. the AI will let you win."); }
+            else if (v === 'nn' || v === 'forwardpass') { cout.textContent += `\n$ ${v}\nrunning a forward pass in the Lab below...`; runForwardPass(); document.getElementById('lab').scrollIntoView({ behavior: 'smooth' }); }
             else if (CMDS[v]) { cout.textContent += `\n$ ${v}\n${CMDS[v]}`; }
             else if (EGGCMDS[v]) { cout.textContent += `\n$ ${v}\n${EGGCMDS[v]}`; }
             else if (v) { cout.textContent += `\n$ ${v}\ncommand not found, try 'help'.`; }
@@ -812,6 +846,70 @@
                 eggUnlockTTT("↑↑↓↓←→←→BA. dev mode: the AI folds.");
             }
         });
+
+        // ---- Neural net diagram: input -> hidden -> hidden -> output, animated forward pass ----
+        const NS = 'http://www.w3.org/2000/svg';
+        const nnSvg = document.getElementById('nn-svg');
+        const nnLayerSizes = [3, 4, 4, 1];
+        const NN_W = 640, NN_H = 240;
+        nnSvg.setAttribute('viewBox', `0 0 ${NN_W} ${NN_H}`);
+        const nnXs = nnLayerSizes.map((_, i) => 44 + i * ((NN_W - 88) / (nnLayerSizes.length - 1)));
+        const nnPositions = nnLayerSizes.map((count, li) => {
+            const gap = NN_H / (count + 1);
+            return Array.from({ length: count }, (_, i) => ({ x: nnXs[li], y: gap * (i + 1) }));
+        });
+        const nnEdges = [];
+        for (let li = 0; li < nnLayerSizes.length - 1; li++) {
+            const rowEdges = [];
+            nnPositions[li].forEach(a => {
+                nnPositions[li + 1].forEach(b => {
+                    const line = document.createElementNS(NS, 'line');
+                    line.setAttribute('x1', a.x); line.setAttribute('y1', a.y);
+                    line.setAttribute('x2', b.x); line.setAttribute('y2', b.y);
+                    line.setAttribute('class', 'nn-edge');
+                    nnSvg.appendChild(line);
+                    rowEdges.push(line);
+                });
+            });
+            nnEdges.push(rowEdges);
+        }
+        const nnNodes = nnPositions.map(layer => layer.map(p => {
+            const c = document.createElementNS(NS, 'circle');
+            c.setAttribute('cx', p.x); c.setAttribute('cy', p.y); c.setAttribute('r', 9);
+            c.setAttribute('class', 'nn-node');
+            nnSvg.appendChild(c);
+            return c;
+        }));
+        const nnStatus = document.getElementById('nn-status');
+        const nnLabels = [...document.querySelectorAll('.nn-labels span')];
+        let nnRunning = false;
+        async function runForwardPass() {
+            if (nnRunning) return;
+            nnRunning = true;
+            nnNodes.flat().forEach(n => n.classList.remove('active'));
+            nnEdges.flat().forEach(e => e.classList.remove('active'));
+            nnLabels.forEach(l => l.classList.remove('active'));
+
+            nnNodes[0].forEach(n => n.classList.add('active'));
+            nnLabels[0].classList.add('active');
+            nnStatus.textContent = 'Input layer firing…';
+            await new Promise(r => setTimeout(r, 420));
+
+            for (let li = 0; li < nnLayerSizes.length - 1; li++) {
+                nnEdges[li].forEach(e => e.classList.add('active'));
+                await new Promise(r => setTimeout(r, 220));
+                nnNodes[li + 1].forEach(n => n.classList.add('active'));
+                if (li < nnLayerSizes.length - 2) nnLabels[1].classList.add('active');
+                else nnLabels[2].classList.add('active');
+                nnStatus.textContent = li < nnLayerSizes.length - 2 ? 'Propagating through hidden layer…' : 'Output firing.';
+                await new Promise(r => setTimeout(r, 420));
+            }
+            await new Promise(r => setTimeout(r, 700));
+            nnStatus.textContent = 'Bits become weights, weights become a decision.';
+            nnRunning = false;
+        }
+        document.getElementById('nn-run').addEventListener('click', runForwardPass);
+        setTimeout(runForwardPass, 1200); // so it's not a dead diagram on first view
 
         // ---- Local AI Pipeline & Prompt Optimizer (simulated CLI demo) ----
         // This does not call a real model. It's a themed simulation of how a local
