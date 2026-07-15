@@ -43,6 +43,29 @@
         a { color: inherit; text-decoration: none; }
         :focus-visible { outline: 2px solid var(--trace); outline-offset: 3px; border-radius: 2px; }
 
+        /* ---- Landing gate ---- */
+        .gate { position: fixed; inset: 0; z-index: 5000; background: var(--void); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .gate::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle at 1px 1px, var(--edge-strong) 1px, transparent 0); background-size: 28px 28px; opacity: 0.4; pointer-events: none; }
+        .gate-inner { position: relative; text-align: center; padding: 2rem; animation: gateIn 0.9s cubic-bezier(0.16,1,0.3,1) both; }
+        .gate-kicker { font-family: var(--font-m); font-size: 0.72rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--trace); margin-bottom: 1.6rem; }
+        .gate-name { font-family: var(--font-d); font-weight: 800; letter-spacing: -0.03em; font-size: clamp(2.4rem, 8vw, 4.6rem); line-height: 1; color: var(--solder); }
+        .gate-role { font-family: var(--font-b); color: var(--ghost); font-size: clamp(1rem, 2vw, 1.2rem); margin-top: 1.1rem; line-height: 1.5; }
+        .gate-role b { color: var(--solder); font-weight: 500; }
+        .gate-enter { margin-top: 2.6rem; font-family: var(--font-m); font-size: 0.8rem; letter-spacing: 0.06em; background: var(--trace); color: #000; font-weight: 700; border: none; border-radius: 999px; padding: 1rem 2.2rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.6rem; transition: box-shadow 0.25s ease, transform 0.25s ease; }
+        .gate-enter:hover { box-shadow: 0 0 30px var(--trace-glow); transform: translateY(-2px); }
+        .gate-enter svg { width: 13px; height: 13px; transition: transform 0.25s ease; }
+        .gate-enter:hover svg { transform: translateX(3px); }
+        .gate-hint { margin-top: 1.4rem; font-family: var(--font-m); font-size: 0.66rem; letter-spacing: 0.06em; color: var(--ghost); opacity: 0.65; }
+        @keyframes gateIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+        .gate.leaving { pointer-events: none; animation: gateOverlayOut 0.7s cubic-bezier(0.7,0,0.84,0) both; }
+        .gate.leaving .gate-inner { animation: gateInnerOut 0.5s cubic-bezier(0.7,0,0.84,0) both; }
+        @keyframes gateOverlayOut { to { opacity: 0; } }
+        @keyframes gateInnerOut { to { opacity: 0; transform: translateY(-20px) scale(0.97); } }
+        body.gated { overflow: hidden; }
+        body.gated .hero-kicker, body.gated .hero-h1 .lo, body.gated .hero-h1 .pole, body.gated .hero-sub, body.gated .hero-actions {
+            animation-play-state: paused;
+        }
+
         /* ---- Signal rail (left) ---- */
         .rail { position: fixed; top: 0; left: 0; height: 100vh; width: var(--rail-w); z-index: 900; display: flex; flex-direction: column; align-items: center; padding: 2.4rem 0; }
         .rail-line { position: relative; flex: 1; width: 2px; background: var(--trace-dim); opacity: 0.5; margin: 1.2rem 0; }
@@ -61,10 +84,8 @@
         /* ---- Layout shell ---- */
         .shell { margin-left: var(--rail-w); }
         .band { padding: 8rem clamp(1.5rem, 5vw, 5rem); max-width: calc(var(--wrap) + var(--rail-w)); }
-        .band-label { font-family: var(--font-m); font-size: 0.7rem; letter-spacing: 0.24em; color: var(--trace); text-transform: uppercase; display: flex; align-items: center; gap: 0.7rem; margin-bottom: 1.6rem; }
-        .band-label::before { content: ''; width: 26px; height: 1px; background: var(--trace); }
-        .band-title { font-family: var(--font-d); font-weight: 800; font-size: clamp(1.9rem, 4.2vw, 2.8rem); letter-spacing: -0.02em; line-height: 1.02; }
-        .band-note { color: var(--ghost); max-width: 560px; margin-top: 1rem; }
+        .band-title { font-family: var(--font-d); font-weight: 800; font-size: clamp(1.9rem, 4.2vw, 2.8rem); letter-spacing: -0.02em; line-height: 1.02; text-wrap: balance; }
+        .band-note { color: var(--ghost); max-width: 560px; margin-top: 1rem; text-wrap: pretty; }
 
         /* ---- Hero ---- */
         .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; padding-top: 6rem; padding-bottom: 6rem; position: relative; }
@@ -113,7 +134,7 @@
         .layer-body { display: flex; flex-direction: column; gap: 1.4rem; }
         .entry h3 { font-family: var(--font-d); font-weight: 700; font-size: 1.24rem; letter-spacing: -0.01em; }
         .entry .stack { font-family: var(--font-m); font-size: 0.66rem; letter-spacing: 0.1em; color: var(--ghost); text-transform: uppercase; margin-top: 0.35rem; }
-        .entry p { color: var(--ghost); font-size: 0.94rem; margin-top: 0.7rem; max-width: 620px; }
+        .entry p { color: var(--ghost); font-size: 0.94rem; margin-top: 0.7rem; max-width: 620px; text-wrap: pretty; }
         .entry.flag { border: 1px solid var(--trace-dim); border-radius: 10px; padding: 1.6rem; background: linear-gradient(180deg, rgba(255,130,0,0.06), transparent 70%); position: relative; transition: box-shadow 0.3s ease, border-color 0.3s ease; }
         .entry.flag:hover { box-shadow: 0 0 42px var(--trace-glow); border-color: var(--trace); }
         .entry.flag::before { content: 'FLAGSHIP'; position: absolute; top: 1.6rem; right: 1.6rem; font-family: var(--font-m); font-size: 0.58rem; letter-spacing: 0.18em; color: var(--trace); }
@@ -235,10 +256,31 @@
             .hero-kicker, .hero-h1 .lo, .hero-h1 .pole, .hero-sub, .hero-actions { animation: none; }
             .sq-to, .sq-the { animation: none; opacity: 0.92; }
             .reveal { opacity: 1; transform: none; transition: none; }
+            .gate-inner, .gate.leaving, .gate.leaving .gate-inner { animation: none; }
+            body.gated .hero-kicker, body.gated .hero-h1 .lo, body.gated .hero-h1 .pole, body.gated .hero-sub, body.gated .hero-actions { animation-play-state: running; }
         }
     </style>
+    <noscript><style>
+        .gate { display: none !important; }
+        body { overflow: auto !important; }
+        body.gated .hero-kicker, body.gated .hero-h1 .lo, body.gated .hero-h1 .pole, body.gated .hero-sub, body.gated .hero-actions { animation-play-state: running !important; }
+    </style></noscript>
 </head>
-<body>
+<body class="gated">
+
+    <!-- Landing gate: click, tap, or press any key to reveal the site -->
+    <div class="gate" id="gate" role="dialog" aria-modal="true" aria-label="Introduction">
+        <div class="gate-inner">
+            <p class="gate-kicker">Portfolio</p>
+            <p class="gate-name">Keaton Wyrick</p>
+            <p class="gate-role">B.S. Computer Engineering<br><b>University of Tennessee, Knoxville</b></p>
+            <button class="gate-enter" id="gate-enter" type="button">
+                Enter
+                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <p class="gate-hint">click anywhere, or press any key</p>
+        </div>
+    </div>
 
     <!-- Signal rail -->
     <nav class="rail" aria-label="Section navigation">
@@ -260,7 +302,7 @@
     <div class="shell">
 
         <!-- HERO -->
-        <header id="top" class="band hero">
+        <header id="top" class="band hero" tabindex="-1">
             <p class="hero-kicker">Computer Engineer · <b>University of Tennessee, Knoxville</b></p>
             <h1 class="hero-h1">
                 <span class="lo">From the</span><br>
@@ -284,7 +326,6 @@
 
         <!-- THE STACK -->
         <section id="stack" class="band">
-            <p class="band-label">Selected work</p>
             <h2 class="band-title reveal">From high-level AI down to the silicon.</h2>
 
             <div style="margin-top: 2.6rem;">
@@ -378,7 +419,6 @@
 
         <!-- LOCAL AI PIPELINE & PROMPT OPTIMIZER (simulated CLI demo) -->
         <section id="pipeline" class="band">
-            <p class="band-label">Pipeline</p>
             <h2 class="band-title reveal">Local AI Pipeline &amp; Prompt Optimizer.</h2>
             <p class="band-note">A simulation of how a local inference launcher turns a prompt and a set of optimization flags into a startup script, the kind of thing that sits in front of a model like the one running my Obsidian assistant.</p>
             <div class="pipeline reveal">
@@ -414,7 +454,6 @@
 
         <!-- LAB -->
         <section id="lab" class="band">
-            <p class="band-label">Lab</p>
             <h2 class="band-title reveal">Have Fun!</h2>
             <p class="band-note">Good luck beating the Tic Tac Toe AI - you can't. Below that, a tiny forward pass: how a signal turns into a decision.</p>
             <div class="lab-grid">
@@ -473,7 +512,6 @@
 
         <!-- CONSOLE + SPEC -->
         <section id="console" class="band">
-            <p class="band-label">About</p>
             <h2 class="band-title reveal">A bit more about me.</h2>
             <p class="band-note">Type a command, or read the details.</p>
             <div class="console-grid">
@@ -500,7 +538,6 @@
 
         <!-- REACH -->
         <section id="reach" class="band reach">
-            <p class="band-label">Contact</p>
             <a class="reach-mail" href="mailto:keatonwyrick4@gmail.com">keatonwyrick4@gmail.com</a>
             <div class="reach-links">
                 <a href="https://linkedin.com/in/keatonwyrick" target="_blank" rel="noopener">LinkedIn ↗</a>
@@ -516,6 +553,37 @@
     <div class="egg-toast" id="egg-toast" role="status" aria-live="polite"></div>
 
     <script>
+        // ---- Landing gate: click, tap anywhere, or press any key to reveal the site ----
+        (function () {
+            const gate = document.getElementById('gate');
+            const enterBtn = document.getElementById('gate-enter');
+            const top = document.getElementById('top');
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            let dismissed = false;
+
+            function dismissGate() {
+                if (dismissed) return;
+                dismissed = true;
+                gate.classList.add('leaving');
+                document.body.classList.remove('gated');
+                document.querySelector('.shell').removeAttribute('aria-hidden');
+                document.querySelector('.rail').removeAttribute('aria-hidden');
+                document.removeEventListener('keydown', onGateKey);
+                setTimeout(() => {
+                    gate.remove();
+                    if (top) top.focus({ preventScroll: true });
+                }, reduceMotion ? 0 : 650);
+            }
+            function onGateKey() { dismissGate(); }
+
+            document.querySelector('.shell').setAttribute('aria-hidden', 'true');
+            document.querySelector('.rail').setAttribute('aria-hidden', 'true');
+            enterBtn.addEventListener('click', e => { e.stopPropagation(); dismissGate(); });
+            gate.addEventListener('click', dismissGate);
+            document.addEventListener('keydown', onGateKey);
+            enterBtn.focus({ preventScroll: true });
+        })();
+
         // ---- Signal rail: scroll progress + active node ----
         const railFill = document.getElementById('rail-fill');
         const nodes = [...document.querySelectorAll('.rail-node')];
