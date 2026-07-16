@@ -42,34 +42,40 @@
         ::selection { background: var(--trace); color: #000; }
         a { color: inherit; text-decoration: none; }
         :focus-visible { outline: 2px solid var(--trace); outline-offset: 3px; border-radius: 2px; }
+        #top:focus { outline: none; } /* programmatic-only focus target (tabindex=-1), never reached by Tab */
 
         /* ---- Landing gate ---- */
-        .gate { position: fixed; inset: 0; z-index: 5000; background: var(--void); display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .gate { position: fixed; inset: 0; z-index: 5000; background: var(--void); display: flex; align-items: center; justify-content: center; cursor: pointer; clip-path: circle(150% at var(--gx, 50%) var(--gy, 50%)); }
         .gate::before { content: ''; position: absolute; inset: 0; background-image: radial-gradient(circle at 1px 1px, var(--edge-strong) 1px, transparent 0); background-size: 28px 28px; opacity: 0.4; pointer-events: none; }
         .gate-inner { position: relative; text-align: center; padding: 2rem; animation: gateIn 0.9s cubic-bezier(0.16,1,0.3,1) both; }
         .gate-kicker { font-family: var(--font-m); font-size: 0.72rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--trace); margin-bottom: 1.6rem; }
         .gate-name { font-family: var(--font-d); font-weight: 800; letter-spacing: -0.03em; font-size: clamp(2.4rem, 8vw, 4.6rem); line-height: 1; color: var(--solder); }
         .gate-role { font-family: var(--font-b); color: var(--ghost); font-size: clamp(1rem, 2vw, 1.2rem); margin-top: 1.1rem; line-height: 1.5; }
         .gate-role b { color: var(--solder); font-weight: 500; }
-        .gate-enter { margin-top: 2.6rem; font-family: var(--font-m); font-size: 0.8rem; letter-spacing: 0.06em; background: var(--trace); color: #000; font-weight: 700; border: none; border-radius: 999px; padding: 1rem 2.2rem; cursor: pointer; display: inline-flex; align-items: center; gap: 0.6rem; transition: box-shadow 0.25s ease, transform 0.25s ease; }
-        .gate-enter:hover { box-shadow: 0 0 30px var(--trace-glow); transform: translateY(-2px); }
-        .gate-enter svg { width: 13px; height: 13px; transition: transform 0.25s ease; }
-        .gate-enter:hover svg { transform: translateX(3px); }
-        .gate-hint { margin-top: 1.4rem; font-family: var(--font-m); font-size: 0.66rem; letter-spacing: 0.06em; color: var(--ghost); opacity: 0.65; }
+        .gate-hint { margin-top: 2rem; font-family: var(--font-m); font-size: 0.68rem; letter-spacing: 0.08em; color: var(--ghost); opacity: 0.7; }
         @keyframes gateIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
-        .gate.leaving { pointer-events: none; animation: gateOverlayOut 0.7s cubic-bezier(0.7,0,0.84,0) both; }
-        .gate.leaving .gate-inner { animation: gateInnerOut 0.5s cubic-bezier(0.7,0,0.84,0) both; }
-        @keyframes gateOverlayOut { to { opacity: 0; } }
-        @keyframes gateInnerOut { to { opacity: 0; transform: translateY(-20px) scale(0.97); } }
+        .gate.leaving { pointer-events: none; animation: gateCollapse 0.9s cubic-bezier(0.76,0,0.24,1) forwards; }
+        .gate.leaving .gate-inner { animation: gateInnerOut 0.45s cubic-bezier(0.7,0,0.84,0) both; }
+        @keyframes gateCollapse { to { clip-path: circle(0% at var(--gx, 50%) var(--gy, 50%)); } }
+        @keyframes gateInnerOut { to { opacity: 0; transform: translateY(-16px) scale(0.96); } }
         body.gated { overflow: hidden; }
         body.gated .hero-kicker, body.gated .hero-h1 .lo, body.gated .hero-h1 .pole, body.gated .hero-sub, body.gated .hero-actions {
             animation-play-state: paused;
         }
 
+        /* Reveal flash + spark burst: fixed overlays, siblings of .gate so the collapsing
+           clip-path never clips them out. */
+        .gate-flash { position: fixed; inset: 0; z-index: 5500; background: radial-gradient(circle at var(--gx, 50%) var(--gy, 50%), rgba(255, 130, 0, 0.6), transparent 55%); opacity: 0; pointer-events: none; }
+        .gate-flash.pulse { animation: gateFlash 0.55s ease-out forwards; }
+        @keyframes gateFlash { 0% { opacity: 0; } 18% { opacity: 1; } 100% { opacity: 0; } }
+        #gate-burst { position: fixed; inset: 0; z-index: 6000; pointer-events: none; overflow: visible; }
+        .burst-ray { stroke: var(--trace); stroke-width: 2; stroke-linecap: round; fill: none; filter: drop-shadow(0 0 6px var(--trace-glow)); }
+        .burst-core { fill: var(--trace); filter: drop-shadow(0 0 10px var(--trace-glow)); transform-box: fill-box; transform-origin: center; }
+
         /* ---- Signal rail (left) ---- */
         .rail { position: fixed; top: 0; left: 0; height: 100vh; width: var(--rail-w); z-index: 900; display: flex; flex-direction: column; align-items: center; padding: 2.4rem 0; }
         .rail-line { position: relative; flex: 1; width: 2px; background: var(--trace-dim); opacity: 0.5; margin: 1.2rem 0; }
-        .rail-fill { position: absolute; top: 0; left: 0; width: 100%; height: 0; background: var(--trace); box-shadow: 0 0 12px var(--trace-glow); transition: height 0.15s linear; }
+        .rail-fill { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: var(--trace); box-shadow: 0 0 12px var(--trace-glow); transform: scaleY(0); transform-origin: top; transition: transform 0.15s linear; }
         .rail-nodes { position: absolute; top: 0; left: 50%; transform: translateX(-50%); height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
         .rail-node { position: relative; width: 9px; height: 9px; border-radius: 50%; background: var(--void); border: 2px solid var(--trace-dim); cursor: pointer; transition: 0.25s; }
         .rail-node.on { border-color: var(--trace); background: var(--trace); box-shadow: 0 0 10px var(--trace-glow); }
@@ -83,7 +89,7 @@
 
         /* ---- Layout shell ---- */
         .shell { margin-left: var(--rail-w); }
-        .band { padding: 8rem clamp(1.5rem, 5vw, 5rem); max-width: calc(var(--wrap) + var(--rail-w)); }
+        .band { padding: 4.5rem clamp(1.5rem, 5vw, 5rem); max-width: calc(var(--wrap) + var(--rail-w)); }
         .band-title { font-family: var(--font-d); font-weight: 800; font-size: clamp(1.9rem, 4.2vw, 2.8rem); letter-spacing: -0.02em; line-height: 1.02; text-wrap: balance; }
         .band-note { color: var(--ghost); max-width: 560px; margin-top: 1rem; text-wrap: pretty; }
 
@@ -183,7 +189,7 @@
         .spec-course { margin-top: 1.3rem; font-family: var(--font-m); font-size: 0.7rem; line-height: 2; color: var(--ghost); }
         .spec-course b { color: var(--solder); font-weight: 400; display: block; letter-spacing: 0.14em; font-size: 0.6rem; text-transform: uppercase; margin-bottom: 0.4rem; }
 
-        .reach { min-height: 78vh; display: flex; flex-direction: column; justify-content: center; }
+        .reach { min-height: 40vh; display: flex; flex-direction: column; justify-content: center; padding-bottom: 2rem; }
         .reach-mail { font-family: var(--font-d); font-weight: 700; letter-spacing: -0.01em; font-size: clamp(1.05rem, 3vw, 1.8rem); border-bottom: 2px solid var(--edge); padding-bottom: 0.25rem; transition: 0.25s; word-break: break-word; text-transform: none; }
         .reach-mail:hover { color: var(--trace); border-color: var(--trace); }
         .reach-links { display: flex; flex-wrap: wrap; gap: 1.8rem; margin-top: 2.2rem; font-family: var(--font-m); font-size: 0.8rem; color: var(--ghost); }
@@ -204,7 +210,7 @@
             .rail-name { max-width: none; }
             .shell { margin-left: 0; padding-top: 52px; }
             .hero { min-height: 90vh; padding-top: 2rem; }
-            .band { padding-top: 5rem; padding-bottom: 5rem; }
+            .band { padding-top: 3.5rem; padding-bottom: 3.5rem; }
             .layer { grid-template-columns: 1fr; gap: 0.9rem; }
             .layer-id { display: flex; align-items: baseline; gap: 0.7rem; }
             .layer-id .lv { font-size: 1.05rem; }
@@ -222,12 +228,15 @@
             .hero-kicker, .hero-h1 .lo, .hero-h1 .pole, .hero-sub, .hero-actions, .hero-aside { animation: none; }
             .sq-to, .sq-the { animation: none; opacity: 0.92; }
             .reveal { opacity: 1; transform: none; transition: none; }
-            .gate-inner, .gate.leaving, .gate.leaving .gate-inner { animation: none; }
+            .gate-inner { animation: none; }
+            .gate.leaving { animation: none; clip-path: circle(0% at var(--gx, 50%) var(--gy, 50%)); }
+            .gate.leaving .gate-inner { animation: none; opacity: 0; }
+            .gate-flash.pulse { animation: none; }
             body.gated .hero-kicker, body.gated .hero-h1 .lo, body.gated .hero-h1 .pole, body.gated .hero-sub, body.gated .hero-actions { animation-play-state: running; }
         }
     </style>
     <noscript><style>
-        .gate { display: none !important; }
+        .gate, .gate-flash, #gate-burst { display: none !important; }
         body { overflow: auto !important; }
         body.gated .hero-kicker, body.gated .hero-h1 .lo, body.gated .hero-h1 .pole, body.gated .hero-sub, body.gated .hero-actions { animation-play-state: running !important; }
     </style></noscript>
@@ -235,18 +244,16 @@
 <body class="gated">
 
     <!-- Landing gate: click, tap, or press any key to reveal the site -->
-    <div class="gate" id="gate" role="dialog" aria-modal="true" aria-label="Introduction">
+    <div class="gate" id="gate" role="dialog" aria-modal="true" aria-label="Introduction" tabindex="-1">
         <div class="gate-inner">
             <p class="gate-kicker">Portfolio</p>
             <p class="gate-name">Keaton Wyrick</p>
             <p class="gate-role">B.S. Computer Engineering<br><b>University of Tennessee, Knoxville</b></p>
-            <button class="gate-enter" id="gate-enter" type="button">
-                Enter
-                <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
             <p class="gate-hint">click anywhere, or press any key</p>
         </div>
     </div>
+    <div class="gate-flash" id="gate-flash" aria-hidden="true"></div>
+    <div id="gate-burst" aria-hidden="true"></div>
 
     <!-- Signal rail -->
     <nav class="rail" aria-label="Section navigation">
@@ -458,35 +465,106 @@
     <div class="egg-toast" id="egg-toast" role="status" aria-live="polite"></div>
 
     <script>
-        // ---- Landing gate: click, tap anywhere, or press any key to reveal the site ----
+        // ---- Landing gate: click anywhere, or press any key, to power on the site ----
         (function () {
             const gate = document.getElementById('gate');
-            const enterBtn = document.getElementById('gate-enter');
+            const flash = document.getElementById('gate-flash');
+            const burstLayer = document.getElementById('gate-burst');
             const top = document.getElementById('top');
             const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             let dismissed = false;
 
-            function dismissGate() {
+            // Radiating circuit-trace spark burst from the interaction point, drawn with the
+            // same stroke-dasharray "trace draw-in" technique used by the hero squiggle.
+            function spawnBurst(x, y) {
+                const NS = 'http://www.w3.org/2000/svg';
+                const svg = document.createElementNS(NS, 'svg');
+                svg.setAttribute('class', 'burst-svg');
+                svg.style.position = 'absolute';
+                svg.style.inset = '0';
+                svg.style.width = '100%';
+                svg.style.height = '100%';
+                svg.style.overflow = 'visible';
+
+                const RAYS = 14;
+                const lines = [];
+                for (let i = 0; i < RAYS; i++) {
+                    const angle = (i / RAYS) * Math.PI * 2 + (Math.random() * 0.4 - 0.2);
+                    const len = 90 + Math.random() * 220;
+                    const line = document.createElementNS(NS, 'line');
+                    line.setAttribute('x1', x); line.setAttribute('y1', y);
+                    line.setAttribute('x2', x + Math.cos(angle) * len); line.setAttribute('y2', y + Math.sin(angle) * len);
+                    line.setAttribute('class', 'burst-ray');
+                    svg.appendChild(line);
+                    lines.push(line);
+                }
+                const core = document.createElementNS(NS, 'circle');
+                core.setAttribute('cx', x); core.setAttribute('cy', y); core.setAttribute('r', 3);
+                core.setAttribute('class', 'burst-core');
+                svg.appendChild(core);
+                burstLayer.appendChild(svg);
+
+                lines.forEach(line => {
+                    const len = line.getTotalLength();
+                    line.style.strokeDasharray = len;
+                    line.style.strokeDashoffset = len;
+                    line.style.opacity = '1';
+                });
+                core.style.transform = 'scale(0)';
+                core.style.opacity = '1';
+                void svg.getBoundingClientRect(); // commit the "from" state before transitioning
+
+                lines.forEach((line, i) => {
+                    line.style.transition = `stroke-dashoffset 0.5s cubic-bezier(0.16,1,0.3,1) ${i * 6}ms, opacity 0.4s ease ${280 + i * 6}ms`;
+                    line.style.strokeDashoffset = '0';
+                });
+                core.style.transition = 'transform 0.35s cubic-bezier(0.16,1,0.3,1)';
+                core.style.transform = 'scale(7)';
+
+                setTimeout(() => {
+                    lines.forEach(l => { l.style.opacity = '0'; });
+                    core.style.transition += ', opacity 0.3s ease';
+                    core.style.opacity = '0';
+                }, 300);
+                setTimeout(() => { svg.remove(); }, 950);
+            }
+
+            function dismissGate(evt) {
                 if (dismissed) return;
                 dismissed = true;
+
+                const hasPoint = evt instanceof MouseEvent || (evt && evt.touches && evt.touches[0]);
+                const px = hasPoint ? (evt.clientX ?? evt.touches[0].clientX) : window.innerWidth / 2;
+                const py = hasPoint ? (evt.clientY ?? evt.touches[0].clientY) : window.innerHeight / 2;
+                gate.style.setProperty('--gx', px + 'px');
+                gate.style.setProperty('--gy', py + 'px');
+                flash.style.setProperty('--gx', px + 'px');
+                flash.style.setProperty('--gy', py + 'px');
+
+                if (!reduceMotion) {
+                    spawnBurst(px, py);
+                    flash.classList.add('pulse');
+                }
+                void gate.offsetWidth; // commit --gx/--gy before the collapse animation reads them
                 gate.classList.add('leaving');
+
                 document.body.classList.remove('gated');
                 document.querySelector('.shell').removeAttribute('aria-hidden');
                 document.querySelector('.rail').removeAttribute('aria-hidden');
-                document.removeEventListener('keydown', onGateKey);
+                document.removeEventListener('keydown', dismissGate);
+                gate.removeEventListener('click', dismissGate);
+
                 setTimeout(() => {
                     gate.remove();
                     if (top) top.focus({ preventScroll: true });
-                }, reduceMotion ? 0 : 650);
+                }, reduceMotion ? 0 : 900);
             }
-            function onGateKey() { dismissGate(); }
 
             document.querySelector('.shell').setAttribute('aria-hidden', 'true');
             document.querySelector('.rail').setAttribute('aria-hidden', 'true');
-            enterBtn.addEventListener('click', e => { e.stopPropagation(); dismissGate(); });
             gate.addEventListener('click', dismissGate);
-            document.addEventListener('keydown', onGateKey);
-            enterBtn.focus({ preventScroll: true });
+            document.addEventListener('keydown', dismissGate);
+            gate.focus({ preventScroll: true });
         })();
 
         // ---- Signal rail: scroll progress + active node ----
