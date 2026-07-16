@@ -166,7 +166,8 @@
         .lb-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; gap: 8px; }
         .lb-title { font-family: var(--font-m); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--trace); white-space: nowrap; }
         .lb-you { font-family: var(--font-m); font-size: 0.6rem; color: var(--ghost); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .lb-name-row { display: flex; gap: 6px; margin-bottom: 10px; }
+        .lb-name-row { display: none; gap: 6px; margin-bottom: 10px; } /* shown only when the game is over */
+        .lb-name-row.show { display: flex; }
         .lb-name-input { flex: 1; min-width: 0; background: var(--void); border: 1px solid var(--edge-strong); border-radius: 6px; color: var(--solder); font-family: var(--font-m); font-size: 0.7rem; padding: 6px 8px; outline: none; }
         .lb-name-input:focus { border-color: var(--trace); }
         .lb-list { display: flex; flex-direction: column; gap: 3px; max-height: 150px; overflow-y: auto; }
@@ -438,7 +439,7 @@
                                     <span class="lb-title">Leaderboard</span>
                                     <span class="lb-you" id="lb-you"></span>
                                 </div>
-                                <div class="lb-name-row">
+                                <div class="lb-name-row" id="lb-name-row">
                                     <input type="text" id="lb-name-input" class="lb-name-input" placeholder="Your name" maxlength="16" autocomplete="off">
                                     <button class="pill" id="lb-name-save" type="button" style="margin-top:0; width:auto;">SAVE</button>
                                 </div>
@@ -677,6 +678,7 @@
                 isGameOver = true;
                 document.getElementById('final-score').innerText = score;
                 document.getElementById('game-over-overlay').style.display = 'flex';
+                document.getElementById('lb-name-row').classList.add('show');
                 recordScore(score);
             }
         }
@@ -768,7 +770,9 @@
             document.getElementById('lines').innerText = 0;
             document.getElementById('level').innerText = 1;
             clearingRows = null; clearElapsed = 0;
-            isGameOver=false; document.getElementById('game-over-overlay').style.display='none'; playerReset();
+            isGameOver=false; document.getElementById('game-over-overlay').style.display='none';
+            document.getElementById('lb-name-row').classList.remove('show');
+            playerReset();
         }
         function update(time=0) {
             if (!isPaused && !isGameOver) {
