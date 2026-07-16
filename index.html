@@ -474,9 +474,13 @@
             const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
             let dismissed = false;
 
-            // Radiating circuit-trace spark burst from the interaction point, drawn with the
-            // same stroke-dasharray "trace draw-in" technique used by the hero squiggle.
-            function spawnBurst(x, y) {
+            // Radiating circuit-trace spark burst, drawn with the same stroke-dasharray
+            // "trace draw-in" technique used by the hero squiggle. `rays`/`scale` let each
+            // burst in the fireworks show vary in size so they don't all look identical.
+            function spawnBurst(x, y, opts) {
+                opts = opts || {};
+                const RAYS = opts.rays || 14;
+                const scale = opts.scale || 1;
                 const NS = 'http://www.w3.org/2000/svg';
                 const svg = document.createElementNS(NS, 'svg');
                 svg.setAttribute('class', 'burst-svg');
@@ -486,11 +490,10 @@
                 svg.style.height = '100%';
                 svg.style.overflow = 'visible';
 
-                const RAYS = 14;
                 const lines = [];
                 for (let i = 0; i < RAYS; i++) {
                     const angle = (i / RAYS) * Math.PI * 2 + (Math.random() * 0.4 - 0.2);
-                    const len = 90 + Math.random() * 220;
+                    const len = (90 + Math.random() * 220) * scale;
                     const line = document.createElementNS(NS, 'line');
                     line.setAttribute('x1', x); line.setAttribute('y1', y);
                     line.setAttribute('x2', x + Math.cos(angle) * len); line.setAttribute('y2', y + Math.sin(angle) * len);
@@ -519,7 +522,7 @@
                     line.style.strokeDashoffset = '0';
                 });
                 core.style.transition = 'transform 0.35s cubic-bezier(0.16,1,0.3,1)';
-                core.style.transform = 'scale(7)';
+                core.style.transform = `scale(${7 * scale + 1})`;
 
                 setTimeout(() => {
                     lines.forEach(l => { l.style.opacity = '0'; });
@@ -527,6 +530,22 @@
                     core.style.opacity = '0';
                 }, 300);
                 setTimeout(() => { svg.remove(); }, 950);
+            }
+
+            // A short fireworks show: the main burst right where you clicked, plus a
+            // handful of smaller ones popping at random points around the screen, staggered
+            // so they read as a quick cascade rather than everything firing at once.
+            function spawnFireworks(mainX, mainY) {
+                spawnBurst(mainX, mainY, { rays: 16, scale: 1.1 });
+                const extras = 5 + Math.floor(Math.random() * 2);
+                for (let i = 0; i < extras; i++) {
+                    const ex = window.innerWidth * (0.08 + Math.random() * 0.84);
+                    const ey = window.innerHeight * (0.08 + Math.random() * 0.84);
+                    const delay = 60 + Math.random() * 360;
+                    const scale = 0.4 + Math.random() * 0.4;
+                    const rays = 7 + Math.floor(Math.random() * 5);
+                    setTimeout(() => spawnBurst(ex, ey, { rays, scale }), delay);
+                }
             }
 
             function dismissGate(evt) {
@@ -542,7 +561,7 @@
                 flash.style.setProperty('--gy', py + 'px');
 
                 if (!reduceMotion) {
-                    spawnBurst(px, py);
+                    spawnFireworks(px, py);
                     flash.classList.add('pulse');
                 }
                 void gate.offsetWidth; // commit --gx/--gy before the collapse animation reads them
