@@ -162,22 +162,31 @@
         .swipe-hint { display: none; font-family: var(--font-m); font-size: 0.6rem; letter-spacing: 0.08em; color: var(--ghost); text-align: center; margin-top: 10px; }
         @media (pointer: coarse) { .swipe-hint { display: block; } }
         #tetris-container { position: relative; width: fit-content; }
-        .lb-panel { margin-top: 12px; width: 100%; border-top: 1px solid var(--edge); padding-top: 12px; }
-        .lb-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px; gap: 8px; }
-        .lb-title { font-family: var(--font-m); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--trace); white-space: nowrap; }
-        .lb-you { font-family: var(--font-m); font-size: 0.6rem; color: var(--ghost); text-align: right; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .lb-name-row { display: none; gap: 6px; margin-bottom: 10px; } /* shown only when the game is over */
+
+        /* ---- Tetris + Leaderboard: side by side on desktop, stacked on mobile ---- */
+        .tetris-unit { width: 100%; }
+        .tetris-split { display: flex; gap: 2rem; padding: 1.7rem; justify-content: center; align-items: stretch; flex-wrap: wrap; }
+        .tetris-side { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+        .lb-side { flex: 1 1 320px; display: flex; }
+        .lab-solo { display: flex; justify-content: center; margin-top: 1.6rem; }
+        .lab-solo .unit { width: 100%; max-width: 420px; }
+
+        .lb-panel { flex: 1; display: flex; flex-direction: column; background: var(--void); border: 1px solid var(--edge); border-radius: 12px; padding: 1.5rem; min-width: 0; }
+        .lb-head { display: flex; justify-content: center; align-items: baseline; margin-bottom: 12px; gap: 8px; position: relative; }
+        .lb-title { font-family: var(--font-m); font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--trace); white-space: nowrap; }
+        .lb-you { font-family: var(--font-m); font-size: 0.62rem; color: var(--ghost); position: absolute; right: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 45%; }
+        .lb-name-row { display: none; gap: 8px; margin-bottom: 14px; justify-content: center; align-items: center; }
         .lb-name-row.show { display: flex; }
-        .lb-name-input { flex: 1; min-width: 0; background: var(--void); border: 1px solid var(--edge-strong); border-radius: 6px; color: var(--solder); font-family: var(--font-m); font-size: 0.7rem; padding: 6px 8px; outline: none; }
+        .lb-name-input { width: 78px; flex: 0 0 auto; text-align: center; text-transform: uppercase; letter-spacing: 0.2em; background: var(--carbon); border: 1px solid var(--edge-strong); border-radius: 6px; color: var(--solder); font-family: var(--font-m); font-weight: 700; font-size: 0.95rem; padding: 8px 6px; outline: none; }
         .lb-name-input:focus { border-color: var(--trace); }
-        .lb-list { display: flex; flex-direction: column; gap: 3px; max-height: 150px; overflow-y: auto; }
-        .lb-row { display: grid; grid-template-columns: 18px 1fr auto; gap: 8px; font-family: var(--font-m); font-size: 0.7rem; color: var(--ghost); padding: 4px 6px; border-radius: 6px; }
-        .lb-row.me { background: rgba(255, 130, 0, 0.1); color: var(--solder); }
+        .lb-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+        .lb-row { display: grid; grid-template-columns: 24px 1fr auto; gap: 10px; font-family: var(--font-m); font-size: 0.8rem; color: var(--ghost); padding: 7px 9px; border-radius: 7px; align-items: center; }
+        .lb-row.me { background: rgba(255, 130, 0, 0.12); color: var(--solder); }
         .lb-rank { color: var(--trace); }
-        .lb-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .lb-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; letter-spacing: 0.12em; font-weight: 700; }
         .lb-score { color: var(--solder); font-weight: 700; }
         .lb-row.me .lb-score { color: var(--trace); }
-        .lb-empty { font-family: var(--font-m); font-size: 0.68rem; color: var(--ghost); padding: 8px 4px; text-align: center; }
+        .lb-empty { font-family: var(--font-m); font-size: 0.72rem; color: var(--ghost); padding: 12px 4px; text-align: center; margin: auto; }
         .ov { position: absolute; inset: 0; background: rgba(11,11,13,0.92); display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 6; font-family: var(--font-m); color: var(--trace); text-align: center; border-radius: 5px; gap: 8px; }
         .ov h4 { font-family: var(--font-d); font-size: 1.1rem; letter-spacing: 0.1em; }
         .pill { background: none; border: 1px solid var(--trace); color: var(--trace); padding: 8px 16px; cursor: pointer; font-family: var(--font-m); font-size: 0.68rem; border-radius: 6px; transition: 0.2s; margin-top: 6px; }
@@ -236,6 +245,9 @@
             .layer-id .nm { margin-top: 0; }
             .layer-id .hw { display: none; }
             .lab-grid, .contact-grid { grid-template-columns: 1fr; }
+            .tetris-split { flex-direction: column; align-items: center; padding: 1.2rem; }
+            .lb-side { width: 100%; max-width: 420px; }
+            .lb-list { max-height: 220px; }
             .entry.flag::before { position: static; display: block; margin-bottom: 0.5rem; }
             .entry.flag h3 { font-size: 1.3rem; }
         }
@@ -411,10 +423,10 @@
         <section id="lab" class="band">
             <h2 class="band-title reveal">Have Fun!</h2>
             <p class="band-note">Good luck beating the Tic Tac Toe AI - you can't.</p>
-            <div class="lab-grid">
-                <div class="unit reveal">
-                    <div class="unit-bar"><span>Tetris</span><span class="r">L0 → canvas</span></div>
-                    <div class="unit-in">
+            <div class="unit reveal tetris-unit">
+                <div class="unit-bar"><span>Tetris</span><span class="r">L0 → canvas</span></div>
+                <div class="tetris-split">
+                    <div class="tetris-side">
                         <div id="tetris-container">
                             <div class="readout">
                                 <span>Score <span id="score">0</span></span>
@@ -434,20 +446,25 @@
                             <canvas id="tetris" width="240" height="400"></canvas>
                             <p class="swipe-hint">drag ◀ ▶ to move · flick ▼ to drop · tap to rotate</p>
                             <button class="pill" style="width:100%;margin-top:10px;" onclick="togglePause()">PAUSE</button>
-                            <div class="lb-panel">
-                                <div class="lb-head">
-                                    <span class="lb-title">Leaderboard</span>
-                                    <span class="lb-you" id="lb-you"></span>
-                                </div>
-                                <div class="lb-name-row" id="lb-name-row">
-                                    <input type="text" id="lb-name-input" class="lb-name-input" placeholder="Your name" maxlength="16" autocomplete="off">
-                                    <button class="pill" id="lb-name-save" type="button" style="margin-top:0; width:auto;">SAVE</button>
-                                </div>
-                                <div id="lb-list" class="lb-list"></div>
+                        </div>
+                    </div>
+                    <div class="lb-side">
+                        <div class="lb-panel">
+                            <div class="lb-head">
+                                <span class="lb-title">Leaderboard</span>
+                                <span class="lb-you" id="lb-you"></span>
                             </div>
+                            <div class="lb-name-row" id="lb-name-row">
+                                <input type="text" id="lb-name-input" class="lb-name-input" placeholder="AAA" maxlength="3" autocomplete="off" aria-label="Your three-letter initials">
+                                <button class="pill" id="lb-name-save" type="button" style="margin-top:0; width:auto;">SAVE</button>
+                            </div>
+                            <div id="lb-list" class="lb-list"></div>
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <div class="lab-solo">
                 <div class="unit reveal">
                     <div class="unit-bar"><span id="egg-tic">Tic-Tac-Toe</span><span class="r" id="egg-mini">minimax</span></div>
                     <div class="unit-in">
@@ -655,6 +672,7 @@
         let score = 0, isPaused = false, isGameOver = false;
         let lastTime = 0, dropCounter = 0, dropInterval = 400;
         let linesCleared = 0, level = 1;
+        let pendingScore = 0; // score awaiting initials, if none are set yet this session
         let clearingRows = null, clearElapsed = 0;
         const CLEAR_FLASH_MS = 220;
         const arena = Array.from({length: 20}, () => new Array(12).fill(0));
@@ -679,7 +697,10 @@
                 document.getElementById('final-score').innerText = score;
                 document.getElementById('game-over-overlay').style.display = 'flex';
                 document.getElementById('lb-name-row').classList.add('show');
-                recordScore(score);
+                // Already have initials this session -> record immediately. Otherwise hold the
+                // score until they type initials and hit SAVE, so it's never recorded as "Anonymous".
+                if (getPlayerName()) { recordScore(score); pendingScore = 0; }
+                else { pendingScore = score; }
             }
         }
         function rotate(m, dir) {
@@ -769,7 +790,7 @@
             linesCleared = 0; level = 1; dropInterval = 400;
             document.getElementById('lines').innerText = 0;
             document.getElementById('level').innerText = 1;
-            clearingRows = null; clearElapsed = 0;
+            clearingRows = null; clearElapsed = 0; pendingScore = 0;
             isGameOver=false; document.getElementById('game-over-overlay').style.display='none';
             document.getElementById('lb-name-row').classList.remove('show');
             playerReset();
@@ -880,9 +901,10 @@
             document.getElementById('high-score').innerText = mine ? mine.score : 0;
         }
 
+        // Requires real 3-letter initials -- never silently records under a placeholder name.
         function recordScore(finalScore) {
-            if (finalScore <= 0) return;
-            const name = getPlayerName() || 'Anonymous';
+            const name = getPlayerName();
+            if (!name || finalScore <= 0) return;
             const list = getLeaderboard();
             const existing = list.find(e => e.name === name);
             if (existing) { if (finalScore > existing.score) existing.score = finalScore; }
@@ -898,9 +920,18 @@
             lbYou.textContent = name ? ('Playing as ' + name) : '';
             if (name) lbNameInput.value = name;
         }
+        // Live-format to exactly three capitalized letters as they type, arcade high-score style.
+        lbNameInput.addEventListener('input', () => {
+            lbNameInput.value = lbNameInput.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3);
+        });
         document.getElementById('lb-name-save').addEventListener('click', () => {
-            const v = lbNameInput.value.trim().slice(0, 16);
-            if (v) { setPlayerName(v); refreshNameUI(); renderLeaderboard(); lbNameInput.blur(); }
+            const v = lbNameInput.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3);
+            if (v.length !== 3) return; // require exactly three letters
+            setPlayerName(v);
+            refreshNameUI();
+            if (pendingScore > 0) { recordScore(pendingScore); pendingScore = 0; }
+            else { renderLeaderboard(); }
+            lbNameInput.blur();
         });
         lbNameInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('lb-name-save').click(); } });
         refreshNameUI();
