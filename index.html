@@ -443,8 +443,12 @@
                                 <p style="font-family:var(--font-m);font-size:0.72rem;color:var(--ghost)">Score <span id="final-score">0</span></p>
                                 <button class="pill" onclick="resetGame()">RETRY</button>
                             </div>
+                            <div class="ov" id="name-gate-overlay">
+                                <h4>ENTER INITIALS</h4>
+                                <p style="font-family:var(--font-m);font-size:0.72rem;color:var(--ghost);max-width:190px;">Type 3 letters in the leaderboard panel to start playing</p>
+                            </div>
                             <canvas id="tetris" width="240" height="400"></canvas>
-                            <p class="swipe-hint">drag ◀ ▶ to move · flick ▼ to drop · tap to rotate</p>
+                            <p class="swipe-hint">drag ◀ ▶ to move · hold to speed up · flick ▼ to slam · tap to rotate</p>
                             <button class="pill" style="width:100%;margin-top:10px;" onclick="togglePause()">PAUSE</button>
                         </div>
                     </div>
@@ -668,8 +672,17 @@
         // ---- Tetris ----
         const canvas = document.getElementById('tetris');
         const context = canvas.getContext('2d');
-        context.scale(20, 20);
-        let score = 0, isPaused = false, isGameOver = false;
+        // Board is much larger on desktop; mobile keeps its original compact size.
+        function sizeCanvas() {
+            const cell = window.matchMedia('(min-width: 821px)').matches ? 34 : 20;
+            canvas.width = 12 * cell;
+            canvas.height = 20 * cell;
+            context.setTransform(1, 0, 0, 1, 0, 0);
+            context.scale(cell, cell);
+            return cell;
+        }
+        let CELL = sizeCanvas(); // canvas px per cell, also used for touch-drag math
+        let score = 0, isPaused = false, isGameOver = false, needsName = false;
         let lastTime = 0, dropCounter = 0, dropInterval = 400;
         let linesCleared = 0, level = 1;
         let pendingScore = 0; // score awaiting initials, if none are set yet this session
@@ -696,11 +709,10 @@
                 isGameOver = true;
                 document.getElementById('final-score').innerText = score;
                 document.getElementById('game-over-overlay').style.display = 'flex';
-                document.getElementById('lb-name-row').classList.add('show');
-                // Already have initials this session -> record immediately. Otherwise hold the
-                // score until they type initials and hit SAVE, so it's never recorded as "Anonymous".
+                // Initials are already collected by the pre-game gate, so this normally just
+                // records. The row only resurfaces as a fallback if a name somehow isn't set.
                 if (getPlayerName()) { recordScore(score); pendingScore = 0; }
-                else { pendingScore = score; }
+                else { document.getElementById('lb-name-row').classList.add('show'); pendingScore = score; }
             }
         }
         function rotate(m, dir) {
@@ -784,7 +796,14 @@
             }
             dropCounter = 0;
         }
-        function togglePause() { isPaused=!isPaused; document.getElementById('pause-overlay').style.display = isPaused?'flex':'none'; }
+        function togglePause() {
+            if (needsName || isGameOver) return; // gate/game-over overlays own pausing while active
+            isPaused=!isPaused; document.getElementById('pause-overlay').style.display = isPaused?'flex':'none';
+        }
+        window.addEventListener('resize', () => {
+            const next = sizeCanvas();
+            if (next !== CELL) { CELL = next; draw(); }
+        });
         function resetGame() {
             arena.forEach(r=>r.fill(0)); score=0; document.getElementById('score').innerText=0;
             linesCleared = 0; level = 1; dropInterval = 400;
@@ -844,12 +863,20 @@
             if (e.keyCode===32) act('drop');   // space: hard drop
         });
 
-        // Touch: drag ◀ ▶ to move, flick ▼ to hard-drop (slam & place), tap to rotate.
-        const CELL = 20; // canvas px per cell (240 / 12)
+        // Touch: drag ◀ ▶ to move, hold to speed up the drop, flick ▼ to hard-drop (slam & place), tap to rotate.
         let tx0, ty0, txLast, tt0, tMoved, dropped;
+        let holdTimer = null, holdInterval = null, holding = false;
+        function clearHold() { clearTimeout(holdTimer); clearInterval(holdInterval); holdTimer = holdInterval = null; }
         canvas.addEventListener('touchstart', e => {
             const t = e.touches[0];
             tx0 = txLast = t.clientX; ty0 = t.clientY; tt0 = Date.now(); tMoved = false; dropped = false;
+            clearHold(); holding = false;
+            // A press held past a quick tap (and not yet a drag/drop) accelerates the fall.
+            holdTimer = setTimeout(() => {
+                if (tMoved || dropped) return;
+                holding = true;
+                holdInterval = setInterval(() => { if (!isPaused && !isGameOver && !clearingRows) act('down'); }, 60);
+            }, 200);
             e.preventDefault();
         }, { passive: false });
         canvas.addEventListener('touchmove', e => {
@@ -857,9 +884,10 @@
             const t = e.touches[0];
             const dx = t.clientX - tx0, dy = t.clientY - ty0;
             // A committed downward flick hard-drops immediately (fast, decisive placement).
-            if (dy > 46 && dy > Math.abs(dx) * 1.5) { hardDrop(); dropped = true; tMoved = true; e.preventDefault(); return; }
+            if (dy > 46 && dy > Math.abs(dx) * 1.5) { clearHold(); hardDrop(); dropped = true; tMoved = true; e.preventDefault(); return; }
             // Otherwise, drag horizontally: one cell per CELL px moved.
             while (Math.abs(t.clientX - txLast) >= CELL) {
+                clearHold();
                 const dir = t.clientX > txLast ? 1 : -1;
                 act(dir > 0 ? 'right' : 'left');
                 txLast += dir * CELL; tMoved = true;
@@ -867,13 +895,15 @@
             e.preventDefault();
         }, { passive: false });
         canvas.addEventListener('touchend', e => {
+            clearHold();
             if (dropped) { e.preventDefault(); return; }
             const t = e.changedTouches[0];
             const dx = t.clientX - tx0, dy = t.clientY - ty0;
             if (dy > 28 && dy > Math.abs(dx)) hardDrop();          // shorter downward swipe still drops
-            else if (!tMoved && Date.now() - tt0 < 250) act('rotate'); // tap = rotate
+            else if (!tMoved && !holding && Date.now() - tt0 < 250) act('rotate'); // quick tap = rotate
             e.preventDefault();
         }, { passive: false });
+        canvas.addEventListener('touchcancel', clearHold, { passive: true });
 
         // ---- Tetris leaderboard: localStorage, keyed by a session player name,
         // overwrites only when a new score beats that player's existing best. ----
@@ -931,12 +961,25 @@
             refreshNameUI();
             if (pendingScore > 0) { recordScore(pendingScore); pendingScore = 0; }
             else { renderLeaderboard(); }
+            if (needsName) {
+                needsName = false; isPaused = false;
+                document.getElementById('name-gate-overlay').style.display = 'none';
+                document.getElementById('lb-name-row').classList.remove('show');
+            }
             lbNameInput.blur();
         });
         lbNameInput.addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); document.getElementById('lb-name-save').click(); } });
         refreshNameUI();
         renderLeaderboard();
 
+        // Require initials before the board goes live -- never play (or record) as a nameless session.
+        needsName = !getPlayerName();
+        if (needsName) {
+            isPaused = true;
+            document.getElementById('lb-name-row').classList.add('show');
+            document.getElementById('name-gate-overlay').style.display = 'flex';
+            lbNameInput.focus();
+        }
         playerReset(); update();
 
         // ---- Tic-Tac-Toe (minimax) ----
